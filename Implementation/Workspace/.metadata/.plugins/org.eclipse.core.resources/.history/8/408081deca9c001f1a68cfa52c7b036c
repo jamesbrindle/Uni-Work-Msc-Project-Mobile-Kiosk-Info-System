@@ -1,0 +1,16 @@
+package sik.client;
+
+public class RunClientProgram {
+
+	protected static LoginManager loginManager;
+	
+public RunClientProgram () {
+	
+
+}
+	public static void main(String[] args) {
+		loginManager = new LoginManager();
+
+	}
+
+}

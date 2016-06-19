@@ -1,0 +1,5 @@
+WARNING -- change the variables but do NOT change anything else
+-
+RMI Address:
+//127.0.0.1:1099/RMIServer
+-

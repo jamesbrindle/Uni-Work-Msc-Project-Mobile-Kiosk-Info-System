@@ -1,0 +1,16 @@
+package sik.client.admin;
+
+import java.rmi.RemoteException;
+
+import compute.*;
+
+
+public class RMIClientImpl implements RMIClient {
+
+	 public RMIClientImpl() throws RemoteException {
+
+	    }
+	private static final long serialVersionUID = 1L;
+
+ 
+}

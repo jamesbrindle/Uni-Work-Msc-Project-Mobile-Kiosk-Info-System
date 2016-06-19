@@ -1,0 +1,79 @@
+1280778086621	Delete element
+1280778099368	Rename type 'Record'
+1280779888315	Rename type 'ServerLogs'
+1280789265895	Copy compilation unit
+1280790163994	Copy compilation unit
+1280791538140	Rename local variable 'recordsArrayList'
+1280871813499	Rename field 'record'
+1280871829915	Rename field 'store'
+1280871870591	Rename field 'recordsStore'
+1280872685903	Rename local variable 'f'
+1280872895895	Rename local variable 'oos'
+1280946025860	Delete elements
+1280946401309	Delete element
+1280947975005	Delete element
+1280950950409	Rename local variable 'name'
+1280952159542	Rename type 'Records'
+1280954045637	Rename type 'Record'
+1280955240506	Rename local variable 'temp'
+1280956031704	Rename resource 'serverLog.txt'
+1280956038845	Rename resource 'serverOptions.txt'
+1281035251482	Rename type 'Records'
+1281041119871	Rename type 'StudentRecord'
+1281045693906	Rename type 'StudentRecordImpl'
+1281046035672	Rename type 'Records'
+1281186816184	Rename field 'menuItem1'
+1281186833017	Rename field 'menuItem2'
+1281186841222	Rename field 'menuItem3'
+1281186852922	Rename field 'menuItem4'
+1281186859069	Rename field 'menuItem_newStpre'
+1281189636442	Rename method 'setNavButtons'
+1281190955641	Copy compilation unit
+1281190977559	Copy compilation unit
+1281193673334	Rename type 'Store'
+1281194660206	Rename package 'sik.admin'
+1281194735881	Move package
+1281194882147	Delete element
+1281194907606	Copy files
+1281197110025	Rename type 'Store'
+1281197351444	Copy folder
+1281197359820	Delete element
+1281197362683	Delete element
+1281197364809	Delete element
+1281197475944	Rename package 'sik.client.admin'
+1281197606860	Rename type 'StudentRecordImpl'
+1281197640627	Rename type 'StudentRecordImpl'
+1281197665270	Rename type 'StoreImpl'
+1281197796132	Rename type 'StudentRecordImpl_admin'
+1281197805326	Rename type 'StoreImpl'
+1281198567375	Rename field 'recordArrayList'
+1281198790464	Rename type 'StoreImpl_server'
+1281198797358	Copy compilation unit
+1281198806172	Rename type 'StoreImpl_server_admin'
+1281198916301	Rename type 'StudentRecordImpl_server'
+1281199083605	Rename type 'StudentRecordImpl_sever_admin'
+1281200304873	Rename type 'StudentRecordImpl_server_admin'
+1281203960288	Rename type 'StudentRecordImpl_server'
+1281203965030	Copy compilation unit
+1281204035848	Rename type 'StudentRecordImpl_server_admin'
+1281204100255	Rename type 'StoreImpl_server'
+1281204106788	Copy compilation unit
+1281204114981	Rename type 'StoreImpl_server_admin'
+1281204142363	Rename type 'StudentRecordImpl_server'
+1281204360953	Rename type 'StudentRecordImpl_server_admin'
+1281208650490	Rename type 'StoreImpl_server'
+1281208659069	Copy compilation unit
+1281208666557	Rename type 'StoreImpl_server_admin'
+1281210395108	Copy package
+1281211992312	Copy compilation unit
+1281212027634	Rename type 'StudentRecordImpl_server_admin'
+1281212331284	Delete element
+1281212339451	Delete element
+1281212349093	Delete element
+1281212361062	Delete element
+1281219223296	Delete element
+1281219226333	Delete element
+1281224251165	Rename field 'studentRecordsStore'
+1281224544961	Copy package
+1281224556809	Delete element
+1281273681408	Delete element

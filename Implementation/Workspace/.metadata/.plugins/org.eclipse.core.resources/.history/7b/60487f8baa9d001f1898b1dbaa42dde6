@@ -1,0 +1,86 @@
+package sik.server;
+
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+
+import sik.admin.Records;
+import sik.admin.Store;
+import sik.common.RMIClient;
+import sik.common.RMIServer;
+
+public class RMIServerImpl extends UnicastRemoteObject
+implements RMIServer 
+{
+	
+	 private static final long serialVersionUID = 1L;
+	 
+	 ArrayList<RMIClient> clientArrayList;
+	 
+	 Store store;
+	 Records record;
+	 ServerOptions serverOptions;
+
+	 public RMIServerImpl() throws RemoteException {
+		clientArrayList = new ArrayList<RMIClient>();
+		serverOptions = new ServerOptions();
+		
+		store = new Store();
+		store = store.fileIn(serverOptions.getStoreFileName());
+		record = new Records();
+		
+	 }
+	 
+	 public void startRMIServer() {
+		 if (System.getSecurityManager() == null) {
+			 System.setSecurityManager(new RMISecurityManager());
+		 }
+
+		 String name = serverOptions.getRMIAddress();
+		 try {
+			 RMIServer rmiServer = new RMIServerImpl();
+			 Naming.rebind(name, rmiServer);
+			 System.out.println("RMIServer bound");
+		 } catch (Exception e) {
+			 System.err.println("RMIServer exception: " + 
+					 e.getMessage());
+			 e.printStackTrace();
+		 }
+	 }
+
+	 public void printMessage(String theMessage) {
+		 System.out.println(theMessage);
+	 }
+
+	 public void dispatchMessage(String theMessage) {
+
+
+	 }
+
+	@Override
+	public void connect(RMIClient theClient) throws RemoteException {
+		clientArrayList.add(theClient);	
+
+		System.out.println("Bound Client: " + theClient);
+		
+	}
+
+	@Override
+	public void validateUser(RMIClient theClient, String studentID, String pinNo)
+			throws RemoteException {
+		
+		if(clientArrayList.contains(theClient)) {
+			if(store.getRecordFromStudentID(studentID).gettPinNo().equalsIgnoreCase(pinNo)) {
+				record = store.getRecordFromStudentID(studentID);
+				theClient.dispatchRecord(record);
+				}
+		}
+		else {
+			theClient.dispatchMessage("Error:Could not find your client " + theClient);
+		}
+		
+	}
+	 
+}

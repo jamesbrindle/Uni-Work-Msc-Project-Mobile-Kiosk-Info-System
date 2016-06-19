@@ -1,0 +1,9 @@
+
+-09-09-2010 21-33-14-
+
+--Starting The Student Information Kiosk RMI Server--
+
+Successfully loaded server settings file
+Server succesfully bound
+
+

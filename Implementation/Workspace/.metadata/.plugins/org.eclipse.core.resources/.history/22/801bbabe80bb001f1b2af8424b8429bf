@@ -1,0 +1,360 @@
+package sik.common;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+
+public class StudentRecord implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	private String studentID;
+	private String pinNo;
+	private String title, firstName, lastName, firstLineAddress,
+			secondLineAddress, city, county, postCode, telephone,
+			timestableName, rfidTagID, course;
+	private ImageIcon image;
+	private ArrayList<String> messagesArrayList, timestableArrayList,
+			resultsArrayList;
+
+	public StudentRecord() {}
+
+	public StudentRecord(String studentID) {
+		this.studentID = studentID;
+	}
+
+	/**
+	 * Returns studentID number
+	 * 
+	 * @return studentID Account record account number integer
+	 */
+	public String getStudentID() {
+		return studentID;
+	}
+
+	/**
+	 * Returns pinNo
+	 * 
+	 * @return pinNo Account record pin number integer
+	 */
+	public String getPinNo() {
+		return pinNo;
+	}
+	
+	/**
+	 * Returns course
+	 * 
+	 * @return course Course Name String
+	 */
+	public String getCourse() {
+		return course;
+	}
+
+	/**
+	 * Returns title
+	 * 
+	 * @return title Account record name title string
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * Returns firstName
+	 * 
+	 * @return firstName Account record first name string
+	 */
+	public String getFirstName() {
+		return firstName;
+	}
+
+	/**
+	 * Returns lastName
+	 * 
+	 * @return lastName Account record last name string
+	 */
+	public String getLastName() {
+		return lastName;
+	}
+
+	/**
+	 * Returns firstLineAddress
+	 * 
+	 * @return firstLineAddress Account record account number string
+	 */
+	public String getFirstLineAddress() {
+		return firstLineAddress;
+	}
+
+	/**
+	 * Returns secondLineAddress
+	 * 
+	 * @return secondLineAddress Account record second name string
+	 */
+	public String getSecondLineAddress() {
+		return secondLineAddress;
+	}
+
+	/**
+	 * Returns city
+	 * 
+	 * @return city Account record city string
+	 */
+	public String getCity() {
+		return city;
+	}
+
+	/**
+	 * Returns county
+	 * 
+	 * @return county Account record county string
+	 */
+	public String getCounty() {
+		return county;
+	}
+
+	/**
+	 * Returns postCode
+	 * 
+	 * @return postCode Account record post code string
+	 */
+	public String getPostCode() {
+		return postCode;
+	}
+
+	/**
+	 * Returns telephone
+	 * 
+	 * @return telephone Account record telephone number string
+	 */
+	public String getTelephone() {
+		return telephone;
+	}
+
+	/**
+	 * Returns student photo
+	 * 
+	 * @return image Record image of student photo
+	 */
+	public ImageIcon getImage() {
+		return image;
+	}
+
+	/**
+	 * Returns student messages
+	 * 
+	 * @return messageArrayList Array List of messages
+	 */
+	public ArrayList<String> getMessages() {
+		return messagesArrayList;
+	}
+
+	/**
+	 * Returns student timetable
+	 * 
+	 * @return timestableArrayList Array List of timestable
+	 */
+	public ArrayList<String> getTimestable() {
+		return timestableArrayList;
+	}
+
+	/**
+	 *  Returns student timetable name string
+	 * 
+	 * @return timestableName String of the name of the timestable
+	 */
+	public String getTimestableName() {
+		return timestableName;
+	}
+
+	/**
+	 * Returns student assignment results
+	 * 
+	 * @return resultsArrayList Array List of assignment results
+	 */
+	public ArrayList<String> getResults() {
+		return resultsArrayList;
+	}
+		
+	/**
+	 * Returns RFID Tag ID
+	 * 
+	 * @return rfidTagID String for RFID Tag ID
+	 */
+	public String getRFIDTagID() {
+		return rfidTagID;
+	}
+	
+	// ------------------------------------------------------------------------	
+	
+	/**
+	 * Sets account record pin number
+	 * 
+	 * @param pinNo
+	 *            The pin number integer
+	 */
+	public void setPinNo(String pinNo) {
+		this.pinNo = pinNo;
+	}
+	
+	/**
+	 * Sets course name
+	 * 
+	 * @param course
+	 *            The course name string
+	 */
+	public void setCourse(String course) {
+		this.course = course;
+	}
+
+	/**
+	 * Sets record title
+	 * 
+	 * @param title
+	 *            the name title string
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/**
+	 * Sets account record first name
+	 * 
+	 * @param firstName
+	 *            the first name string
+	 */
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	/**
+	 * Sets account record last name
+	 * 
+	 * @param lastName
+	 *            the last name string
+	 */
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	/**
+	 * Sets account record first line of address
+	 * 
+	 * @param firstLineAddress
+	 *            the first line of address string
+	 */
+	public void setFirstLineAddress(String firstLineAddress) {
+		this.firstLineAddress = firstLineAddress;
+	}
+
+	/**
+	 * Sets account record second line of address
+	 * 
+	 * @param secondLineAddress
+	 *            the second line of the address string
+	 */
+	public void setSecondLineAddress(String secondLineAddress) {
+		this.secondLineAddress = secondLineAddress;
+	}
+
+	/**
+	 * Sets account record city
+	 * 
+	 * @param city
+	 *            the city string
+	 */
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	/**
+	 * Sets account record county
+	 * 
+	 * @param county
+	 *            the county string
+	 */
+	public void setCounty(String county) {
+		this.county = county;
+	}
+
+	/**
+	 * Sets account record post code
+	 * 
+	 * @param postCode
+	 *            the post code string
+	 */
+	public void setPostCode(String postCode) {
+		this.postCode = postCode;
+	}
+
+	/**
+	 * Sets account record telephone
+	 * 
+	 * @param telephone
+	 *            the telephone number string
+	 */
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	/**
+	 * Sets student photo image
+	 * 
+	 * @param image
+	 *            the ImageIcon of student photo
+	 */
+	public void setImage(ImageIcon image) {
+		this.image = image;
+	}
+
+	/**
+	 * Sets student messages
+	 * 
+	 * @param messages
+	 *            ArrayList of messages Strings
+	 */
+	public void setMessages(ArrayList<String> messages) {
+		this.messagesArrayList = messages;
+	}
+
+	/**
+	 * Sets student timetable
+	 * 
+	 * @param timestable
+	 *            ArrayList of student timestable Strings
+	 */
+	public void setTimestable(ArrayList<String> timestable) {
+		this.timestableArrayList = timestable;
+	}
+
+	/**
+	 * Sets student timetable name
+	 * 
+	 * @param ttn
+	 *            String of the timestable name
+	 */
+	public void setTimestableName(String ttn) {
+		this.timestableName = ttn;
+	}
+
+	/**
+	 * Sets student assignment results
+	 * 
+	 * @param results
+	 *            ArrayList of student assignment results
+	 */
+	public void setResults(ArrayList<String> results) {
+		this.resultsArrayList = results;
+	}
+	
+	/**
+	 * Sets RFID Tage ID
+	 * 
+	 * @param rfidTagID
+	 *            String of rfid Tag ID
+	 */
+	public void setRFIDTagID(String rfidTagID) {
+		this.rfidTagID = rfidTagID;
+	}
+
+}

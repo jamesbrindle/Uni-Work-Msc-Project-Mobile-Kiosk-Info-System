@@ -1,0 +1,44 @@
+1280421332825	Delete element
+1280431481045	Move compilation unit
+1280431982812	Move file
+1280432044777	Move compilation unit
+1280433465027	Delete element
+1280436493472	Delete element
+1280437618204	Move compilation unit
+1280437989606	Rename type 'ComputeEngine'
+1280439347112	Rename local variable 'engine'
+1280447533821	Delete element
+1280449480528	Delete element
+1280455121930	Rename field 'rmiClient'
+1280457989747	Rename resource 'StudetRecords.dat'
+1280594060542	Delete element
+1280594062165	Delete element
+1280594171521	Move compilation unit
+1280594254047	Delete element
+1280594283219	Rename type 'RunAdmin'
+1280594422573	Rename type 'RunRMIServer'
+1280594646901	Rename method 'runGUI'
+1280594712312	Rename method 'LoadMenu'
+1280594730876	Rename method 'changeWarningMessage'
+1280594869935	Rename field 'nf'
+1280594907687	Rename field 'validationOK'
+1280594920635	Rename field 'newRecord'
+1280594940306	Rename field 'saveAttempt'
+1280595114418	Rename method 'warningMessage'
+1280595149877	Rename local variable 'GUI'
+1280595160375	Rename field 'nf'
+1280595183276	Rename local variable 'GUI'
+1280595319636	Rename method 'runGUI'
+1280595327841	Rename method 'runGU'
+1280595354642	Rename method 'LoadMenu'
+1280595404375	Rename method 'runGUI'
+1280595420942	Rename method 'LoadMenu'
+1280595436573	Rename local variable 'GUI'
+1280595445855	Rename local variable 'editMessagesGUi'
+1280595470784	Rename local variable 'GUI'
+1280595488927	Rename method 'runGUI'
+1280595495339	Rename method 'runG'
+1280595514277	Rename method 'LoadMenu'
+1280595539955	Rename method 'changeWarningMessage'
+1280596023526	Move file
+1280611599810	Copy files

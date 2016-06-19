@@ -1,0 +1,65 @@
+package sik.admin;
+
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+public class ServerOptions {
+    private String[] input;
+    protected String textFileLocation;
+			 
+    @SuppressWarnings("deprecation")
+    public ServerOptions() {
+        input = new String[11];
+        textFileLocation = "clientOptions.txt";
+		 
+        File file = new File(textFileLocation);
+        FileInputStream fis = null;
+        BufferedInputStream bis = null;
+        DataInputStream dis = null;
+	        
+        try {
+            fis = new FileInputStream(file);
+            bis = new BufferedInputStream(fis);
+            dis = new DataInputStream(bis);
+			  
+            for (int n = 0; dis.available() != 0; n++) {
+                input[n] = dis.readLine();        	
+            }
+	            
+            fis.close();
+            bis.close();
+            dis.close();
+	            
+        } catch (FileNotFoundException e) {
+            System.err.println("Can't find clientOptions.txt");
+	           
+        } catch (IOException e) {
+            e.printStackTrace();
+	           
+        }
+		 
+    }
+	
+    public String getRMIAddress() {		      
+        String rmiAddress = input[3].toString();     
+        
+        return rmiAddress;       
+    }
+
+    public String getAdminPassword() {
+        String adminPassword = input[6].toString();
+					      
+        return adminPassword;
+    }
+    
+    public String getImageLocation() {
+    	String imageLocation = input[9].toString();
+    	
+    	return imageLocation;
+    }
+}
+

@@ -1,0 +1,73 @@
+package sik.pannels;
+
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import sik.client.MainDisplayGUI;
+
+
+class IntroPanel extends JPanel implements ActionListener {
+
+	private static final long serialVersionUID = 1L;
+
+	protected MainDisplayGUI mainGUI;
+
+	private GridBagConstraints introDisplayLayout;
+	private JLabel introMessageLn1, introMessageLn2;	
+	private JButton keyEntryButton;
+
+	public IntroPanel(MainDisplayGUI mainGUI) {
+		
+		this.mainGUI = mainGUI;
+		
+		setLayout(new GridBagLayout());
+		introDisplayLayout = new GridBagConstraints();		
+		
+		setOpaque(false);
+		
+		introDisplayLayout.insets = new Insets(5,5,5,5);
+		
+		introDisplayLayout.gridy=0;	
+		
+		introMessageLn1 = new JLabel("Please Hold Your Fob Key or Card Up to the Reader");
+		introMessageLn1.setFont(sik.client.mainGUI.extraLargeFont);
+		introMessageLn1.setForeground(new Color(255,255,255));
+		add(introMessageLn1, introDisplayLayout);
+
+		introDisplayLayout.gridy=1;
+		
+		introMessageLn2 = new JLabel("In Order to Access This Consol");
+		introMessageLn2.setFont(mainGUI.extraLargeFont);
+		introMessageLn2.setForeground(new Color(255,255,255));
+		add(introMessageLn2, introDisplayLayout);
+
+		introDisplayLayout.insets = new Insets(100,5,5,5);	
+
+		introDisplayLayout.gridy=2;
+		
+		keyEntryButton = new JButton("Manual Pin Entry");
+		keyEntryButton.setFont(mainGUI.largerFont);
+		keyEntryButton.addActionListener(this);
+			
+		add(keyEntryButton, introDisplayLayout);
+		
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==keyEntryButton) {
+			mainGUI.container.remove(this);
+			mainGUI.frame.repaint();	
+			mainGUI.loadManualPinEntryElements();			
+			mainGUI.frame.pack();
+		}
+		
+	}
+
+}

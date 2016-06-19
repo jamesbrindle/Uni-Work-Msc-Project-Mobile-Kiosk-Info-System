@@ -1,0 +1,39 @@
+package sik.client.admin;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+
+import sik.common.*;
+
+public class RMIClientImpl implements RMIClient, Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	protected RecordsGUIListener recordsGL;
+	
+	Store store;
+	public RMIClientImpl(Store suppliedStore) {
+		this.store = suppliedStore;
+	
+    }
+	
+	public void setStore(Store store) {
+		 this.store=store;
+   
+	}
+
+	@Override
+	public void printMessage(String theMessage) {
+		System.out.println(theMessage);
+		
+	}
+
+	@Override
+	public void dispatchMessage(String theMessage) {
+		// TODO Auto-generated method stub
+		
+	}
+
+   
+}

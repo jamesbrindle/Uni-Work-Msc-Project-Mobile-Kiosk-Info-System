@@ -1,0 +1,531 @@
+package sik.client.user.panes;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.AbstractButton;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+
+import sik.client.user.FontStyles;
+import sik.client.user.panels.HomePanel;
+import sik.client.user.services.BTServices;
+
+public class BluetoothPane extends JPanel implements ActionListener {
+
+	private static final long serialVersionUID = 1L;
+
+	private HomePanel homePanel;
+	private BTServices btServices;
+
+	private String status;
+	private JLabel titleLabel;
+	public JLabel statusLabel;
+	private JButton searchButton, sendMessageButton, sendScheduleButton,
+			sendResultsButton, sendMapButton;
+
+	private JButton BT1, BT2, BT3, BT4, BT5, BT6, BT7, BT8, BT9, BT10;
+
+	private JPanel titleArea, BTDevicesArea, controlArea, BTMenuArea;
+	private GridBagConstraints titleAreaLayout, BTDeviceAreaLayout,
+			controlAreaLayout, BTMenuAreaLayout;
+
+	private Runnable runnable;
+	private Thread thread;
+	private Timer timer, timer2;
+
+	private int deviceCount;
+	private int timerCount = 0;
+
+	public BluetoothPane(HomePanel homePanel) {
+		this.homePanel = homePanel;
+
+		timer = new Timer(1000, new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				timerCount++;
+				if (timerCount == 8) {
+					status = "Searching for Bluetooth Devices";
+					statusLabel.setText(status);
+					timerCount = 0;
+				} else {
+					status = "." + status + ".";
+					statusLabel.setText(status);
+				}
+				timer.restart();
+			}
+		});
+
+		timer2 = new Timer(25000, new ActionListener() {
+
+			public void actionPerformed(ActionEvent evt) {
+				timer.stop();
+				searchButton.setText("Re-Search");
+				searchButton.setEnabled(true);
+
+				String tmpStr = "";
+				if (deviceCount > 1) {
+					tmpStr = "Devices";
+				} else {
+					tmpStr = "Device";
+				}
+
+				if (deviceCount == 0) {
+					statusLabel.setText("No Devices Found");
+				}
+
+				statusLabel.setText("Found " + deviceCount + " " + tmpStr
+						+ ". Please Select Your Device");
+				timer2.stop();
+			}
+		});
+
+		setPreferredSize(new Dimension(650, 400));
+		setMaximumSize(new Dimension(650, 400));
+		setMinimumSize(new Dimension(650, 400));
+
+		setOpaque(false);
+
+		BTDevicesArea = new JPanel(new GridBagLayout());
+		BTDeviceAreaLayout = new GridBagConstraints();
+
+		titleArea = new JPanel(new GridBagLayout());
+		titleAreaLayout = new GridBagConstraints();
+
+		controlArea = new JPanel(new GridBagLayout());
+		controlAreaLayout = new GridBagConstraints();
+		
+		BTMenuArea = new JPanel(new GridBagLayout());
+		BTMenuAreaLayout = new GridBagConstraints();
+
+		loadTitleAreaElements();
+		loadBTDeviceAreaElements();
+		loadControlAreaElements();
+
+		add(titleArea, BorderLayout.NORTH);
+		add(BTDevicesArea, BorderLayout.CENTER);
+		add(controlArea, BorderLayout.SOUTH);
+
+		btServices = new BTServices(this);
+		runnable = btServices;
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == searchButton) {
+			performSearch();
+		}
+		if (e.getSource() == BT1) {
+			loadBTMenu(0);
+		}
+		if (e.getSource() == BT2) {
+			loadBTMenu(1);
+		}
+		if (e.getSource() == BT3) {
+			loadBTMenu(2);
+		}
+		if (e.getSource() == BT4) {
+			loadBTMenu(3);
+		}
+		if (e.getSource() == BT5) {
+			loadBTMenu(4);
+		}
+		if (e.getSource() == BT6) {
+			loadBTMenu(5);
+		}
+		if (e.getSource() == BT7) {
+			loadBTMenu(6);
+		}
+		if (e.getSource() == BT8) {
+			loadBTMenu(7);
+		}
+		if (e.getSource() == BT9) {
+			loadBTMenu(8);
+		}
+		if (e.getSource() == BT10) {
+			loadBTMenu(9);
+		}
+	}
+
+	private void loadTitleAreaElements() {
+		titleArea.setOpaque(false);
+
+		titleAreaLayout.insets = new Insets(0, 0, 10, 0);
+		titleAreaLayout.gridy = 0;
+
+		titleLabel = new JLabel("Bluetooth Options");
+		titleLabel.setFont(FontStyles.extraLargeFont);
+		titleLabel.setForeground(new Color(255, 255, 255));
+
+		titleArea.add(titleLabel, titleAreaLayout);
+
+		titleAreaLayout.gridy = 1;
+
+		status = "Start By Searching for Available Bluetooth Devices";
+
+		statusLabel = new JLabel(status);
+		statusLabel.setFont(FontStyles.largeFont);
+		statusLabel.setForeground(new Color(255, 255, 255));
+
+		titleArea.add(statusLabel, titleAreaLayout);
+	}
+
+	private void loadBTDeviceAreaElements() {
+		BTDevicesArea.setOpaque(false);
+		BTDevicesArea.setPreferredSize(new Dimension(650, 218));
+		BTDevicesArea.setMaximumSize(new Dimension(650, 218));
+		BTDevicesArea.setMinimumSize(new Dimension(650, 218));
+
+		prepareBTPhoneImages();
+	}
+
+	private void loadControlAreaElements() {
+
+		controlArea.setOpaque(false);
+
+		searchButton = new JButton("Search", new ImageIcon(
+				"res/images/buttonNotSelected/search.png"));
+		searchButton.setVerticalTextPosition(AbstractButton.BOTTOM);
+		searchButton.setHorizontalTextPosition(AbstractButton.CENTER);
+		searchButton.setPressedIcon(new ImageIcon(
+				"res/images/buttonSelected/search.png"));
+		searchButton.setFont(FontStyles.smallerFont);
+		searchButton.setContentAreaFilled(false);
+		searchButton.setBorderPainted(false);
+		searchButton.addActionListener(this);
+
+		controlArea.add(searchButton, controlAreaLayout);
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void loadBTMenu(int index) {
+		timer.stop();
+		timer2.stop();
+		thread.stop();
+		statusLabel.setText("Checking Device Services...");
+		searchButton.setEnabled(true);
+		searchButton.setText("Re-Search");
+		btServices.discoverServices(index);
+		
+		if (btServices.isObjectPushAvailable()) {
+			remove(BTDevicesArea);
+			loadBTMenuElements();
+			repaint();
+			homePanel.mainGUI.frame.pack();
+		}
+		else {
+			statusLabel.setText("Selected Device Does Not Support Object Push");
+		}
+	}
+
+	private void loadBTMenuElements() {
+		BTMenuArea.setOpaque(false);
+		BTMenuArea.setPreferredSize(new Dimension(650, 218));
+		BTMenuArea.setMaximumSize(new Dimension(650, 218));
+		BTMenuArea.setMinimumSize(new Dimension(650, 218));
+		
+		sendMessageButton = new JButton("Send Me Messages", new ImageIcon(
+				"res/images/buttonNotSelected/messagesToPhone.png"));
+		sendScheduleButton = new JButton("Send Me Timetable", new ImageIcon(
+				"res/images/buttonNotSelected/scheduleToPhone.png"));
+		sendResultsButton = new JButton("Send Me Results", new ImageIcon(
+				"res/images/buttonNotSelected/resultsToPhone.png"));
+		sendMapButton = new JButton("Send Campus Map", new ImageIcon(
+				"res/images/buttonNotSelected/mapToPhone.png"));
+		
+		sendMessageButton.setVerticalTextPosition(AbstractButton.BOTTOM);
+		sendMessageButton.setHorizontalTextPosition(AbstractButton.CENTER);
+		sendMessageButton.setFont(FontStyles.tinyFont);
+		sendMessageButton.setContentAreaFilled(false);
+		sendMessageButton.setBorderPainted(false);
+		sendMessageButton.addActionListener(this);
+		
+		sendScheduleButton.setVerticalTextPosition(AbstractButton.BOTTOM);
+		sendScheduleButton.setHorizontalTextPosition(AbstractButton.CENTER);
+		sendScheduleButton.setFont(FontStyles.tinyFont);
+		sendScheduleButton.setContentAreaFilled(false);
+		sendScheduleButton.setBorderPainted(false);
+		sendScheduleButton.addActionListener(this);
+		
+		sendResultsButton.setVerticalTextPosition(AbstractButton.BOTTOM);
+		sendResultsButton.setHorizontalTextPosition(AbstractButton.CENTER);
+		sendResultsButton.setFont(FontStyles.tinyFont);
+		sendResultsButton.setContentAreaFilled(false);
+		sendResultsButton.setBorderPainted(false);
+		sendResultsButton.addActionListener(this);
+		
+		sendMapButton.setVerticalTextPosition(AbstractButton.BOTTOM);
+		sendMapButton.setHorizontalTextPosition(AbstractButton.CENTER);
+		sendMapButton.setFont(FontStyles.tinyFont);
+		sendMapButton.setContentAreaFilled(false);
+		sendMapButton.setBorderPainted(false);
+		sendMapButton.addActionListener(this);
+		
+		BTMenuAreaLayout.gridx = 0;		
+		BTMenuArea.add(sendMessageButton, BTMenuAreaLayout);
+		
+		BTMenuAreaLayout.gridx = 1;		
+		BTMenuArea.add(sendScheduleButton, BTMenuAreaLayout);
+		
+		BTMenuAreaLayout.gridx = 2;		
+		BTMenuArea.add(sendResultsButton, BTMenuAreaLayout);
+		
+		//BTMenuAreaLayout.gridx = 3;		
+		//BTMenuArea.add(sendMapButton, BTMenuAreaLayout);
+		
+		add(BTMenuArea, BorderLayout.CENTER);
+	}
+
+	private void performSearch() {
+		clearBTButtons();
+
+		status = "Searching for Bluetooth Devices";
+		searchButton.setEnabled(false);
+		timer.start();
+
+		thread = new Thread(runnable);
+		thread.start();
+
+		timer2.setDelay(25000);
+		timer2.start();
+	}
+
+	public void addBTDevice(int index, String name, boolean isLast) {
+		timer2.setDelay(8000);
+		timer2.restart();
+		deviceCount++;
+
+		if (isLast) {
+			timer.stop();
+			searchButton.setText("Re-Search");
+			searchButton.setEnabled(true);
+			timer2.stop();
+		}
+
+		int deviceIndex = index + 1;
+		switch (deviceIndex) {
+			case 1:
+				BT1.setVisible(true);
+				BT1.setText(name);
+				break;
+			case 2:
+				BT2.setVisible(true);
+				BT2.setText(name);
+				break;
+			case 3:
+				BT3.setVisible(true);
+				BT3.setText(name);
+				break;
+			case 4:
+				BT4.setVisible(true);
+				BT4.setText(name);
+				break;
+			case 5:
+				BT5.setVisible(true);
+				BT5.setText(name);
+				break;
+			case 6:
+				BT6.setVisible(true);
+				BT6.setText(name);
+				break;
+			case 7:
+				BT7.setVisible(true);
+				BT7.setText(name);
+				break;
+			case 8:
+				BT8.setVisible(true);
+				BT8.setText(name);
+				break;
+			case 9:
+				BT9.setVisible(true);
+				BT9.setText(name);
+				break;
+			case 10:
+				BT10.setVisible(true);
+				BT10.setText(name);
+				break;
+		}
+	}
+
+	private void clearBTButtons() {
+		BT1.setVisible(false);
+		BT2.setVisible(false);
+		BT3.setVisible(false);
+		BT4.setVisible(false);
+		BT5.setVisible(false);
+		BT6.setVisible(false);
+		BT7.setVisible(false);
+		BT8.setVisible(false);
+		BT9.setVisible(false);
+		BT10.setVisible(false);
+	}
+
+	private void prepareBTPhoneImages() {
+		BT1 = new JButton("", new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT1.setVerticalTextPosition(AbstractButton.BOTTOM);
+		BT1.setHorizontalTextPosition(AbstractButton.CENTER);
+		BT1.setPressedIcon(new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT1.setFont(FontStyles.tinyFont);
+		BT1.setContentAreaFilled(false);
+		BT1.setBorderPainted(false);
+		BT1.setVisible(false);
+		BT1.addActionListener(this);
+
+		BT2 = new JButton("", new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT2.setVerticalTextPosition(AbstractButton.BOTTOM);
+		BT2.setHorizontalTextPosition(AbstractButton.CENTER);
+		BT2.setPressedIcon(new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT2.setFont(FontStyles.tinyFont);
+		BT2.setContentAreaFilled(false);
+		BT2.setBorderPainted(false);
+		BT2.setVisible(false);
+		BT2.addActionListener(this);
+
+		BT3 = new JButton("", new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT3.setVerticalTextPosition(AbstractButton.BOTTOM);
+		BT3.setHorizontalTextPosition(AbstractButton.CENTER);
+		BT3.setPressedIcon(new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT3.setFont(FontStyles.tinyFont);
+		BT3.setContentAreaFilled(false);
+		BT3.setBorderPainted(false);
+		BT3.setVisible(false);
+		BT3.addActionListener(this);
+
+		BT4 = new JButton("", new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT4.setVerticalTextPosition(AbstractButton.BOTTOM);
+		BT4.setHorizontalTextPosition(AbstractButton.CENTER);
+		BT4.setPressedIcon(new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT4.setFont(FontStyles.tinyFont);
+		BT4.setContentAreaFilled(false);
+		BT4.setBorderPainted(false);
+		BT4.setVisible(false);
+		BT4.addActionListener(this);
+
+		BT5 = new JButton("", new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT5.setVerticalTextPosition(AbstractButton.BOTTOM);
+		BT5.setHorizontalTextPosition(AbstractButton.CENTER);
+		BT5.setPressedIcon(new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT5.setFont(FontStyles.tinyFont);
+		BT5.setContentAreaFilled(false);
+		BT5.setBorderPainted(false);
+		BT5.setVisible(false);
+		BT5.addActionListener(this);
+
+		BT6 = new JButton("", new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT6.setVerticalTextPosition(AbstractButton.BOTTOM);
+		BT6.setHorizontalTextPosition(AbstractButton.CENTER);
+		BT6.setPressedIcon(new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT6.setFont(FontStyles.tinyFont);
+		BT6.setContentAreaFilled(false);
+		BT6.setBorderPainted(false);
+		BT6.setVisible(false);
+		BT6.addActionListener(this);
+
+		BT7 = new JButton("", new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT7.setVerticalTextPosition(AbstractButton.BOTTOM);
+		BT7.setHorizontalTextPosition(AbstractButton.CENTER);
+		BT7.setPressedIcon(new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT7.setFont(FontStyles.tinyFont);
+		BT7.setContentAreaFilled(false);
+		BT7.setBorderPainted(false);
+		BT7.setVisible(false);
+		BT7.addActionListener(this);
+
+		BT8 = new JButton("", new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT8.setVerticalTextPosition(AbstractButton.BOTTOM);
+		BT8.setHorizontalTextPosition(AbstractButton.CENTER);
+		BT8.setPressedIcon(new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT8.setFont(FontStyles.tinyFont);
+		BT8.setContentAreaFilled(false);
+		BT8.setBorderPainted(false);
+		BT8.setVisible(false);
+		BT8.addActionListener(this);
+
+		BT9 = new JButton("", new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT9.setVerticalTextPosition(AbstractButton.BOTTOM);
+		BT9.setHorizontalTextPosition(AbstractButton.CENTER);
+		BT9.setPressedIcon(new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT9.setFont(FontStyles.tinyFont);
+		BT9.setContentAreaFilled(false);
+		BT9.setBorderPainted(false);
+		BT9.setVisible(false);
+		BT9.addActionListener(this);
+
+		BT10 = new JButton("", new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT10.setVerticalTextPosition(AbstractButton.BOTTOM);
+		BT10.setHorizontalTextPosition(AbstractButton.CENTER);
+		BT10.setPressedIcon(new ImageIcon(
+				"res/images/buttonNotSelected/bluetoothPhone.png"));
+		BT10.setFont(FontStyles.tinyFont);
+		BT10.setContentAreaFilled(false);
+		BT10.setBorderPainted(false);
+		BT10.setVisible(false);
+		BT10.addActionListener(this);
+
+		BTDeviceAreaLayout.gridx = 0;
+		BTDeviceAreaLayout.gridy = 0;
+		BTDevicesArea.add(BT1, BTDeviceAreaLayout);
+
+		BTDeviceAreaLayout.gridx = 1;
+		BTDeviceAreaLayout.gridy = 0;
+		BTDevicesArea.add(BT2, BTDeviceAreaLayout);
+
+		BTDeviceAreaLayout.gridx = 2;
+		BTDeviceAreaLayout.gridy = 0;
+		BTDevicesArea.add(BT3, BTDeviceAreaLayout);
+
+		BTDeviceAreaLayout.gridx = 3;
+		BTDeviceAreaLayout.gridy = 0;
+		BTDevicesArea.add(BT4, BTDeviceAreaLayout);
+
+		BTDeviceAreaLayout.gridx = 4;
+		BTDeviceAreaLayout.gridy = 0;
+		BTDevicesArea.add(BT5, BTDeviceAreaLayout);
+
+		BTDeviceAreaLayout.gridx = 0;
+		BTDeviceAreaLayout.gridy = 1;
+		BTDevicesArea.add(BT6, BTDeviceAreaLayout);
+
+		BTDeviceAreaLayout.gridx = 1;
+		BTDeviceAreaLayout.gridy = 1;
+		BTDevicesArea.add(BT7, BTDeviceAreaLayout);
+
+		BTDeviceAreaLayout.gridx = 2;
+		BTDeviceAreaLayout.gridy = 1;
+		BTDevicesArea.add(BT8, BTDeviceAreaLayout);
+
+		BTDeviceAreaLayout.gridx = 3;
+		BTDeviceAreaLayout.gridy = 1;
+		BTDevicesArea.add(BT9, BTDeviceAreaLayout);
+
+		BTDeviceAreaLayout.gridx = 4;
+		BTDeviceAreaLayout.gridy = 1;
+		BTDevicesArea.add(BT10, BTDeviceAreaLayout);
+	}
+}

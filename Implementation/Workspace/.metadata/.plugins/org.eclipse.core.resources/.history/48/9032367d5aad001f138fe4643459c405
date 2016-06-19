@@ -1,0 +1,14 @@
+
+public class Run {
+
+	static InOutEmails inOut;
+	public static void main(String[] args) {
+		inOut = new InOutEmails();
+		inOut.getEmailList();
+		//inOut.exportEmailsToTextFile();
+		
+	
+
+	}
+
+}

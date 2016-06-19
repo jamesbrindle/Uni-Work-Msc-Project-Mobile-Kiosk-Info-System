@@ -1,0 +1,30 @@
+package rmi.common;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+/**
+ * RMIChatClient Bind Method declaration class
+ * 
+ * @author Jamie Brindle (06352322), Enterprise Programming, Msc Advanced Computing
+ */
+public interface RMIChatClient extends Remote {
+
+    /**
+     *  allows the sending of a message to the client
+     *  @throws RemoteException when connection problem
+     */
+    public void dispatchMessage(String theMessage) throws RemoteException;
+    
+    /**
+	 *  Allows a user to appear online in an online user list
+	 *  @throws RemoteException when connection problem
+	 */
+    public void ShowOnline(String theUser) throws RemoteException;
+    
+    /**
+	 *  Allows a user to appear offline in an online user list
+	 *  @throws RemoteException when connection problem
+	 */
+    public void ShowOffline(String theUser) throws RemoteException;
+
+}

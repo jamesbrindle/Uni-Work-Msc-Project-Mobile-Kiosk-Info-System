@@ -1,0 +1,13 @@
+
+public class run {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		FilePusher fp = new FilePusher();
+		fp.sendFile();
+
+	}
+
+}

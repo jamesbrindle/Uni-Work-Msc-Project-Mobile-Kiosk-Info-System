@@ -1,0 +1,333 @@
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.rmi.Naming;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.Timer;
+
+
+/**
+ * This is the main class that first opens a GUI to select a chat room
+ * (RoomSelector class) and enter a desired screen name and then allows
+ * a user to send messages to various clients within the same room.
+ * The GUI also updates a list of currently connected users in that room
+ * every 10 seconds. It also connects to an online mysql database and
+ * receives a history of messages of a particular room. The amount
+ * of history depends on the field stored within a text file
+ * which can be changed at any time. When the chat room is close, the
+ * room selector menu reappers to give the opportunity to enter another room.
+ * 
+ * @author Jamie Brindle (06352322), Enterprise Programming, Msc Advanced Computing
+ *
+ */
+public class Chatter extends JFrame implements ActionListener, KeyListener {
+
+	private static final long serialVersionUID = 1L;
+
+	private RMIChatServer chatServer;
+
+	private JTextArea receivedList, userList;
+
+	private JButton sendButton;
+
+	private JTextField messageText;
+
+	private HistoryManager historyManager;	//deals with storing history
+
+	private String bindName;	//name of server to connect to - stored in serverOptions.txt
+	public Connector connector;
+	private int roomID, timeAmount;
+	public int lineCount;	
+	Timer timer;
+
+	//allows server options to be retrieved from a file, through ServerOptions class
+	private ServerOptions serverOptions;  
+
+	private static RoomSelector roomSelector;
+
+	private Container container;
+
+	/**
+	 * Constructs the chat room GUI
+	 */
+	public Chatter() {
+
+		historyManager = new HistoryManager();		
+		timeAmount = 10000;		//10 seconds gap between online users update
+		connector = new Connector();	//deals with connecting to mysql database
+		roomID = connector.matchServertoID(roomSelector.getRoomName());	 //translate room name to room ID
+
+		setTitle(roomSelector.getRoomName() + " Chat Room");	//room name within title
+
+		container = this.getContentPane();
+		container.setLayout(new BorderLayout());
+
+		receivedList = new JTextArea(25, 40);	//messages sink
+		receivedList.setEditable(false);
+
+		JScrollPane scroll = new JScrollPane(receivedList);	//allow scrollable text area
+
+		scroll.setWheelScrollingEnabled(true);	//enable mouse scroll
+		scroll.setHorizontalScrollBarPolicy(
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+		userList = new JTextArea(20, 10);	//list of online users sink
+		userList.setEditable(false);
+		JScrollPane users = new JScrollPane(userList);
+
+		scroll.setWheelScrollingEnabled(true);		
+
+		messageText = new JTextField(35);
+		messageText.addKeyListener(this);	
+
+		sendButton = new JButton("Send");
+		sendButton.addActionListener(this);
+		sendButton.setEnabled(false);	//do not allow messages to be sent until connected
+
+		Panel bottomPanel = new Panel();
+		Panel topPanel = new Panel();
+		Panel rightPanel = new Panel();
+
+		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+		rightPanel.add(new JLabel("Online Users:"));
+		rightPanel.add(users);	
+
+		topPanel.add(new JLabel("Welcome " + roomSelector.getScreenName()));
+
+		bottomPanel.add(new JLabel("Enter Message"));
+		bottomPanel.add(messageText);
+		bottomPanel.add(sendButton);	
+
+		container.add(topPanel, BorderLayout.NORTH);
+		container.add(rightPanel, BorderLayout.EAST);
+		container.add(bottomPanel, BorderLayout.SOUTH);
+		container.add(scroll, BorderLayout.CENTER);
+
+		pack();
+
+		//What to do when closing the chat room GUI
+		this.addWindowListener(
+				new WindowAdapter() {
+					public void windowClosing(WindowEvent e) {
+
+						setVisible(false);
+						dispose();
+						historyManager.dispose();
+						timer.stop();	//stop updating list of users
+						try {
+							//remove user from list of users
+							chatServer.removeUsers(roomID, roomSelector.getScreenName());
+						} catch (Exception ed) {
+							System.err.println("Failed To Update");
+						}
+						roomSelector.setVisible(true);	//open room selector GUI			
+
+					}
+				});
+
+		//updates list of online users every 10 seconds
+		timer = new Timer(timeAmount,
+				new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+
+				try {
+					//the actual update
+					chatServer.updateUsers(roomID, roomSelector.getScreenName());
+				} catch (Exception e) {
+					System.err.println("Failed To Update");
+				}
+			}
+		});
+
+	}	
+
+	/**
+	 * Re-defines actionPerformed, only one action event here which
+	 * is the send button which runs the sendToServer methods which in
+	 * turn sends the message to the RMI server
+	 * 
+	 * @param e - The action event
+	 */
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == sendButton
+				&& !(messageText.getText().equalsIgnoreCase(""))) {
+			sendToServer(messageText.getText());
+		}
+
+	}
+
+	/**
+	 * Checks to see if the user wishes to enter a server address
+	 * manually or connect to a predefined server. Gets
+	 * the server address from the serverOptions.txt file.
+	 * registers the user with the server (through the RMIServer class)
+	 * registers the screen name (through the UsersOnline class)
+	 */
+	public void connectToServer() {
+
+		serverOptions = new ServerOptions();
+
+		//if the user wishes to enter a server address manually they can
+		//in which case a pop up menu appears and asks for the address
+		if (roomSelector.getRoomName().equalsIgnoreCase("Manual Server Entry")) {
+
+			bindName = JOptionPane.showInputDialog(this,
+					"Please give server name", "Chatter",
+					JOptionPane.QUESTION_MESSAGE);
+			setTitle(bindName);
+
+			//if users wishes to use pre-defined address:
+		} else {
+			setTitle(roomSelector.getRoomName());	//set GUI title to room name
+
+			//get binding address from file
+			bindName = serverOptions.getBindingAddress();
+		}
+
+		try {
+
+			System.out.println("Looking up " + bindName);
+
+			// get a reference to the remote object
+			chatServer = (RMIChatServer) Naming.lookup(bindName);
+
+			//declare RMIClient and UsersOnline
+			RMIChatClient myClient;
+
+			//reference to where messages go
+			myClient = new RMIChatClientImpl(receivedList, userList);
+
+			//register client and their screen name
+			chatServer.connect(myClient, roomID);
+
+			System.out.println("Connected!");
+
+			//if connected, allow messages to be sent
+			sendButton.setEnabled(true);
+
+			//update online users sink
+			chatServer.updateUsers(roomID, roomSelector.getScreenName());
+
+			//start the online users update timer
+			timer.start();
+
+			//if user did not wish to enter a manual server address
+			//allow history to be retrieved
+			if (roomID != 99) {		
+
+				//transfer from history in mysql to received messages sink
+				receivedList.append(historyManager.getHistory(roomID));
+
+				lineCount = receivedList.getLineCount();
+
+			}
+
+		} catch (Exception e) {
+			log("Failed to find remote class" + e);
+			JOptionPane.showMessageDialog(this,
+					"Failed to find server: " + bindName, "Chatter",
+					JOptionPane.ERROR_MESSAGE);
+		}
+
+	}
+	/**
+	 * Takes the messages input into the message field by the user
+	 * and sends it to the RMIServer to be dispatched to the correct place.
+	 * Also the history manager stores last xx entries of messages passed
+	 * in a mysql server
+	 * 
+	 * @param theMessage - the message to send to the server      
+	 */
+	public void sendToServer(String theMessage) {
+
+		try {
+
+			//counteract mysql problems cause by function characters
+			//accidently send within a message
+			String message = roomSelector.getScreenName() + ": "
+			+ theMessage.replaceAll("'", "\"");
+
+			//send the message along with the room name of where to send to
+			chatServer.sendMessageToServer(message, roomID);
+
+			//store history
+			historyManager.setHistory(roomID, receivedList.getText(),
+					receivedList.getLineCount());
+
+		} catch (Exception e) {
+			log("Failed to send message" + e);
+			e.printStackTrace();
+		}
+
+		//reset message input field
+		messageText.setText("");
+
+	}
+
+	/**
+	 * logs any errors and displayed in server running
+	 * 
+	 * @param message - The message to log
+	 */
+	public void log(String message) {
+
+		System.out.println(roomSelector.getScreenName() + ": " + message);
+	}
+
+	/**
+	 * main method which calls other methods. It first runs
+	 * the roomSelect GUI in order to allow the user to select
+	 * a room and enter a desired screen name
+	 */
+	public static void main(String[] args) {
+
+		roomSelector = new RoomSelector();
+		roomSelector.setLocationRelativeTo(null);
+
+		roomSelector.setVisible(true);
+	}
+
+	@SuppressWarnings("static-access")
+
+	/**
+	 * Action to be performed upon key press. In this case
+	 * the return button pressed initiates the sending of a message
+	 */  
+	public void keyPressed(KeyEvent e) {
+
+		//does not allow blank messaged to be sent
+		if (e.getKeyCode() == e.VK_ENTER
+				&& !(messageText.getText().equalsIgnoreCase(""))) {
+			sendToServer(messageText.getText());
+		}
+
+	}
+
+	/**
+	 * Action to be performed upon key press. In this case
+	 * the method does nothing but still needs to be declared
+	 */
+	public void keyReleased(KeyEvent e) {}
+
+	/**
+	 * Action to be performed upon key press. In this case
+	 * the method does nothing but still needs to be declared
+	 */
+	public void keyTyped(KeyEvent e) {}
+
+}

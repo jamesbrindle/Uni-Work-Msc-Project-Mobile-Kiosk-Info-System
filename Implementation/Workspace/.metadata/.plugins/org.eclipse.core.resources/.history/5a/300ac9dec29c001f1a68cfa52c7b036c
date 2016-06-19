@@ -1,0 +1,562 @@
+package sik.server;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+public class RecordsGUI extends JFrame implements WindowListener {
+	
+    private static final long serialVersionUID = 1L;
+    private Container container;
+    static JFrame frame;
+    
+         
+    protected RecordsGUIButtonManager recrdsGBM;
+    protected RecordsGUIListener recordsGUIListener;
+	
+    // panels
+	
+    private JPanel recdordsInfo, photoArea, searchBar, navigation;
+	
+    // layouts
+	
+    private GridBagConstraints recordsInfoLayout, photoAreaLayout, navigationLayout;
+	
+    // accountInfoElements
+	
+    private JLabel studentIDLabel, titleLabel, firstNameLabel, lastNameLabel,
+            firstLineAddrLabel, secondLineAddrLabel, cityLabel, countyLabel,
+            postCodeLabel, telephoneLabel, pinNumberLabel;
+	
+    protected JTextField studentIDTextField, titleTextField, firstNameTextField, lastNameTextField,
+            firstLineAddrTextField, secondLineAddrTextField, cityTextField, countyTextField,
+            postCodeTextField, telephoneTextField, pinNumberTextField;
+	
+    // transInfoElements
+	
+    protected JTextField balanceTextField, amountWithdrawnTodayTextField, maxDayWithdrawTextField;		
+    protected JTextArea transactionListTextArea;	
+    protected JCheckBox accountLockedCheckBox;
+    protected JScrollPane transactionListScrollPane; 
+	
+    // searchBarElements
+	
+    private JLabel searchBarLabel;	
+    protected JTextField searchBarTextField;
+    protected JButton searchBarSearchButton;
+	
+    // navigationElements
+	
+    protected JButton firstNavButton, lastNavButton, nextNavButton, previousNavButton,
+            newRecordNavButton, saveNavButton, editNavButton, removeNavButton;
+	
+    private Color red = new Color(255, 0, 0);
+    protected JLabel warningLabel;
+    protected String warningMessage;
+    protected boolean isEditing = false;
+	
+    // menu Elements
+	
+    protected JMenuBar menuBar;
+    protected JMenu menu;
+    protected JMenuItem menuItem1, menuItem2, menuItem3, menuItem4;
+    
+    //Photo Area Elements
+    
+    ImageIcon photo;
+    protected String photoString = "images/default.jpg";
+    protected JButton editImageButton, editMessages, editTimestable, editAssignmentResults;
+    protected JLabel image;
+    
+    /**
+     * RecordsGUI Constructor
+     */
+    public RecordsGUI() {
+        runGUI();
+	             
+    }
+    
+    /**
+     * Builds the standard GUI visuals (text field, labels, 
+     * buttons and text area objects)
+     */
+    public void runGUI() {
+    	
+    
+    	
+        frame = new JFrame("Records Manager GUI");
+        frame.addWindowListener(this);
+    	 
+        recrdsGBM = new RecordsGUIButtonManager(this);
+        recordsGUIListener = new RecordsGUIListener(this);
+    	
+        container = frame.getContentPane();
+        container.setLayout(new BorderLayout());
+         
+        recdordsInfo = new JPanel(new GridBagLayout());
+        recordsInfoLayout = new GridBagConstraints();
+         
+        photoArea = new JPanel(new GridBagLayout());
+        photoAreaLayout = new GridBagConstraints();
+         
+        searchBar = new JPanel(new FlowLayout());
+         
+        navigation = new JPanel(new GridBagLayout());
+        navigationLayout = new GridBagConstraints();
+         
+        LoadMenu(); 
+        loadAccountInfoElements(); 
+        loadPhotoAreaElements();
+                
+        warningMessage = "No File Loaded";
+        loadSearchBarElements(); 
+        loadNavigationElements(); 
+         
+        setTextFieldsEditable(false); // can't edit info
+        
+        container.add(searchBar, BorderLayout.NORTH);
+        container.add(recdordsInfo, BorderLayout.WEST);
+        container.add(photoArea, BorderLayout.EAST);
+        container.add(navigation, BorderLayout.SOUTH);
+         
+        setNavButtonsEnabled(false); // can't navigate when no file open
+         
+        frame.setJMenuBar(menuBar); // add menu to frame
+        frame.setResizable(false); // don't allow to resize the frame
+         
+        // centre frame on screen
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        Dimension screenSize = tk.getScreenSize();
+        int screenHeight = screenSize.height;
+        int screenWidth = screenSize.width;
+         
+        frame.setLocation(screenWidth / 4, screenHeight / 4);
+        frame.pack();
+        frame.setVisible(true);
+        
+        this.addWindowListener(new WindowAdapter() {
+
+            /**
+             * Add a window listener thread
+             */
+            public void windowClosing(WindowEvent e) {
+
+                dispose();
+                System.exit(0);
+				
+            }
+        });
+         
+    }
+    
+    public void loadPhotoAreaElements() {
+    	
+    	 photo = new ImageIcon(photoString);
+         image = new JLabel(photo);
+
+         photoAreaLayout.insets = new Insets(5, 0, 0, 20);
+         
+         editImageButton = new JButton("Edit Image");
+         editImageButton.addActionListener(recordsGUIListener);
+         
+         editMessages = new JButton("Messages");
+         editMessages.addActionListener(recordsGUIListener);
+         
+         editTimestable = new JButton("Timestable");
+         editTimestable.addActionListener(recordsGUIListener);
+         
+         editAssignmentResults = new JButton("Assignment Results");
+         editAssignmentResults.addActionListener(recordsGUIListener);
+         
+         
+         photoAreaLayout.gridy=0;    
+         photoArea.add(image, photoAreaLayout);
+         
+         photoAreaLayout.gridy=1;         
+         photoArea.add(editImageButton, photoAreaLayout);
+         
+         photoAreaLayout.gridy=2;         
+         photoArea.add(editMessages, photoAreaLayout);
+         
+         photoAreaLayout.gridy=3;         
+         photoArea.add(editTimestable, photoAreaLayout);
+         
+         photoAreaLayout.gridy=4;         
+         photoArea.add(editAssignmentResults, photoAreaLayout);
+         
+      
+    }
+    
+    /**
+     * Loads the objects regarding the search bar
+     */
+    public void loadSearchBarElements() {
+        searchBarLabel = new JLabel(
+                "Please Enter Name or Account Number to Search");
+        searchBar.add(searchBarLabel);
+    	
+        searchBarTextField = new JTextField(15);
+        searchBar.add(searchBarTextField);
+    	
+        searchBarSearchButton = new JButton("Search");
+        searchBarSearchButton.addActionListener(recordsGUIListener);
+        searchBar.add(searchBarSearchButton);
+    	
+    }
+    
+    /**
+     * Loads the objects regarding personal records information
+     */
+    public void loadAccountInfoElements() {
+    	
+    	recordsInfoLayout.insets = new Insets(5, 10, 0, 0);
+        recordsInfoLayout.anchor = GridBagConstraints.FIRST_LINE_START;
+    	
+        // labels    	
+    	
+        studentIDLabel = new JLabel("Student ID");
+        recordsInfoLayout.gridx = 0;
+        recordsInfoLayout.gridy = 0;    	
+        recdordsInfo.add(studentIDLabel, recordsInfoLayout);
+    	
+        pinNumberLabel = new JLabel("Pin Number");
+        recordsInfoLayout.gridx = 0;
+        recordsInfoLayout.gridy = 1;
+        recdordsInfo.add(pinNumberLabel, recordsInfoLayout);
+    	    	
+        titleLabel = new JLabel("Title");
+        recordsInfoLayout.gridx = 0;
+        recordsInfoLayout.gridy = 2;
+        recdordsInfo.add(titleLabel, recordsInfoLayout);
+    	    	
+        firstNameLabel = new JLabel("First Name");
+        recordsInfoLayout.gridx = 0;
+        recordsInfoLayout.gridy = 3;
+        recdordsInfo.add(firstNameLabel, recordsInfoLayout);
+    	
+        lastNameLabel = new JLabel("Last Name");
+        recordsInfoLayout.gridx = 0;
+        recordsInfoLayout.gridy = 4;
+        recdordsInfo.add(lastNameLabel, recordsInfoLayout);
+    	
+        firstLineAddrLabel = new JLabel("First Line Address");
+        recordsInfoLayout.gridx = 0;
+        recordsInfoLayout.gridy = 5;
+        recdordsInfo.add(firstLineAddrLabel, recordsInfoLayout);
+    	 
+        secondLineAddrLabel = new JLabel("Second Line Address");
+        recordsInfoLayout.gridx = 0;
+        recordsInfoLayout.gridy = 6;
+        recdordsInfo.add(secondLineAddrLabel, recordsInfoLayout);
+    	
+        cityLabel = new JLabel("City");
+        recordsInfoLayout.gridx = 0;
+        recordsInfoLayout.gridy = 7;
+        recdordsInfo.add(cityLabel, recordsInfoLayout);
+    	
+        countyLabel = new JLabel("County");
+        recordsInfoLayout.gridx = 0;
+        recordsInfoLayout.gridy = 8;
+        recdordsInfo.add(countyLabel, recordsInfoLayout);
+    	
+        postCodeLabel = new JLabel("Post Code");
+        recordsInfoLayout.gridx = 0;
+        recordsInfoLayout.gridy = 9;
+        recdordsInfo.add(postCodeLabel, recordsInfoLayout);
+    	
+        telephoneLabel = new JLabel("Telephone");
+        recordsInfoLayout.gridx = 0;
+        recordsInfoLayout.gridy = 10;
+        recdordsInfo.add(telephoneLabel, recordsInfoLayout);	
+    	
+        // text fields   	
+		
+        recordsInfoLayout.insets = new Insets(5, 10, 0, 50);
+    	
+        studentIDTextField = new JTextField(10);
+        studentIDTextField.setEditable(false);
+        recordsInfoLayout.gridx = 1;
+        recordsInfoLayout.gridy = 0;
+        recdordsInfo.add(studentIDTextField, recordsInfoLayout);
+    	
+        pinNumberTextField = new JTextField(10);
+        recordsInfoLayout.gridx = 1;
+        recordsInfoLayout.gridy = 1;
+        recdordsInfo.add(pinNumberTextField, recordsInfoLayout);
+    	
+        titleTextField = new JTextField(10);
+        recordsInfoLayout.gridx = 1;
+        recordsInfoLayout.gridy = 2;
+        recdordsInfo.add(titleTextField, recordsInfoLayout);
+    	
+        firstNameTextField = new JTextField(15);
+        recordsInfoLayout.gridx = 1;
+        recordsInfoLayout.gridy = 3;
+        recdordsInfo.add(firstNameTextField, recordsInfoLayout);
+    	
+        lastNameTextField = new JTextField(15);
+        recordsInfoLayout.gridx = 1;
+        recordsInfoLayout.gridy = 4;
+        recdordsInfo.add(lastNameTextField, recordsInfoLayout);
+    	
+        firstLineAddrTextField = new JTextField(20);
+        recordsInfoLayout.gridx = 1;
+        recordsInfoLayout.gridy = 5;
+        recdordsInfo.add(firstLineAddrTextField, recordsInfoLayout);
+		
+        secondLineAddrTextField = new JTextField(20);
+        recordsInfoLayout.gridx = 1;
+        recordsInfoLayout.gridy = 6;
+        recdordsInfo.add(secondLineAddrTextField, recordsInfoLayout);
+		
+        cityTextField = new JTextField(15);
+        recordsInfoLayout.gridx = 1;
+        recordsInfoLayout.gridy = 7;
+        recdordsInfo.add(cityTextField, recordsInfoLayout);
+		
+        countyTextField = new JTextField(15);
+        recordsInfoLayout.gridx = 1;
+        recordsInfoLayout.gridy = 8;
+        recdordsInfo.add(countyTextField, recordsInfoLayout);
+    	
+        postCodeTextField = new JTextField(10);
+        recordsInfoLayout.gridx = 1;
+        recordsInfoLayout.gridy = 9;
+        recdordsInfo.add(postCodeTextField, recordsInfoLayout);
+    	
+        telephoneTextField = new JTextField(10);
+        recordsInfoLayout.gridx = 1;
+        recordsInfoLayout.gridy = 10;
+        recdordsInfo.add(telephoneTextField, recordsInfoLayout);
+		
+    }    
+    
+    /**
+     * Loads the objects regarding record navigation
+     */
+    public void loadNavigationElements() {
+        navigationLayout.insets = new Insets(10, 2, 5, 2);
+    	   	
+        warningLabel = new JLabel(warningMessage);
+        warningLabel.setForeground(red);
+        navigationLayout.gridx = 0;
+        navigationLayout.gridy = 0;
+        navigationLayout.gridwidth = 8;
+        navigation.add(warningLabel, navigationLayout);
+    	
+        navigationLayout.gridwidth = 1;
+        firstNavButton = new JButton("<<");
+        firstNavButton.addActionListener(recordsGUIListener);
+        navigationLayout.gridx = 0;
+        navigationLayout.gridy = 1;
+        navigation.add(firstNavButton, navigationLayout);
+    	
+        previousNavButton = new JButton("<");
+        previousNavButton.addActionListener(recordsGUIListener);
+        navigationLayout.gridx = 1;
+        navigationLayout.gridy = 1;
+        navigation.add(previousNavButton, navigationLayout);
+    	
+        nextNavButton = new JButton(">");
+        nextNavButton.addActionListener(recordsGUIListener);
+        navigationLayout.gridx = 2;
+        navigationLayout.gridy = 1;
+        navigation.add(nextNavButton, navigationLayout);    	
+    	
+        lastNavButton = new JButton(">>");
+        lastNavButton.addActionListener(recordsGUIListener);
+        navigationLayout.gridx = 3;
+        navigationLayout.gridy = 1;
+        navigation.add(lastNavButton, navigationLayout);
+    	
+        newRecordNavButton = new JButton("New Record");
+        newRecordNavButton.addActionListener(recordsGUIListener);
+        navigationLayout.gridx = 4;
+        navigationLayout.gridy = 1;
+        navigation.add(newRecordNavButton, navigationLayout);
+    	    	
+        saveNavButton = new JButton("Save Record");
+        saveNavButton.addActionListener(recordsGUIListener);
+        saveNavButton.setEnabled(false);
+        navigationLayout.gridx = 5;
+        navigationLayout.gridy = 1;
+        navigation.add(saveNavButton, navigationLayout);
+		
+        editNavButton = new JButton("Edit");
+        editNavButton.addActionListener(recordsGUIListener);
+        navigationLayout.gridx = 6;
+        navigationLayout.gridy = 1;
+        navigation.add(editNavButton, navigationLayout);
+		
+        removeNavButton = new JButton("Remove");
+        removeNavButton.addActionListener(recordsGUIListener);
+        navigationLayout.gridx = 7;
+        navigationLayout.gridy = 1;
+        navigation.add(removeNavButton, navigationLayout);
+		
+    }
+    
+    /**
+     * Loads the frame's drop down menu, used to open, load and create stores
+     * and to exit the frame
+     */
+    private void LoadMenu() {
+        menuBar = new JMenuBar();
+        menu = new JMenu("File");
+        menuBar.add(menu);
+
+        menuItem1 = new JMenuItem("Open Store"); 
+        menuItem1.addActionListener(recordsGUIListener);
+        
+        menuItem2 = new JMenuItem("Save Store As");		
+        menuItem2.addActionListener(recordsGUIListener);
+
+        menuItem3 = new JMenuItem("Exit GUI"); 
+        menuItem3.addActionListener(recordsGUIListener);
+        
+        menuItem4 = new JMenuItem("New Store");
+        menuItem4.addActionListener(recordsGUIListener);
+        
+       
+        // adds each button to the frame
+        menu.add(menuItem4);
+        menu.add(menuItem1);
+        menu.add(menuItem2);
+        menu.add(menuItem3);
+        
+    }
+    
+    /**
+     * Method used to order to easily change the standard warning message
+     * @param message The warning message string
+     */
+    public void changeWarningMessage(String message) {
+        warningMessage = message;
+        warningLabel.setText(warningMessage);
+    }
+    
+    /**
+     * Boolean void method which sets text fields editable or uneditable
+     * @param b if false - set fields uneditable, otherwise fields are editable
+     */
+    public void setTextFieldsEditable(boolean b) {
+        if (b == false) {
+            pinNumberTextField.setEditable(false);
+            titleTextField.setEditable(false);
+            firstNameTextField.setEditable(false); 
+            lastNameTextField.setEditable(false);
+            firstLineAddrTextField.setEditable(false); 
+            secondLineAddrTextField.setEditable(false); 
+            cityTextField.setEditable(false);
+            countyTextField.setEditable(false);
+            postCodeTextField.setEditable(false);
+            telephoneTextField.setEditable(false);
+            searchBarTextField.setEnabled(true);
+            
+        } else {
+            pinNumberTextField.setEditable(true);
+            titleTextField.setEditable(true);
+            firstNameTextField.setEditable(true);
+            lastNameTextField.setEditable(true);
+            firstLineAddrTextField.setEditable(true);
+            secondLineAddrTextField.setEditable(true);
+            cityTextField.setEditable(true);
+            countyTextField.setEditable(true);
+            postCodeTextField.setEditable(true);
+            telephoneTextField.setEditable(true);       
+            searchBarTextField.setEditable(true);
+
+        }
+    }
+    
+    public void setNavButtonsEnabled(boolean b) {
+        recrdsGBM.setNavButtonsEnabled(b);
+    }
+    
+    public void setEditNavButtonMode(boolean b) {
+        recrdsGBM.setEditNavButtonMode(b);
+    }
+    
+    public void setIsLast(boolean b) {
+        recrdsGBM.setIsLast(b);
+    }
+    
+    public void setIsFirst(boolean b) {
+        recrdsGBM.setIsFirst(b);
+    }
+    
+    public void setIsEmpty(boolean b) {
+        recrdsGBM.setIsEmpty(b);
+    	
+    }
+    
+    /**
+     * Implements and redefines window closing event
+     * @param e The window calling the event
+     */
+    public void windowClosing(WindowEvent e) {
+
+        frame.dispose();
+        System.exit(0);
+    }
+
+    /**
+     * Implements and redefines window closed event
+     * @param e The window calling the event
+     */
+    public void windowClosed(WindowEvent e) {}
+
+    /**
+     * Implements and redefines window Opened event
+     * @param e The window calling the event
+     */
+    public void windowOpened(WindowEvent e) {}
+
+    /**
+     * Implements and redefines window iconified event
+     * @param e The window calling the event
+     */
+    public void windowIconified(WindowEvent e) {}
+
+    /**
+     * Implements and redefines window deiconified event
+     * @param e The window calling the event
+     */
+    public void windowDeiconified(WindowEvent e) {}
+
+    /**
+     * Implements and redefines window activated event
+     * @param e The window calling the event
+     */
+    public void windowActivated(WindowEvent e) {}
+
+    /**
+     * Implements and redefines window deactivated event
+     * @param e The window calling the event
+     */
+    public void windowDeactivated(WindowEvent e) {}
+    
+
+}

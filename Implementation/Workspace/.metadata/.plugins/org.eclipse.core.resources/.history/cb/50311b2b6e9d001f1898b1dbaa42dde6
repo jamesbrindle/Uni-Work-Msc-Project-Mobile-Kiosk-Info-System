@@ -1,0 +1,163 @@
+package sik.client;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import java.awt.Dimension;
+
+
+import javax.swing.ImageIcon;
+
+import sik.pannels.*;
+
+public class MainDisplayGUI extends JFrame implements ActionListener {
+	private static final long serialVersionUID = 1L;
+
+	//Main Display
+
+	ExitDialog exitDialog;
+
+	public Container container;
+	public JFrame frame;	
+
+	private JLabel typicalJLabel = new JLabel("");
+	private JButton exitProgramButton;
+	protected ImageIcon image;
+
+	private JPanel mainDisplayPanel;
+	private GridBagConstraints mainDisplayLayout;
+	private JLabel introMessageLn1, introMessageLn2;
+	
+	//Panels
+	
+	protected JPanel introPanel;
+	protected JPanel manPinEntryPanel;
+	
+	//Function Classes
+	
+	protected ClientOptions clientOptions;
+	
+	private JButton keyEntryButton;
+	public Font extraLargeFont, largerFont;
+	
+	//manual pin entry elements
+	
+	private JPanel manPinEntryDisplayPanel, manPinEntryPanelNorth, manPinEntryPanelEast, manPinEntryPanelWest;
+	private GridBagConstraints manPinEntryDisplayLayout, manPinEntryLayoutNorth, 
+			manPinEntryLayoutEast, manPinEntryLayoutWest;
+	private JLabel manPinEntryMessage, studentIDLabel, pinNoLabel;
+	private JTextField studentIDTextField;
+	private JPasswordField pinNoTextField;
+	
+	private JButton numEnter, numCancel, numClear, numEmpty1, numEmpty2, numEmpty3, 
+			num0, num1, num2, num3, num4, num5, num6, num7, num8, num9;
+	
+
+   public MainDisplayGUI() {
+	   clientOptions = new ClientOptions();
+	   
+	   
+	}
+
+	public void run() {
+		image = new ImageIcon(clientOptions.getImageLocation());
+		
+		frame = new JFrame("Student Informatio Kiosk"); // Main frame and its title
+		
+		frame.addWindowListener(new WindowAdapter() {
+
+            /**
+             * Add a window listener thread
+             */
+            public void windowClosing(WindowEvent e) {
+
+                frame.dispose();
+                System.exit(0);
+				
+            }
+        });
+
+		container = frame.getContentPane();
+		container.setLayout(new BorderLayout());
+
+		frame.setResizable(false);
+		//frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // because the closing operation has been re-defined
+		//frame.setUndecorated(true);
+
+		typicalJLabel = new JLabel("");
+		System.out.println(typicalJLabel.getText().toString());
+		
+		extraLargeFont = new Font(typicalJLabel.getFont().getName(), typicalJLabel.getFont().getStyle(),24);
+		largerFont = new Font(typicalJLabel.getFont().getName(), typicalJLabel.getFont().getStyle(),15);
+
+		mainDisplayPanel = new ImagePanel(image.getImage());
+		mainDisplayPanel.setLayout(new GridBagLayout());
+		mainDisplayLayout = new GridBagConstraints();
+		
+		addExitHotKey();
+		
+		
+		introPanel = new IntroPanel(this);
+		mainDisplayPanel.add(introPanel, mainDisplayLayout);
+		container.add(mainDisplayPanel, BorderLayout.CENTER);
+		
+				
+		//manPinEntryDisplayPanel = new ImagePanel(image.getImage());
+		//manPinEntryDisplayPanel.setLayout(new GridBagLayout());
+		//manPinEntryDisplayLayout = new GridBagConstraints();		 
+		
+		//loadIntroElements();
+		
+
+		// centre frame on screen
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Dimension screenSize = tk.getScreenSize();
+		int screenHeight = screenSize.height;
+		int screenWidth = screenSize.width;
+
+		frame.setLocation(screenWidth / 4, screenHeight / 4);
+		frame.pack();
+		frame.setVisible(true);
+		
+		
+	}
+
+
+
+	public void loadManualPinEntryPanel() {
+		manPinEntryPanel = new ManPinEntryPanel(this);
+		mainDisplayPanel.add(manPinEntryPanel, mainDisplayLayout);
+        
+        
+	}
+
+	public void addExitHotKey() {
+		exitProgramButton = new JButton("");
+		exitProgramButton.addActionListener(this);
+		exitProgramButton.setMnemonic(KeyEvent.VK_Q);
+		frame.add(exitProgramButton);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==exitProgramButton) {
+			exitDialog = new ExitDialog(this, "Exit Attempt");
+
+			if (exitDialog.getChoice() == 1) {
+				frame.dispose();
+				System.exit(0);
+			} 
+		}
+	}
+
+}

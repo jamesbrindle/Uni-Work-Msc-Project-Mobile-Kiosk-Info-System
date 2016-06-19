@@ -1,0 +1,29 @@
+package sik.client.admin;
+
+import sik.common.RMIClient;
+import compute.*;
+
+public class RMIClientImpl implements RMIClient {
+
+	private static final long serialVersionUID = 1L;
+
+	public RMIClientImpl() {
+		
+
+      
+    }
+
+	@Override
+	public void printMessage(String theMessage) {
+		System.out.println(theMessage);
+		
+	}
+
+	@Override
+	public void dispatchMessage(String theMessage) {
+		// TODO Auto-generated method stub
+		
+	}
+
+   
+}

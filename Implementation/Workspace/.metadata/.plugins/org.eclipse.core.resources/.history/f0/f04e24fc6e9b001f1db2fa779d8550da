@@ -1,0 +1,36 @@
+package engine;
+
+import java.rmi.*;
+import java.rmi.server.*;
+import compute.*;
+
+public class RMIServerImpl extends UnicastRemoteObject
+                           implements RMIServer
+{
+    public RMIServerImpl() throws RemoteException {
+        super();
+    }
+
+    public Object executeTask(RMIClient t) {
+        return t.execute();
+    }
+
+    public static void main(String[] args) {
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new RMISecurityManager());
+        }
+        
+        // the original example had "//host/Compute" here, which
+        // has to be replaced with a real host name. 
+        String name = "//localhost/Compute";
+        try {
+            RMIServer engine = new RMIServerImpl();
+            Naming.rebind(name, engine);
+            System.out.println("ComputeEngine bound");
+        } catch (Exception e) {
+            System.err.println("ComputeEngine exception: " + 
+			       e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}

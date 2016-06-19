@@ -1,0 +1,112 @@
+package sik.client;
+
+import java.util.regex.Pattern;
+
+public class RecordsGUIFieldValidator {
+    protected RecordsGUIListener recordsGL;
+    protected NumeralFunctions nf;
+		
+
+    public RecordsGUIFieldValidator(RecordsGUIListener GUI) {
+        this.recordsGL = GUI;	
+        nf = new NumeralFunctions();
+        
+    }  
+	
+    /**
+     * Validates the pin number field, in conjunction with the containsOnlyNumbers
+     * method
+     * @param aString The String needed to be checked
+     * @return boolean - true is valid, false otherwise
+     */
+    public boolean validatePinNumber(String aString) {
+	
+        if (nf.containsOnlyNumbers(aString)) {
+			
+            if (nf.stringToInt(aString) >= 100000
+                    && nf.stringToInt(aString) <= 999999) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+		
+    }
+	
+    /**
+     * Checks there are no invalid characters in a given text field
+     * @param aString The string needed to be checked
+     * @return boolean -true if no invalid characters, false otherwise
+     */
+    public boolean checkNoInvalidCharacters(String aString) {
+		
+        String invalidList = "!\"" + "\u00A3" + "$%^&*()_+-=`{}[]:@~;#<>?/\\";
+        int count = 0;
+				
+        String[] temp1 = Pattern.compile("").split(invalidList);
+        String[] temp2 = Pattern.compile("").split(aString);
+		
+        for (int i = 0; i < temp2.length; i++) {
+            for (int y = 0; y < temp1.length; y++) {
+                if (temp2[i].equalsIgnoreCase(temp1[y])) {
+                    count++;
+                }
+            }
+        }
+		
+        if (count > 1) {
+            return false;
+        } else {
+            return true;
+        }	
+		
+    }
+    
+    /**
+     * Checks there are no invalid characters or numbers in a given text field
+     * Used in conjunction with the checkNoInvalidCharacters method
+     * @param aString The string needed to be checked
+     * @return boolean -true if no invalid characters, false otherwise
+     */
+    public boolean validateStringsFieldsNumbersNotAllowed(String aString) {
+        if (checkNoInvalidCharacters(aString) && !(nf.containsNumbers(aString))) {
+            return true; 
+        } else {
+            return false;
+        }
+    }    
+    
+    /**
+     * Checks there are no invalid characters in a given text field
+     * Used in conjunction with the checkNoInvalidCharacters method
+     * @param aString The string needed to be checked
+     * @return boolean -true if no invalid characters, false otherwise
+     */
+    public boolean validateStringsFieldsNumbersAllowed(String aString) {
+		
+        if (checkNoInvalidCharacters(aString)) {
+            return true; 
+        } else {
+            return false;
+        }
+    }
+	
+    /**
+     * Checks there are only numbers and spaces in telephone text field
+     * used in conjunction with the containsOnlyNumbersAndSpaces method
+     * @param aString The string needed to be checked
+     * @return boolean -true if no invalid characters, false otherwise
+     */
+    
+    public boolean validateTelephone(String aString) {
+		
+        if (nf.containsOnlyNumbersAndSpaces(aString)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+		
+}

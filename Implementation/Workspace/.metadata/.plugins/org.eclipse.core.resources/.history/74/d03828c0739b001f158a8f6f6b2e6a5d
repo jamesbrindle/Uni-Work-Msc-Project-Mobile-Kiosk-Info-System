@@ -1,0 +1,9 @@
+package compute;
+
+import java.rmi.Remote;
+
+public interface RMIServer extends Remote {
+
+	public void printMessage(String theMessage);
+	public void dispatchMessage(String theMessage);
+}

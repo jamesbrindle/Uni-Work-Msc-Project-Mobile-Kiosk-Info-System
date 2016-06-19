@@ -1,0 +1,18 @@
+package sik.client;
+
+import java.awt.*;
+
+public class RunClient {
+
+	protected static LoginManager loginManager;
+	
+public RunClient () {
+	
+
+}
+	public static void main(String[] args) {
+		loginManager = new LoginManager();
+
+	}
+
+}

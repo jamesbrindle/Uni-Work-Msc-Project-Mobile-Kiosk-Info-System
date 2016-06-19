@@ -1,0 +1,5 @@
+package sik.server;
+
+public class StartRMIServer {
+
+}

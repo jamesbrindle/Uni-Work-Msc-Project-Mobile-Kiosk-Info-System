@@ -1,0 +1,32 @@
+package sik.client.admin;
+
+import sik.common.*;
+
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.rmi.RemoteException;
+
+public class RMIClientImpl implements RMIClient, Serializable {
+
+	FileInputStream fis;
+
+    public RMIClientImpl(FileInputStream suppliedFIS) throws RemoteException {
+    	this.fis = suppliedFIS;
+    	
+    }
+    
+    public void setFIS(FileInputStream retrievedFIS) {
+    	fis = retrievedFIS;
+    }
+
+	public void dispatchMessage(String theMessage) throws RemoteException {
+	
+	}
+
+	
+	public void printMessage(String theMessage) throws RemoteException {
+		System.out.println(theMessage);
+		
+	}
+}

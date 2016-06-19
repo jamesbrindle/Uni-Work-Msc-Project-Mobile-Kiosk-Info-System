@@ -1,0 +1,36 @@
+package sik.server;
+
+import java.rmi.*;
+import java.rmi.server.*;
+import sik.common.*;
+
+public class ComputeEngine extends UnicastRemoteObject
+                           implements RMIServer
+{
+    public ComputeEngine() throws RemoteException {
+        super();
+    }
+
+    public Object executeTask(RMIClient t) {
+        return t.execute();
+    }
+
+    public static void main(String[] args) {
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new RMISecurityManager());
+        }
+        
+        // the original example had "//host/Compute" here, which
+        // has to be replaced with a real host name. 
+        String name = "//localhost/Compute";
+        try {
+            RMIServer engine = new RMIServerImpl();
+            Naming.rebind(name, engine);
+            System.out.println("ComputeEngine bound");
+        } catch (Exception e) {
+            System.err.println("ComputeEngine exception: " + 
+			       e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}

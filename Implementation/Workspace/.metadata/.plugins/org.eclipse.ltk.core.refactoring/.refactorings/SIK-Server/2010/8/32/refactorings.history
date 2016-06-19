@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;studentID&apos; in &apos;sik.server.RMIServerImpl.getStudentRecord(...)&apos; to &apos;uniqueInput&apos;&#x0D;&#x0A;- Original project: &apos;SIK-Server&apos;&#x0D;&#x0A;- Original element: &apos;sik.server.RMIServerImpl.getStudentRecord(String, String, boolean).studentID&apos;&#x0D;&#x0A;- Renamed element: &apos;studentID&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename local variable &apos;studentID&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;sik.server{RMIServerImpl.java[RMIServerImpl~getStudentRecord~QString;~QString;~Z@studentID!1593!1608!1600!1608!QString;" name="uniqueInput" references="true" stamp="1281560319222" version="1.0"/>
+</session>

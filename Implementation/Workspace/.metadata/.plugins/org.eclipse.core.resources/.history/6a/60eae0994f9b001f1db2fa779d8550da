@@ -1,0 +1,140 @@
+package sik.client.admin;
+
+public class RecordsGUIButtonManager {
+	
+    private RecordsGUI recordsGUI;
+	
+    public RecordsGUIButtonManager(RecordsGUI GUI) {
+        this.recordsGUI = GUI;
+	      
+    } 
+	
+    /**
+     * Sets all navigation buttons enabled or disabled
+     * @param b - if false then disable, enable otherwise
+     */
+    public void setNavButtonsEnabled(boolean b) {
+        if (b == false) {
+            recordsGUI.firstNavButton.setEnabled(false);
+            recordsGUI.lastNavButton.setEnabled(false); 
+            recordsGUI.nextNavButton.setEnabled(false); 
+            recordsGUI.previousNavButton.setEnabled(false);
+            recordsGUI.newRecordNavButton.setEnabled(false); 
+            recordsGUI.saveNavButton.setEnabled(false); 
+            recordsGUI.editNavButton.setEnabled(false); 
+            recordsGUI.removeNavButton.setEnabled(false);
+            recordsGUI.searchBarSearchButton.setEnabled(false);
+            recordsGUI.editImageButton.setEnabled(false);
+            recordsGUI.editMessages.setEnabled(false);
+            recordsGUI.editAssignmentResults.setEnabled(false);
+            recordsGUI.editTimestable.setEnabled(false);
+         
+        } else {
+            recordsGUI.firstNavButton.setEnabled(true);
+            recordsGUI.lastNavButton.setEnabled(true); 
+            recordsGUI.nextNavButton.setEnabled(true); 
+            recordsGUI.previousNavButton.setEnabled(true);
+            recordsGUI.newRecordNavButton.setEnabled(true); 
+            recordsGUI.editNavButton.setEnabled(true); 
+            recordsGUI.removeNavButton.setEnabled(true);
+            recordsGUI.searchBarSearchButton.setEnabled(true);
+            recordsGUI.editImageButton.setEnabled(true);
+            recordsGUI.editMessages.setEnabled(true);
+            recordsGUI.editAssignmentResults.setEnabled(true);
+            recordsGUI.editTimestable.setEnabled(true);
+    		
+        }
+    }
+    
+    /**
+     * Sets navigation buttons into edit mode, i.e. no next and previous
+     * account record pointers
+     * @param b - if false then disable, enable otherwise
+     */
+    public void setEditNavButtonMode(boolean b) {
+        if (b == false) {
+            recordsGUI.firstNavButton.setEnabled(true);
+            recordsGUI.lastNavButton.setEnabled(true); 
+            recordsGUI.nextNavButton.setEnabled(true); 
+            recordsGUI.previousNavButton.setEnabled(true);
+            recordsGUI.newRecordNavButton.setText("New Record");
+            recordsGUI.isEditing = false;
+            recordsGUI.editNavButton.setEnabled(true);
+            recordsGUI.saveNavButton.setEnabled(false);
+            recordsGUI.removeNavButton.setEnabled(true);
+            recordsGUI.searchBarSearchButton.setEnabled(true);
+            recordsGUI.editMessages.setEnabled(true);
+            recordsGUI.editAssignmentResults.setEnabled(true);
+            recordsGUI.editTimestable.setEnabled(true);
+            recordsGUI.editImageButton.setEnabled(true);
+        } else {
+            recordsGUI.firstNavButton.setEnabled(false);
+            recordsGUI.lastNavButton.setEnabled(false);
+            recordsGUI.nextNavButton.setEnabled(false); 
+            recordsGUI.previousNavButton.setEnabled(false);
+            recordsGUI.newRecordNavButton.setText("Cancel");
+            recordsGUI.isEditing = true;
+            recordsGUI.editNavButton.setEnabled(false);
+            recordsGUI.saveNavButton.setEnabled(true);
+            recordsGUI.removeNavButton.setEnabled(false);
+            recordsGUI.searchBarSearchButton.setEnabled(false);
+            recordsGUI.editMessages.setEnabled(false);
+            recordsGUI.editAssignmentResults.setEnabled(false);
+            recordsGUI.editTimestable.setEnabled(false);
+            recordsGUI.editImageButton.setEnabled(false);
+        }
+    }
+    
+    /**
+     * Sets navigation buttons to first record mode, i.e. no first and previous
+     * record pointers
+     * @param b - if false then disable, enable otherwise
+     */
+    public void setIsFirst(boolean b) {
+        if (b == true) {
+            recordsGUI.firstNavButton.setEnabled(false);
+            recordsGUI.previousNavButton.setEnabled(false);
+        } else {
+            recordsGUI.firstNavButton.setEnabled(true);
+            recordsGUI.previousNavButton.setEnabled(true);
+        }
+    }
+    
+    /**
+     * Sets navigation buttons to last record mode, i.e. no last and next
+     * record pointers
+     * @param b - if false then disable, enable otherwise
+     */
+    public void setIsLast(boolean b) {
+        if (b == true) {
+            recordsGUI.lastNavButton.setEnabled(false);
+            recordsGUI.nextNavButton.setEnabled(false);
+        } else {
+            recordsGUI.lastNavButton.setEnabled(true);
+            recordsGUI.nextNavButton.setEnabled(true);
+        }
+    }
+
+    /**
+     * Sets navigation buttons to no record at all mode
+     * i.e. no first, previous, next or last record pointers
+     * @param b - if false then disable, enable otherwise
+     */
+    public void setIsEmpty(boolean b) {
+        if (b == true) {
+            recordsGUI.removeNavButton.setEnabled(false);
+            recordsGUI.firstNavButton.setEnabled(false);
+            recordsGUI.previousNavButton.setEnabled(false);
+            recordsGUI.lastNavButton.setEnabled(false);
+            recordsGUI.nextNavButton.setEnabled(false);
+            recordsGUI.editNavButton.setEnabled(false);
+            recordsGUI.newRecordNavButton.setEnabled(true);
+        } else {
+    		
+            recordsGUI.removeNavButton.setEnabled(true);
+            recordsGUI.editNavButton.setEnabled(true);
+    		
+        }
+    }
+    
+}

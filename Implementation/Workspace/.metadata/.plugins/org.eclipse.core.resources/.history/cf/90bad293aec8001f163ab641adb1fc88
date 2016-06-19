@@ -1,0 +1,312 @@
+package sik.server;
+
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.rmi.AccessException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+
+import javax.swing.JTextArea;
+
+import sik.common.RMIServer;
+import sik.common.Store;
+import sik.common.StudentRecord;
+
+/**
+ * The RMI server implementation which contains method implementations of an RMI
+ * server interface. The methods provide RMI connectivity and and data object
+ * transfer
+ * 
+ * @author Jamie Brindle (06352322) - Manchester Metropolitan University
+ */
+public class RMIServerImpl extends UnicastRemoteObject implements RMIServer,
+		Serializable {
+
+	/**
+	 * Default universal serializable class ID
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * A registry class to handle registry object binding
+	 */
+	private Registry registry;
+
+	/**
+	 * Instance of a student records store object, to be returned to a RMI
+	 * administration client
+	 */
+	private Store store;
+
+	/**
+	 * Instance of a student record object, to be returned to a RMI user client
+	 */
+	private StudentRecord studentRecord;
+
+	/**
+	 * Class to provide text file IO services, in which the text file contains
+	 * attribute values and settings to be used by this and other classes
+	 * 
+	 * @see ServerIOServices
+	 */
+	private ServerIOServices serverOptions;
+
+	/**
+	 * The URL in which to bind an RMI server instance to
+	 */
+	private String bindUrl;
+
+	/**
+	 * A text area to return dispatched message to
+	 */
+	protected JTextArea logs;
+
+	/**
+	 * Class constructor
+	 * 
+	 * @param logs
+	 *            The text area to return dispatched messages to
+	 * @throws RemoteException
+	 *             when any connectivity problems occur
+	 */
+	public RMIServerImpl(JTextArea logs) throws RemoteException {
+		super();
+
+		this.logs = logs;
+		store = new Store();
+		serverOptions = new ServerIOServices();
+	}
+
+	/**
+	 * Starts the RMI server running, creating new instances of using objects,
+	 * defines a security manager, a security policy and the RMI server code
+	 * base and binds the RMI server to the registry and name space to allow
+	 * it's methods to be invoked remotely
+	 */
+	public void startRMIServer() {
+		dispatchMessage("--Starting The Student Information Kiosk RMI Server--\n");
+
+		try {
+			store = store.fileIn(serverOptions.getStoreFileName());
+		} catch (Exception e) {
+			this.dispatchMessage(serverOptions.getStatus());
+		}
+
+		try {
+		bindUrl = serverOptions.getRMIAddress();
+		}	catch (Exception e) {
+			dispatchMessage(serverOptions.getStatus());
+		}
+
+		dispatchMessage(serverOptions.getStatus());
+
+		// make a new registry, using the port specified in the server options
+		// text file
+		try {
+			registry = LocateRegistry.createRegistry(serverOptions
+					.getRegistryPort());
+		} catch (RemoteException e) {
+			dispatchMessage("Problem creating the registry. "
+					+ "Make sure only one server is running on port: "
+					+ serverOptions.getRegistryPort()
+					+ "\n...You may not have unbound" + " a previous registry");
+		}
+
+		// make a new security manager if there isn't one
+		// and define the security policy and code base here so that
+		// it doesn't have to be done manually by the user and aids exporting
+		// to a runnable jar file
+		if (System.getSecurityManager() == null) {
+			String currentDir = System.getProperty("user.dir").replace('\\',
+					'/');
+			String codebase = "file:/" + currentDir + "/bin/";
+			System.setProperty("java.security.policy",
+					"policy/AllSecurity.policy");
+			System.setProperty("java.rmi.server.codebase", codebase);
+			System.setSecurityManager(new RMISecurityManager());
+		}
+
+		// bind the RMI server instance to the name space and registry
+		try {
+			registry.rebind("RMIServer", this);
+			Naming.rebind(bindUrl, this);
+
+			System.out.println(getRegistryDetails());
+
+			dispatchMessage("Server succesfully bound\n");
+		} catch (Exception e) {
+			dispatchMessage("Problem binding server..." + getRegistryDetails());
+			System.out.println(getRegistryDetails());
+			System.err.println("RMIServer exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Used to return a supplied message to the server logger, which displays
+	 * and records any specified message from this RMI server or an RMI client
+	 * 
+	 * @param theMessage
+	 *            The message to be displayed
+	 */
+	public void dispatchMessage(String theMessage) {
+		logs.append(theMessage + "\n");
+	}
+
+	/**
+	 * Used to return a student record object
+	 * 
+	 * @param uniqueInput
+	 *            Defined a unique identifier of a student record which will
+	 *            either be an RFID tag serial number or a student ID number
+	 * @param computerName
+	 *            The computer host name of the machine which invoked this
+	 *            method
+	 * @param isRFIDInput
+	 *            Defines whether the uniqueInput is of type RFID serial or
+	 *            student ID number and which corresponding operation to perform
+	 * @return studentRecord The student record object in which to return
+	 * @throws RemoteException
+	 *             When some remote connectivity problems occur
+	 */
+	public StudentRecord getStudentRecord(String uniqueInput,
+			String computerName, boolean isRFIDInput) throws RemoteException {
+
+		studentRecord = new StudentRecord();
+
+		try {
+			if (isRFIDInput) {
+
+				studentRecord = store.getRecordFromTagID(uniqueInput);
+
+			} else {
+				studentRecord = store.getRecordFromStudentID(uniqueInput);
+			}
+
+			dispatchMessage("Client connected: Device name: " + computerName
+					+ " Student ID: " + studentRecord.getStudentID()
+					+ "\nSending student records array list to " + computerName);
+
+			if (isRFIDInput) {
+				dispatchMessage("Input Method: RFID Tag. Key: " + uniqueInput);
+			} else {
+				dispatchMessage("Input Method: Manual Pin Entry");
+			}
+
+		} catch (NullPointerException e) {
+			dispatchMessage("Client connected but provided wrong credentials, client disconnected");
+			studentRecord.setFirstName("nullArrayList");
+
+		} catch (ArrayIndexOutOfBoundsException e) {
+			dispatchMessage("Client connected but provided wrong credentials, client disconnected");
+			studentRecord.setFirstName("nullArrayList");
+		}
+
+		return studentRecord;
+	}
+
+	/**
+	 * Saves a supplied student records store to a local file
+	 * 
+	 * @param store
+	 *            The store object to save
+	 * @param computerName
+	 *            The name of the computer that invoked this message
+	 * @throws RemoteException
+	 *             When any remote connectivity problems occur
+	 */
+	public void saveStore(Store store, String computerName)
+			throws RemoteException {
+		this.store = store;
+		store.fileOut(serverOptions.getStoreFileName());
+		dispatchMessage("Store modified by admin client: " + computerName);
+	}
+
+	/**
+	 * Returns a student records store, while recording the details of the
+	 * computer host which invoked this methods
+	 * 
+	 * @param computerName
+	 *            The name of the computer which invoked this method
+	 * @return store The student records store object to return
+	 */
+	public Store getStore(String computerName) {
+		dispatchMessage("Admin client: " + computerName
+				+ " is requesting student record store");
+		dispatchMessage("Uploading student record store to admin client: "
+				+ computerName + ".....");
+		dispatchMessage("Upload complete");
+		return store;
+	}
+
+	/**
+	 * Returns a student records store. It's similar to the getStore() method
+	 * however it does not record any details of the remote method invoker
+	 * 
+	 * @return store The student records store object in which to return
+	 * @see #getStore(String)
+	 */
+	public Store getStore_silent() {
+		return store;
+	}
+
+	/**
+	 * Returns a string containing information about the current server binding,
+	 * registry state the URL in which binding has been attempted and whether or
+	 * not a binding has been successful or not and also containing the reasons
+	 * for a server binding failure. This is generally used for debugging
+	 * purposes
+	 * 
+	 * @return registryDetails The string containing information of which to
+	 *         return
+	 */
+	private String getRegistryDetails() {
+		String registryDetails = "";
+
+		registryDetails += "\nChecking registry details...\n";
+		registryDetails += "Currently using host: " + bindUrl + "\n";
+		registryDetails += "Checking host naming binding...\n";
+		try {
+			registryDetails += "..." + Naming.lookup(bindUrl).toString() + "\n";
+		} catch (MalformedURLException e) {
+			registryDetails += "Error: Wrong url syntax\n";
+			e.printStackTrace();
+			return registryDetails;
+		} catch (RemoteException e) {
+			registryDetails += "Error: Some kind of remote connection failure\n";
+			e.printStackTrace();
+			return registryDetails;
+		} catch (NotBoundException e) {
+			registryDetails += "Error: The RMI Server stub has not bound successfully\n";
+			e.printStackTrace();
+			return registryDetails;
+		}
+
+		registryDetails += "Checking host registry binding...\n";
+		try {
+			registryDetails += "..." + registry.lookup("RMIServer") + "\n";
+		} catch (AccessException e) {
+			registryDetails += "Error: Can't access registry, access denied, is already "
+					+ "in use, not found or not allowed\n";
+			e.printStackTrace();
+			return registryDetails;
+		} catch (RemoteException e) {
+			registryDetails += "Error: Some kind of remote connection failure\n";
+			e.printStackTrace();
+			return registryDetails;
+		} catch (NotBoundException e) {
+			registryDetails += "Error: Error: The RMI Server stub has not bound successfully\n";
+			e.printStackTrace();
+			return registryDetails;
+		}
+
+		registryDetails += "It appears the registry has been set up sucessfully";
+
+		return registryDetails;
+	}
+}

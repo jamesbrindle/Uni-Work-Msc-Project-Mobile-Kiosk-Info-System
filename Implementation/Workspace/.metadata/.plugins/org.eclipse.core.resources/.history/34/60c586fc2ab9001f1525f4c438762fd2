@@ -1,0 +1,14 @@
+
+
+public class run {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		BTFilePusher fp = new BTFilePusher();
+		fp.sendFile("btgoep://6C0E0D47F128:6;authenticate=false;encrypt=false;master=false", "image/background1.jpg", BTFilePusher.Type.IMAGE );
+
+	}
+
+}

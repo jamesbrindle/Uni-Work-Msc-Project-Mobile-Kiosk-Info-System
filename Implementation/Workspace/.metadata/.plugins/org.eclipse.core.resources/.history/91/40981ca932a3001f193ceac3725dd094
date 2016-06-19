@@ -1,0 +1,21 @@
+package sik.com.phidgets;
+
+import com.phidgets.*;
+import com.phidgets.event.*;
+
+public class Test {
+	
+	public Test () {
+		InterfaceKitPhidget ik;
+	}
+
+	public static void main(String[] args) {
+		System.out.println("Test...");
+		
+		ik = new InterfaceKitPhidget();		
+		ik.openAny();
+		ik.waitForAttachment();
+
+	}
+
+}

@@ -1,0 +1,35 @@
+1280774923397	Rename field 'tempPasswordField'
+1280774954894	Rename field 'manPinEntryPanel'
+1280774968949	Rename type 'ManPinEntryPanel'
+1280775032426	Rename field 'tempTextField'
+1280775263898	Rename field 'type'
+1280775316798	Rename type 'JPanel'
+1280778091495	Copy compilation unit
+1280789101403	Rename type 'Record'
+1280861853912	Delete element
+1280872325601	Rename local variable 'output'
+1280872658408	Rename local variable 'o'
+1280875207648	Delete element
+1280875518156	Delete element
+1280876991636	Delete element
+1280946557854	Move compilation unit
+1280951428173	Delete element
+1280952170030	Rename type 'Records'
+1280954058594	Rename type 'Record'
+1280955708533	Rename type 'ServerHandler'
+1280955837515	Delete element
+1280956018088	Rename resource 'clientOptions.txt'
+1280956776556	Rename field 'serverHandler'
+1280956849335	Rename field 'receivedMessage'
+1280957108329	Rename field 'introDisplayLayout'
+1281041135970	Rename type 'Records'
+1281042614622	Rename type 'StudentRecordsImpl'
+1281190263501	Copy compilation unit
+1281194683247	Rename package 'sik.client'
+1281194713090	Rename package 'sik.pannels'
+1281194984561	Copy file
+1281197700531	Rename type 'StudentRecordImpl'
+1281197755873	Rename type 'StudentRecordImpl_client'
+1281212380282	Delete element
+1281229335841	Rename type 'ExitDialog'
+1281229389438	Rename field 'exitDialog'

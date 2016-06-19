@@ -1,0 +1,32 @@
+1281982187183	Delete element
+1282081419736	Rename resource 'Explosion 01.wav'
+1282082164947	Rename resource 'explosion'
+1282083131809	Move compilation units
+1282159583282	Rename field 'isStudentIDTextFieldFocuses'
+1282162006817	Copy compilation unit
+1282162119924	Rename field 'homePanelLayout'
+1282162136789	Rename local variable 'welcomeMessage'
+1282163567213	Rename field 'homePanelLayout'
+1282163726424	Rename field 'messagePanelLayout'
+1282163737544	Rename field 'messagePanel'
+1282167682215	Rename field 'greatingsPanel'
+1282477291691	Rename type 'ClientOptions'
+1282483183459	Rename resource 'Schedule.gif'
+1282493019406	Delete element
+1282493042313	Rename type 'EditMessagesGUIButtonManager'
+1282493069387	Rename type 'MessagesGUIButtonManager'
+1282493082219	Rename type 'EditMessagesGUIListener'
+1282495482440	Rename field 'largerFont'
+1282495562483	Rename type 'Font'
+1282495585697	Rename type 'Fonts'
+1282495589129	Delete element
+1282496615062	Rename field 'extraLargeFont'
+1282498418535	Rename field 'introDisplayLayout'
+1282498426218	Rename field 'introMessageLn1'
+1282498509463	Rename field 'goodbyeMEssage'
+1282501387248	Copy compilation unit
+1282505422832	Delete element
+1282505544880	Rename field 'goodbyeLayout'
+1282505568255	Rename field 'goodbyeMessage'
+1282506872786	Rename type 'LogoutPrompt'
+1282513071764	Rename method 'loadLogoutPrompt'

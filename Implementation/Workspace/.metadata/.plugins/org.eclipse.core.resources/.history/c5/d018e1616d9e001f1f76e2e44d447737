@@ -1,0 +1,176 @@
+package sik.admin;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.Serializable;
+
+public class EditMessagesGUIListener  implements ActionListener, Serializable {
+
+	private static final long serialVersionUID = 1L;
+	protected EditMessagesGUI editMessagesGUI;
+	protected OptionsDialog  removeDialog;
+	protected boolean newRecord = false;
+	protected boolean isEditing = false;
+	protected boolean isCreating = false;
+	protected int messageNumber;
+	
+	public EditMessagesGUIListener(EditMessagesGUI editMessagesGUI) {
+		this.editMessagesGUI = editMessagesGUI;	
+	} 
+
+	public void actionPerformed(ActionEvent e) {
+
+		if (e.getSource() == editMessagesGUI.menuItem3) {
+			editMessagesGUI.frame.dispose();                             
+		}          
+
+		if (e.getSource() == editMessagesGUI.nextNavButton) {
+			editMessagesGUI.arrayPointer++;
+			setNavButtons();        	
+			setRecord();
+		} 
+
+		if (e.getSource() == editMessagesGUI.previousNavButton) {
+			editMessagesGUI.arrayPointer--;
+			setNavButtons();        	
+			setRecord();
+		} 
+
+		if (e.getSource() == editMessagesGUI.firstNavButton) {
+			editMessagesGUI.arrayPointer=0;
+			setNavButtons();        	
+			setRecord();
+		} 
+
+		if (e.getSource() == editMessagesGUI.lastNavButton) {
+			editMessagesGUI.arrayPointer=editMessagesGUI.messagesArrayList.size()-1;
+			setNavButtons();        	
+			setRecord();
+
+		} 
+
+		if (e.getSource() == editMessagesGUI.removeNavButton) {
+			if (editMessagesGUI.arrayPointer==editMessagesGUI.messagesArrayList.size()-1) {
+				if(editMessagesGUI.arrayPointer == 0) {
+					editMessagesGUI.messagesArrayList.remove(editMessagesGUI.arrayPointer);
+					editMessagesGUI.messageNumberTextField.setText("0 / 0");
+				}
+				else {
+					editMessagesGUI.messagesArrayList.remove(editMessagesGUI.arrayPointer);
+					editMessagesGUI.arrayPointer--;
+				}
+			}
+			else {
+				editMessagesGUI.messagesArrayList.remove(editMessagesGUI.arrayPointer);
+			}
+			editMessagesGUI.recordsGL.store.currentRecord().setMessages(
+					editMessagesGUI.messagesArrayList);
+			editMessagesGUI.recordsGL.saveFile();
+			setNavButtons();
+			setRecord();
+		}
+
+		if (e.getSource() == editMessagesGUI.editNavButton){
+			isEditing = true;
+			editMessagesGUI.setEditNavButtonMode(true);
+			editMessagesGUI.theMessage.setEditable(true);
+		
+		}
+
+		if (e.getSource() == editMessagesGUI.newRecordNavButton) {
+			if (isCreating || isEditing) {
+				isCreating = false;
+				isEditing = false;
+				setNavButtons();
+				setRecord();
+				editMessagesGUI.setEditNavButtonMode(false);
+				editMessagesGUI.theMessage.setEditable(false);
+
+				if (editMessagesGUI.messagesArrayList.isEmpty()) {
+					editMessagesGUI.editNavButton.setEnabled(false);
+					editMessagesGUI.removeNavButton.setEnabled(false);
+				}
+
+			}
+			else {
+				isCreating = true;
+				editMessagesGUI.theMessage.setText("");
+				editMessagesGUI.setEditNavButtonMode(true);
+				editMessagesGUI.theMessage.setEditable(true);
+			}
+		} 
+
+		if (e.getSource() == editMessagesGUI.saveNavButton) {
+			if (isEditing) {
+				isEditing = false;
+				editMessagesGUI.messagesArrayList.set(editMessagesGUI.arrayPointer, 
+						editMessagesGUI.theMessage.getText());
+			}
+			else if (isCreating) {
+				isCreating = false;
+				editMessagesGUI.messagesArrayList.add(editMessagesGUI.theMessage.getText());
+				editMessagesGUI.arrayPointer=editMessagesGUI.messagesArrayList.size()-1;
+
+			}
+			editMessagesGUI.recordsGL.store.currentRecord().setMessages(
+					editMessagesGUI.messagesArrayList);
+			editMessagesGUI.recordsGL.saveFile();
+			editMessagesGUI.setEditNavButtonMode(false);
+			editMessagesGUI.theMessage.setEditable(false);    		
+			setNavButtons();
+			setRecord();
+
+		} 
+	}
+
+	public void setNavButtons() {
+		if (editMessagesGUI.messagesArrayList.isEmpty()) {
+			editMessagesGUI.setIsEmpty(true);
+			editMessagesGUI.messageNumberTextField.setText("0 / 0");
+		}
+		else {
+
+			messageNumber = editMessagesGUI.arrayPointer+1;
+
+			editMessagesGUI.messageNumberTextField.setText("" + 
+					messageNumber + " / " + 
+					editMessagesGUI.messagesArrayList.size());
+
+			if (editMessagesGUI.messagesArrayList.size()>1 && editMessagesGUI.arrayPointer==0) {
+				editMessagesGUI.setIsFirst(true);
+				editMessagesGUI.setIsLast(false);
+
+
+			}
+			else if (editMessagesGUI.messagesArrayList.size()==1) {
+				editMessagesGUI.setIsFirst(true);
+				editMessagesGUI.setIsLast(true);
+
+			}
+			else if (editMessagesGUI.messagesArrayList.size()== editMessagesGUI.arrayPointer+1 && 
+					editMessagesGUI.messagesArrayList.size()>0) {
+				editMessagesGUI.setIsLast(true);
+				editMessagesGUI.setIsFirst(false);
+
+			}
+			else if (editMessagesGUI.messagesArrayList.size()>1 
+					&& editMessagesGUI.arrayPointer!=editMessagesGUI.messagesArrayList.size()) {
+				editMessagesGUI.setIsLast(false);
+				editMessagesGUI.setIsFirst(false);
+
+			}
+		}    	
+	}
+
+	private void setRecord() {
+		if(editMessagesGUI.messagesArrayList.isEmpty()) {
+			editMessagesGUI.theMessage.setText("");
+			editMessagesGUI.setIsEmpty(true);
+		}
+		else {
+			editMessagesGUI.theMessage.setText(
+					editMessagesGUI.messagesArrayList.get(editMessagesGUI.arrayPointer).toString());
+		}
+	}      
+}
+

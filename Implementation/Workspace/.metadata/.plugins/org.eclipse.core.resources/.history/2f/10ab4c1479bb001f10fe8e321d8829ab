@@ -1,0 +1,17 @@
+package sik.server;
+
+import java.io.IOException;
+import java.io.Serializable;
+
+public class StartRMIServer implements Serializable {
+	private static final long serialVersionUID = 1L;
+	protected static RMIServerImpl rmiServer;
+	protected static ServerLogger serverLogger;
+
+	public static void main(String[] args) throws IOException {
+		serverLogger = new ServerLogger();
+		rmiServer = new RMIServerImpl(serverLogger.logsTextArea);	
+		//rmiServer.Main(args);
+		rmiServer.startRMIServer();
+	}
+}

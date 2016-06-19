@@ -1,0 +1,13 @@
+Basically this is an information kiosk which can be displayed on a computer or portable device (see 'ACTIONSHOT1.png').
+
+It allows logging into the device via a PIN number or RFID Tag, as an RFID scanner has been programmed into the system.
+
+The information kiosk is designed for the university, so includes related info, i.e. a campas map, student messages,
+exam results, and other data (see 'SCREENSHOT3.png').
+
+There is a server holding student information, in which messages can be set up on the server and accessed through the kiosk.
+
+The client and server communicate over a network using RMI (java based).
+
+The project is written in java.
+

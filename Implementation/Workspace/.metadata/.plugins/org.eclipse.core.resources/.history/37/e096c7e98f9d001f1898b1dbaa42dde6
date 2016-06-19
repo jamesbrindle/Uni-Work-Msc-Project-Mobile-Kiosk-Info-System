@@ -1,0 +1,250 @@
+package sik.pannels;
+
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+
+public class NumPadPanel extends JPanel implements ActionListener{
+	
+	private static final long serialVersionUID = 1L;
+	
+	private GridBagConstraints numPadLayout;
+		
+	private JButton numEnter, numCancel, numClear, numEmpty1, numEmpty2, numEmpty3, 
+			num0, num1, num2, num3, num4, num5, num6, num7, num8, num9;
+	
+	private JTextField tempTextField;
+	private JPasswordField tempPasswordField;
+	private String type = "";
+	
+	private ArrayList<JTextField> textTextFieldComponents = new ArrayList<JTextField> ();
+	private ArrayList<JPasswordField> passwordFieldComponents = new ArrayList<JPasswordField>();
+	
+    protected ManPinEntryPanel manPinEntryPanel;
+	
+	public NumPadPanel(ManPinEntryPanel manPinEntryPanel, Font font, 
+			JPasswordField passwordField, 
+			ArrayList<JTextField> textFieldsToClear, 
+			ArrayList<JPasswordField> passwordFieldsToClear) {
+		this.manPinEntryPanel = manPinEntryPanel;
+		this.passwordFieldComponents = passwordFieldsToClear;
+		this.textTextFieldComponents = textFieldsToClear;
+		this.tempPasswordField = passwordField;
+		type = "JPasswordField";
+		buildNumPad(font);		
+		
+	}
+		
+	public NumPadPanel(ManPinEntryPanel manPinEntryPanel,
+			Font font, JTextField textField, 
+			ArrayList<JTextField> textFieldsToClear, 
+			ArrayList<JPasswordField> passwordFieldsToClear) {
+		this.manPinEntryPanel = manPinEntryPanel;
+		this.passwordFieldComponents = passwordFieldsToClear;
+		this.textTextFieldComponents = textFieldsToClear;
+		this.tempTextField = textField;
+		type = "JTextField";
+		buildNumPad(font);
+
+	}
+	
+	public void buildNumPad(Font font) {
+
+		setLayout(new GridBagLayout());
+		setOpaque(false);
+		numPadLayout = new GridBagConstraints();
+		
+		numPadLayout.ipady = 8;
+        
+		numPadLayout.insets = new Insets(4, 0, 0, 0);
+		
+        num1 = new JButton("1");
+        num1.setFont(font);
+        num1.addActionListener(this);
+        numPadLayout.gridx = 0;
+        numPadLayout.gridy = 0;		
+        add(num1, numPadLayout);
+        
+        num2 = new JButton("2");
+        num2.setFont(font);
+        num2.addActionListener(this);
+        numPadLayout.gridx = 1;
+        numPadLayout.gridy = 0;    	
+        add(num2, numPadLayout);
+        
+        num3 = new JButton("3");
+        num3.setFont(font);
+        num3.addActionListener(this);
+        numPadLayout.gridx = 2;
+        numPadLayout.gridy = 0;    	
+        add(num3, numPadLayout);
+        
+        numPadLayout.insets = new Insets(4, 10, 0, 0);
+        
+        numClear = new JButton("Clear");
+        numClear.setFont(font);
+        numClear.addActionListener(this);
+        numPadLayout.fill = GridBagConstraints.HORIZONTAL;
+        numPadLayout.gridx = 3;
+        numPadLayout.gridy = 0;    	
+        add(numClear, numPadLayout);
+        
+        numPadLayout.insets = new Insets(0, 0, 0, 0);
+        
+        num4 = new JButton("4");
+        num4.setFont(font);
+        num4.addActionListener(this);
+        numPadLayout.gridx = 0;
+        numPadLayout.gridy = 1;    	
+        add(num4, numPadLayout);
+        
+        num5 = new JButton("5");
+        num5.setFont(font);
+        num5.addActionListener(this);
+        numPadLayout.gridx = 1;
+        numPadLayout.gridy = 1;    	
+        add(num5, numPadLayout);
+        
+        num6 = new JButton("6");
+        num6.setFont(font);
+        num6.addActionListener(this);
+        numPadLayout.gridx = 2;
+        numPadLayout.gridy = 1;    	
+        add(num6, numPadLayout);
+        
+        numPadLayout.insets = new Insets(0, 10, 0, 0);
+        
+        numCancel = new JButton("Cancel");
+        numCancel.setFont(font);
+        numCancel.addActionListener(this);
+        numPadLayout.fill = GridBagConstraints.HORIZONTAL;
+        numPadLayout.gridx = 3;
+        numPadLayout.gridy = 1;    	
+        add(numCancel, numPadLayout);
+        
+        numPadLayout.insets = new Insets(0, 0, 0, 0);
+        
+        num7 = new JButton("7");
+        num7.setFont(font);
+        num7.addActionListener(this);
+        numPadLayout.gridx = 0;
+        numPadLayout.gridy = 2;    	
+        add(num7, numPadLayout);
+        
+        num8 = new JButton("8");
+        num8.setFont(font);
+        num8.addActionListener(this);
+        numPadLayout.gridx = 1;
+        numPadLayout.gridy = 2;    	
+        add(num8, numPadLayout);
+        
+        num9 = new JButton("9");
+        num9.setFont(font);
+        num9.addActionListener(this);
+        numPadLayout.gridx = 2;
+        numPadLayout.gridy = 2;    	
+        add(num9, numPadLayout);
+        
+        numPadLayout.insets = new Insets(0, 10, 0, 0);
+        
+        numEnter = new JButton("Enter");
+        numEnter.setFont(font);
+        numEnter.addActionListener(this);
+        numPadLayout.gridx = 3;
+        numPadLayout.gridy = 2;    	
+        add(numEnter, numPadLayout);
+        
+        numPadLayout.insets = new Insets(0, 0, 0, 0);
+        
+        numEmpty1 = new JButton("");
+        numEmpty1.setFont(font);
+        numEmpty1.setVisible(false);
+        numPadLayout.fill = GridBagConstraints.BOTH;
+        numPadLayout.gridx = 0;
+        numPadLayout.gridy = 3;    	
+        add(numEmpty1, numPadLayout);
+        
+        num0 = new JButton("0");
+        num0.setFont(font);
+        num0.addActionListener(this);
+        numPadLayout.gridx = 1;
+        numPadLayout.gridy = 3;    	
+        add(num0, numPadLayout);
+        
+        numEmpty2 = new JButton("");
+        numEmpty2.setFont(font);
+        numEmpty2.setVisible(false);
+        numPadLayout.fill = GridBagConstraints.BOTH;
+        numPadLayout.gridx = 2;
+        numPadLayout.gridy = 3;    	
+        add(numEmpty2, numPadLayout);
+        
+        numPadLayout.insets = new Insets(0, 10, 0, 0);
+        
+        numEmpty3 = new JButton("");
+        numEmpty3.setFont(font);
+        numEmpty3.setVisible(false);
+        numPadLayout.fill = GridBagConstraints.BOTH;
+        numPadLayout.gridx = 3;
+        numPadLayout.gridy = 3;    	
+        add(numEmpty3, numPadLayout);
+        
+        numPadLayout.insets = new Insets(0, 0, 0, 0);          
+      		
+	}
+	
+	public void setFocusedObject(JTextField textField) {
+		this.tempTextField = textField;
+		type = "JTextField";
+	}
+	
+	public void setFocusedObject(JPasswordField textField) {
+		this.tempPasswordField = textField;
+		type = "JPasswordField";
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void actionPerformed(ActionEvent e) {
+		JButton tempButton = new JButton("");
+		if(e.getSource() == num1 || e.getSource() == num2 || e.getSource() == num3
+				|| e.getSource() == num4 || e.getSource() == num5 || e.getSource() == num6
+				|| e.getSource() == num7 || e.getSource() == num8 || e.getSource() == num9
+				|| e.getSource() == num0) {
+			tempButton = (JButton)e.getSource();
+			if(type.equalsIgnoreCase("JTextField")) {
+				tempTextField.setText(tempTextField.getText() + tempButton.getText());
+			}
+			if(type.equalsIgnoreCase("JPasswordField")) {
+				
+				tempPasswordField.setText(tempPasswordField.getText() + "1");				
+			}
+		}
+		
+		if(e.getSource() == numClear) {
+			for(int i=0; i<textTextFieldComponents.size(); i++) {
+				textTextFieldComponents.get(i).setText("");
+			}
+			for(int i=0; i<passwordFieldComponents.size(); i++) {
+				passwordFieldComponents.get(i).setText("");
+			}
+		}
+		
+		if(e.getSource() == numCancel) {
+			manPinEntryPanel.cancel();
+		}
+		
+		if(e.getSource() == numEnter) {
+			manPinEntryPanel.enter();
+		}
+	}
+}

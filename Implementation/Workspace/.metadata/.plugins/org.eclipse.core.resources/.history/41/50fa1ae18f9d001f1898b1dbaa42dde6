@@ -1,0 +1,178 @@
+package sik.pannels;
+
+
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import sik.client.MainDisplayGUI;
+
+public class ManPinEntryPanel extends JPanel implements ActionListener, KeyListener, FocusListener{
+	
+   	private static final long serialVersionUID = 1L;
+	
+	MainDisplayGUI mainGUI;
+	
+	private JPanel manPinEntryPanelNorth, manPinEntryPanelEast, manPinEntryPanelWest, manPinEntryPanelSouth; 
+	private NumPadPanel numPad;
+	private GridBagConstraints manPinEntryDisplayLayout, manPinEntryLayoutNorth, 
+			manPinEntryLayoutEast, manPinEntryLayoutWest, manPinEntryLayoutSouth;
+	private JLabel manPinEntryMessage, studentIDLabel, pinNoLabel, errorMessage;
+	private JTextField studentIDTextField;
+	private JPasswordField pinNoTextField;
+	
+	ArrayList<JTextField> textComponents;
+	ArrayList<JPasswordField> passwordComponents;
+	
+	public ManPinEntryPanel(MainDisplayGUI mainGUI) {
+		
+		textComponents = new ArrayList<JTextField>();
+		passwordComponents = new ArrayList<JPasswordField>();
+		
+		this.mainGUI = mainGUI;
+		
+		setLayout(new GridBagLayout());
+		setOpaque(false);
+		manPinEntryDisplayLayout = new GridBagConstraints();
+		
+		
+		manPinEntryPanelNorth = new JPanel(new GridBagLayout());
+		manPinEntryPanelNorth.setOpaque(false);
+		manPinEntryLayoutNorth = new GridBagConstraints();
+		
+		manPinEntryMessage = new JLabel("Please Enter Your Student ID and Pin Number");
+		manPinEntryMessage.setFont(mainGUI.extraLargeFont);
+		manPinEntryMessage.setForeground(new Color(255,255,255));
+		manPinEntryPanelNorth.add(manPinEntryMessage, manPinEntryLayoutNorth);
+		
+		manPinEntryDisplayLayout.insets = new Insets(40,40,40,40);
+		
+		manPinEntryDisplayLayout.gridwidth = 2;
+		manPinEntryDisplayLayout.gridy = 0;		
+		add(manPinEntryPanelNorth, manPinEntryDisplayLayout);
+		
+		//east
+		
+		manPinEntryPanelEast = new JPanel(new GridBagLayout());
+		manPinEntryPanelEast.setOpaque(false);
+		manPinEntryLayoutEast = new GridBagConstraints();
+		
+		manPinEntryLayoutEast.insets = new Insets(2,5,2,5);
+		manPinEntryLayoutEast.anchor = GridBagConstraints.WEST;
+		manPinEntryLayoutEast.gridy = 0;
+		
+		studentIDLabel = new JLabel("Student ID");
+		studentIDLabel.setFont(mainGUI.largerFont);
+		studentIDLabel.setForeground(new Color(255,255,255));
+		studentIDTextField = new JTextField(15);
+		studentIDTextField.addFocusListener(this);
+		studentIDTextField.setFont(mainGUI.largerFont);
+		textComponents.add(studentIDTextField);
+		
+		manPinEntryPanelEast.add(studentIDLabel, manPinEntryLayoutEast);
+		manPinEntryPanelEast.add(studentIDTextField, manPinEntryLayoutEast);
+		
+		manPinEntryLayoutEast.gridy = 1;
+		
+		pinNoLabel = new JLabel("Pin Numebr");
+		pinNoLabel.setFont(mainGUI.largerFont);
+		pinNoLabel.setForeground(new Color(255,255,255));
+
+		pinNoTextField = new JPasswordField(15);
+		pinNoTextField.addFocusListener(this);
+		pinNoTextField.setFont(mainGUI.largerFont);
+		passwordComponents.add(pinNoTextField);
+				
+		manPinEntryPanelEast.add(pinNoLabel, manPinEntryLayoutEast);
+		manPinEntryPanelEast.add(pinNoTextField, manPinEntryLayoutEast);
+		
+		manPinEntryDisplayLayout.gridwidth = 1;
+		manPinEntryDisplayLayout.gridy = 1;		
+		add(manPinEntryPanelEast, manPinEntryDisplayLayout);
+		
+		//west / num pad
+		
+		manPinEntryDisplayLayout.gridx = 1;
+		manPinEntryDisplayLayout.gridy = 1;		
+		
+		manPinEntryPanelWest = new JPanel(new GridBagLayout());
+		manPinEntryPanelWest.setOpaque(false);
+		manPinEntryLayoutWest = new GridBagConstraints();
+		
+		numPad = new NumPadPanel(this, mainGUI.largerFont, studentIDTextField, 
+				textComponents, passwordComponents);
+		
+		manPinEntryPanelWest.add(numPad, manPinEntryLayoutWest);
+		
+		add(manPinEntryPanelWest, manPinEntryDisplayLayout);
+		
+		//south
+		
+		manPinEntryPanelSouth = new JPanel(new GridBagLayout());
+		manPinEntryPanelSouth.setOpaque(false);
+		manPinEntryLayoutSouth = new GridBagConstraints();
+		
+		errorMessage = new JLabel("Student ID or Password Incorrect, Please Try Again");
+		errorMessage.setFont(mainGUI.largerFont);
+		errorMessage.setForeground(new Color(255,255,255));
+		errorMessage.setVisible(false);
+		
+		manPinEntryPanelSouth.add(errorMessage, manPinEntryLayoutSouth);
+		
+		manPinEntryDisplayLayout.gridwidth=2;
+		manPinEntryDisplayLayout.gridy=3;
+		manPinEntryDisplayLayout.gridx=0;
+		
+		add(manPinEntryPanelSouth, manPinEntryDisplayLayout);
+		
+		
+	
+	}
+	
+	 public void cancel() {
+			mainGUI.mainDisplayPanel.remove(this);
+			mainGUI.frame.repaint();	
+			mainGUI.loadIntroPanel();
+			mainGUI.frame.pack();
+		
+	}
+	 
+	public void enter() {
+		mainGUI.connectToServer();
+		
+	}
+	
+	public void focusGained(FocusEvent e) {
+		if(e.getSource()==studentIDTextField) {
+			numPad.setFocusedObject(studentIDTextField);
+		}
+		if(e.getSource()==pinNoTextField) {
+			numPad.setFocusedObject(pinNoTextField);
+		}	
+	}
+	
+	public void actionPerformed(ActionEvent e) {}
+
+	public void keyTyped(KeyEvent e) {}
+
+	public void keyPressed(KeyEvent e) {}
+
+	public void keyReleased(KeyEvent e) {}
+	
+	public void focusLost(FocusEvent e) {}
+
+	
+}

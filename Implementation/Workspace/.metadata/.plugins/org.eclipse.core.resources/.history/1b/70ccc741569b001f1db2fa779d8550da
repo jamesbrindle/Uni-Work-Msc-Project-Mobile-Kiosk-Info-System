@@ -1,0 +1,24 @@
+package sik.client.admin;
+
+import java.rmi.*;
+import java.math.*;
+import sik.common.*;
+
+public class ComputePi {
+    public static void main(String args[]) {
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new RMISecurityManager());
+        }
+        try {
+            String name = "//" + args[0] + "/Compute";
+            RMIServer comp = (RMIServer) Naming.lookup(name);
+            RMIClientImpl task = new RMIClientImpl(Integer.parseInt(args[1]));
+            BigDecimal pi = (BigDecimal) (comp.executeTask(task));
+            System.out.println(pi);
+        } catch (Exception e) {
+            System.err.println("ComputePi exception: " + 
+                               e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}

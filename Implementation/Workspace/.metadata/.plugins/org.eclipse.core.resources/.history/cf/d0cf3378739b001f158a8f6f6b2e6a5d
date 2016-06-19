@@ -1,0 +1,9 @@
+package compute;
+
+import java.io.Serializable;
+
+public interface RMIClient extends Serializable {
+
+		public void printMessage(String theMessage);
+		public void dispatchMessage(String theMessage);
+}

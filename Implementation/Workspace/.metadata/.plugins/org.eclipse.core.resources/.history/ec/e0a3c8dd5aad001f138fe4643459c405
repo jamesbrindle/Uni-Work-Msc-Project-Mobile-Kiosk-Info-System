@@ -1,0 +1,100 @@
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+
+public class InOutEmails {
+
+	private ArrayList<String> emailList;
+	private String readFileLoc = "scan.txt";
+
+	public InOutEmails() {
+
+		emailList = new ArrayList<String>();
+	}
+	
+	public ArrayList getEmailsArrayList() {
+		
+		return emailList;
+	}
+
+	public void getEmails() {
+
+		File file = new File(readFileLoc);
+		FileInputStream fis = null;
+		InputStreamReader in = null;
+		BufferedReader br = null;
+
+		try {			
+			fis = new FileInputStream(file);
+			in = new InputStreamReader(fis, "UTF-16");
+			br = new BufferedReader(in, 8 * 1024);
+
+			while (br.readLine() != null) {
+				emailList.add(br.readLine());
+			}
+
+		} catch (FileNotFoundException e) {
+			System.out.println("Problem loading file - File missing");
+
+		} catch (IOException e) {
+			System.out.println("Problem loading file - Possibly corrupt");
+		} finally {
+			try {
+
+				fis.close();
+				br.close();
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void exportEmailsToTextFile() {
+
+		File file = new File("output1.txt");
+		FileWriter fw = null;
+		FileOutputStream fos = null;
+		OutputStreamWriter out = null;
+		BufferedWriter bw = null;
+
+		try {
+
+			
+			fos = new FileOutputStream(file);
+			fw = new FileWriter(fos);
+			out = new OutputStreamWriter(fos, "UTF-8");
+			bw = new BufferedWriter(out, 8 * 1024);
+
+			for (int i = 0; i < emailList.size(); i++) {
+				bw.write(emailList.get(i));
+				// bw.newLine();
+			}
+
+		} catch (IOException e) {
+			System.out.println("ProblemWriting File");
+		} finally {
+		}
+		try {
+
+			fos.flush();
+			fos.close();
+			bw.flush();
+			bw.close();
+			out.flush();
+			out.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}

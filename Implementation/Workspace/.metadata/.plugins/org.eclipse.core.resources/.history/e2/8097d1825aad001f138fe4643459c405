@@ -1,0 +1,20 @@
+import java.util.ArrayList;
+
+
+public class Run {
+
+	static InOutEmails inOut;
+	public static void main(String[] args) {
+		inOut = new InOutEmails();
+		inOut.getEmails();
+		
+		ArrayList<String> emailList = inOut.getEmailsArrayList();
+		
+		System.out.println(emailList.get(1));
+		//inOut.exportEmailsToTextFile();
+		
+	
+
+	}
+
+}

@@ -1,0 +1,10 @@
+package sik.server;
+
+public class RunAdmin {
+
+	protected static RecordsGUI accountsGUI;
+	
+	public static void main(String[] args) {
+		accountsGUI = new RecordsGUI();
+	}
+}

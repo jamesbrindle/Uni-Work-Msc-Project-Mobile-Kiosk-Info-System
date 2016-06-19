@@ -1,0 +1,103 @@
+package sik.client;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+
+public class ExitDialog extends JDialog
+implements ActionListener {
+
+	private static final long serialVersionUID = 1L;
+	private JButton OKButton, cancelButton;
+	public int choice;
+	private JTextField password;
+
+
+	/** This method constructs the frame (or dialogue)
+	 * @param parent The frame this dialogue should return to
+	 * @param title The title of the dialogue
+	 * @param message The message the dialogue is giving or asking
+	 */
+	public ExitDialog(JFrame parent) {
+
+        super(parent, true);
+
+		setResizable(false); // lock the size of the frame
+		// set the location of the frame...        
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Dimension screenSize = tk.getScreenSize();
+		int screenHeight = screenSize.height;
+		int screenWidth = screenSize.width;
+
+		setLocation(screenWidth / 4, screenHeight / 4);
+		// ...        
+		JPanel messagePane = new JPanel();
+
+		messagePane.add(new JLabel("You must enter the admin password for this operation"));
+		messagePane.add(new JLabel("Password:"));
+		messagePane.add(password);
+		
+		getContentPane().add(messagePane);
+		
+		JPanel buttonPane = new JPanel();
+		
+		OKButton = new JButton("OK");
+		cancelButton = new JButton("Cancel");
+		
+		buttonPane.add(OKButton);
+		buttonPane.add(cancelButton);		
+		
+		OKButton.addActionListener(this);
+		cancelButton.addActionListener(this);
+		
+		getContentPane().add(buttonPane, BorderLayout.SOUTH); // add panel to frame
+		
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		
+		pack();
+		setVisible(true); // show the frame
+
+	}
+
+	/**
+	 * Get the choice integer that has been set (on selection of a button)
+	 * @return choice integer
+	 */
+	public int getChoice() {
+		return choice;
+	}
+
+	/**
+	 * set the choice integer to a particular value
+	 * @param c value of selection
+	 */
+	public void setChoice(int c) {
+		this.choice = c;
+	}
+
+	/**
+	 * effects of particular action listeners
+	 */
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == OKButton) {
+			this.setChoice(1);
+			setVisible(false); // after selection, close the frame
+			dispose();
+		}
+
+		if (e.getSource() == cancelButton) {
+			this.setChoice(0);
+			setVisible(false); // after selection, close the frame
+			dispose();
+		}
+	}
+}

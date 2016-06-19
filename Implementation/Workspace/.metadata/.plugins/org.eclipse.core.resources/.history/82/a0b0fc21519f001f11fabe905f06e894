@@ -1,0 +1,54 @@
+package sik.client;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+
+import sik.common.*;
+
+public class RMIClientImpl implements RMIClient, Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	public String receivedMessage;
+	public ArrayList<Object> studentRecordArrayList;
+
+	public RMIClientImpl() {}
+
+	public void printMessage(String theMessage) {
+		System.out.println(theMessage);		
+	}
+
+	public void dispatchMessage(String theMessage) {
+		receivedMessage = theMessage;		
+	}
+
+	public void dispatchRecord(ArrayList<Object> suppliedArrayList) 
+	throws RemoteException {
+		ObjectOutputStream oo = null; 
+		studentRecordArrayList = suppliedArrayList;
+        try {
+            oo = new ObjectOutputStream(new FileOutputStream("srObjectFile.sof"));
+            oo.writeObject(studentRecordArrayList); 
+        } catch (Exception e) {
+            String errMessage = e.getMessage();
+            System.err.println("Error: " + errMessage); 
+        } finally {
+            if (oo != null) {
+                try {
+                    oo.flush(); 
+                } catch (IOException ioe) {
+                	System.err.println("IO Error on flush"); 
+                }
+                try {
+                    oo.close(); 
+                } catch (IOException ioe) {
+                	System.err.println("IO Error on close"); 
+                }
+            }
+        }	    
+    }   	
+}

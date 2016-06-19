@@ -1,0 +1,13 @@
+package sik.server;
+
+import java.rmi.RemoteException;
+
+public class StartRMIServer {
+
+	protected static RMIServerImpl rmiServer;
+	
+	public static void main(String[] args) throws RemoteException {
+		rmiServer = new RMIServerImpl();
+		rmiServer.startRMIServer();
+	}
+}

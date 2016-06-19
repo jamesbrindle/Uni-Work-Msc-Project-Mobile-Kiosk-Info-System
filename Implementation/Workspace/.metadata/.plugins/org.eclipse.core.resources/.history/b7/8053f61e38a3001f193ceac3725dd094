@@ -1,0 +1,32 @@
+/*- RFIDTagGainListener -
+ * We'll display the tag code in the field on the GUI
+ *
+ * Copyright 2007 Phidgets Inc.  
+ * This work is licensed under the Creative Commons Attribution 2.5 Canada License. 
+ * To view a copy of this license, visit http://creativecommons.org/licenses/by/2.5/ca/
+ */
+
+package listeners;
+
+import com.phidgets.event.TagGainListener;
+import com.phidgets.event.TagGainEvent;
+
+import javax.swing.JTextField;
+
+public class RFIDTagGainListener implements TagGainListener{
+    
+    private JTextField tagTxt;
+    
+    /** Creates a new instance of RFIDTagGainListener */
+    public RFIDTagGainListener(JTextField tagTxt)
+    {
+        this.tagTxt = tagTxt;
+        
+    }
+
+    public void tagGained(TagGainEvent tagGainEvent)
+    {
+        tagTxt.setText(tagGainEvent.getValue());  
+    }
+    
+}

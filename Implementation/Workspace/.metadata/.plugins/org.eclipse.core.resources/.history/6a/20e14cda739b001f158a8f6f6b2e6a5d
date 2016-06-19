@@ -1,0 +1,26 @@
+package client;
+
+import java.rmi.*;
+
+import sik.common.RMIServer;
+import compute.*;
+
+public class Test {
+    public static void main(String args[]) {
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new RMISecurityManager());
+        }
+        try {
+            String name = "//localhost/RMIServer";
+            RMIServer rmiServer = (RMIServer) Naming.lookup(name);
+            RMIClientImpl rmiClient = new RMIClientImpl();
+            
+            rmiServer.printMessage("Client Connected");
+            
+        } catch (Exception e) {
+            System.err.println("RMIClient exception: " + 
+                               e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}

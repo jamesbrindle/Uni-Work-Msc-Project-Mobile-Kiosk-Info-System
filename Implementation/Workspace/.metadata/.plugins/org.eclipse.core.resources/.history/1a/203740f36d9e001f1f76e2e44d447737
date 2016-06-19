@@ -1,0 +1,320 @@
+package sik.admin;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
+public class EditResultsGUI extends JFrame implements ActionListener {
+	
+    private static final long serialVersionUID = 1L;
+    private Container container;
+    protected JFrame frame;
+    
+    protected RecordsGUIListener recordsGL;
+	
+    // panels
+	
+    private JPanel navigation, resultsArea;
+	
+    // layouts
+	
+    private GridBagConstraints navigationLayout, resultsAreaLayout;
+	
+    // navigationElements
+	
+    private JButton  saveNavButton, editNavButton, clearAllNavButton;
+	
+    // menu Elements
+	
+    protected JMenuBar menuBar;
+    protected JMenu menu;
+    protected JMenuItem menuItem3;
+    
+    // timestable elements
+    
+    private ArrayList<JTextField> resultsArrayList;
+    private ArrayList<String> resultsArrayListString;
+    private boolean isResultsNull = true;
+    private boolean isEditing = false;
+   
+    public EditResultsGUI(RecordsGUIListener recordsGL) {
+	             this.recordsGL = recordsGL;	             
+	             resultsArrayList = new ArrayList<JTextField>();
+	             resultsArrayListString = new ArrayList<String>();
+    }
+    
+	public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == menuItem3) {
+            frame.dispose();                         
+        } 
+        
+        if (e.getSource() == clearAllNavButton) {
+        	for (int i = 0; i< resultsArrayList.size();i++) {
+	   			resultsArrayList.get(i).setText("");
+			}
+        
+        }
+        
+        if (e.getSource() == saveNavButton) {
+        	resultsArrayListString.clear();
+        	for(int i = 0; i < resultsArrayList.size(); i++) {
+        		resultsArrayListString.add(resultsArrayList.get(i).getText());
+        	}
+        	recordsGL.store.currentRecord().setResults(resultsArrayListString);
+        	recordsGL.saveFile();
+        	isEditing = false;
+        	
+        	setTextAreasEditable(false); 
+        	saveNavButton.setEnabled(false);
+        	clearAllNavButton.setEnabled(false);
+        	editNavButton.setText("Edit");
+        
+        }
+        
+        if (e.getSource() == editNavButton) {
+        	if(isEditing) {
+        		isEditing = false;
+        		setTextAreasEditable(false); 
+        		editNavButton.setText("Edit");
+        		saveNavButton.setEnabled(false);
+        		clearAllNavButton.setEnabled(false);
+        		
+        		if(!(isResultsNull)) {
+        			for (int i = 0; i< resultsArrayList.size();i++) {
+        				resultsArrayList.get(i).setText(
+        						recordsGL.store.currentRecord().getResults().get(i));
+        			}        			
+        		}
+        		else {
+        			for (int i = 0; i< resultsArrayList.size();i++) {
+    		   			resultsArrayList.get(i).setText("");
+        			}
+        		}        		
+        	}
+        	else {
+        		isEditing = true;
+        		setTextAreasEditable(true);        	
+        		editNavButton.setText("Cancel");
+        		saveNavButton.setEnabled(true);
+        		clearAllNavButton.setEnabled(true);
+        	}        	
+        }
+		
+	}
+    
+    /**
+     * Builds the standard GUI visuals (text field, labels, 
+     * buttons and text area objects)
+     */
+    public void run() {
+    	
+    	if(recordsGL.store.currentRecord().getResults()==null) {
+			isResultsNull = true;
+		}
+    	else {
+    		isResultsNull = false;
+    	}
+    	
+        frame = new JFrame("Assignment Results Editor GUI");
+        
+        frame.addWindowListener(new WindowAdapter() {
+
+			/**
+			 * Add a window listener thread
+			 */
+			public void windowClosing(WindowEvent e) {
+
+				frame.dispose();
+
+			}
+		});
+    	 
+        container = frame.getContentPane();
+        container.setLayout(new BorderLayout());
+         
+        resultsArea = new JPanel(new GridBagLayout());
+        resultsAreaLayout = new GridBagConstraints();
+         
+        navigation = new JPanel(new GridBagLayout());
+        navigationLayout = new GridBagConstraints();
+         
+        loadMenu(); // Frames drop down menu (i.e 'File Open')
+        
+        loadNavigationElements(); // Used to navigate through account records
+        loadResultsArea();
+         
+        container.add(resultsArea, BorderLayout.CENTER);
+        container.add(navigation, BorderLayout.SOUTH);
+         
+        frame.setJMenuBar(menuBar); // add menu to frame
+        frame.setResizable(false); // don't allow to resize the frame
+         
+        // centre frame on screen
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        Dimension screenSize = tk.getScreenSize();
+        int screenHeight = screenSize.height;
+        int screenWidth = screenSize.width;
+         
+        frame.setLocation(screenWidth / 4, screenHeight / 4);
+        frame.pack();
+        frame.setVisible(true);
+        
+         
+    }
+    
+    private void loadResultsArea() {
+    	resultsAreaLayout.anchor = GridBagConstraints.CENTER;
+    	resultsAreaLayout.insets = new Insets(5,5,5,5);
+    	
+    	resultsAreaLayout.gridy=0;
+    	
+    	resultsArea.add(new JLabel("Unit ID"), resultsAreaLayout);
+    	resultsArea.add(new JLabel("Unit Name"), resultsAreaLayout);
+       	resultsArea.add(new JLabel("Assignment 1"), resultsAreaLayout);
+    	resultsArea.add(new JLabel("Assignment 2"), resultsAreaLayout);
+    	resultsArea.add(new JLabel("Exam"), resultsAreaLayout);
+    	        	
+    	int charLength = 0;
+    	
+    	for(int i = 0; i<30; i++) {
+    		
+    		if(i==0 || i==5 || i==10 || i==15 || i==20 || i==25) {
+    			charLength = 8;
+    		}
+    		else if(i==1 || i==6 || i==11 || i==16 || i==21 || i==26) {
+    			charLength = 25;
+    		}
+    		else if(i==2 || i==7 || i==12 || i==17 || i==22 || i==27) {
+    			charLength = 5;
+    		}
+    		else if(i==3 || i==8 || i==13 || i==18 || i==23 || i==28) {
+    			charLength = 5;
+    		}
+    		else if(i==4 || i==9 || i==14 || i==19 || i==24 || i==29) {
+    			charLength = 5;
+    		}
+        		
+    		resultsArrayList.add(new JTextField(charLength));
+    		resultsArrayList.get(i).setHorizontalAlignment(SwingConstants.CENTER);
+    	    			
+    		if(!(isResultsNull)) {
+    			resultsArrayList.get(i).setText(recordsGL.store.currentRecord().getResults().get(i));
+
+    		}
+    		
+  			resultsArrayList.get(i).setEditable(false);    		
+    		
+    	}    	
+       	
+    	//1st unit
+    	
+    	resultsAreaLayout.gridy=1;
+    	    	
+    	for(int i = 0; i<5; i++) {
+    		resultsArea.add(resultsArrayList.get(i), resultsAreaLayout);
+    	}
+    	
+    	//2nd unit
+    	
+    	resultsAreaLayout.gridy=2;
+    	
+    	for(int i = 5; i<10; i++) {
+    		resultsArea.add(resultsArrayList.get(i), resultsAreaLayout);
+    	}
+    	
+    	//3rd unit
+    	
+    	resultsAreaLayout.gridy=3;
+    	
+    	for(int i = 10; i<15; i++) {
+    		resultsArea.add(resultsArrayList.get(i), resultsAreaLayout);
+    	}
+    	
+    	//4th unit
+    	
+    	resultsAreaLayout.gridy=4;
+    	
+    	for(int i = 15; i<20; i++) {
+    		resultsArea.add(resultsArrayList.get(i), resultsAreaLayout);
+    	}
+    	
+    	//5th unit
+    	
+    	resultsAreaLayout.gridy=5;
+    	
+    	for(int i = 20; i<25; i++) {
+    		resultsArea.add(resultsArrayList.get(i), resultsAreaLayout);
+    	}
+    	
+    	//6th unit
+    	
+    	resultsAreaLayout.gridy=6;
+    	
+    	for(int i = 25; i<30; i++) {
+    		resultsArea.add(resultsArrayList.get(i), resultsAreaLayout);
+    	}   	    	
+    }
+        
+    private void loadNavigationElements() {
+    	
+
+        navigationLayout.insets = new Insets(10, 2, 5, 2);
+    	   	
+        saveNavButton = new JButton("Save");
+        saveNavButton.addActionListener(this);
+        saveNavButton.setEnabled(false);
+        navigation.add(saveNavButton, navigationLayout);
+        
+        editNavButton = new JButton("Edit");
+        editNavButton.addActionListener(this);
+        navigation.add(editNavButton, navigationLayout);
+        
+        clearAllNavButton = new JButton("Clear All");
+        clearAllNavButton.addActionListener(this);
+        clearAllNavButton.setEnabled(false);
+        navigation.add(clearAllNavButton, navigationLayout);
+			
+    }
+    
+    private void loadMenu() {
+        menuBar = new JMenuBar();
+        menu = new JMenu("File");
+        menuBar.add(menu);
+
+        menuItem3 = new JMenuItem("Exit GUI"); 
+        menuItem3.addActionListener(this);
+
+        
+        // adds each button to the frame
+        menu.add(menuItem3);
+        
+    }
+    
+    private void setTextAreasEditable(boolean b) {
+    	for(int i = 0; i<resultsArrayList.size(); i++) {
+    		resultsArrayList.get(i).setEditable(b);
+    	}
+    	
+    }    
+  
+
+}

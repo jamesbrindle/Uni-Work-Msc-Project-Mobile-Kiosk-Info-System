@@ -1,0 +1,17 @@
+package sik.client;
+
+public class RunClientProgram {
+
+	protected static MainDisplayGUI mainGUI;
+	
+public RunClientProgram () {
+	
+
+}
+	public static void main(String[] args) {
+		mainGUI = new MainDisplayGUI();
+		mainGUI.run();
+
+	}
+
+}

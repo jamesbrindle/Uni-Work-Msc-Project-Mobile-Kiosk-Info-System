@@ -1,0 +1,144 @@
+package sik.client.user.panels;
+
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+
+import com.phidgets.PhidgetException;
+
+import sik.client.user.ActionClips;
+import sik.client.user.FontStyles;
+import sik.client.user.MainDisplayGUI;
+
+public class LogoutPromptPanel extends JPanel implements ActionListener {
+
+	private static final long serialVersionUID = 1L;
+
+	protected MainDisplayGUI mainGUI;
+
+	private GridBagConstraints logoutPromptLayout;
+	private JLabel messageLabel;
+	private JButton yesButton, noButton;
+	private boolean isTimeout;
+
+	private Timer timer;
+
+	public LogoutPromptPanel(MainDisplayGUI mainGUI) {
+		this.mainGUI = mainGUI;
+
+		timer = new Timer(12000, new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				try {
+					restartClientInterface();
+				} catch (PhidgetException e) {
+				}
+
+				timer.stop();
+			}
+		});
+
+		mainGUI.homePanel.timer.stop();
+
+		setLayout(new GridBagLayout());
+
+		logoutPromptLayout = new GridBagConstraints();
+
+		setOpaque(false);
+
+		logoutPromptLayout.gridwidth = 2;
+		logoutPromptLayout.gridy = 0;
+		logoutPromptLayout.gridx = 0;
+
+		logoutPromptLayout.insets = new Insets(0, 0, 110, 0);
+
+		logoutPromptLayout.anchor = GridBagConstraints.CENTER;
+
+		messageLabel = new JLabel("Would you like more time?");
+		messageLabel.setFont(FontStyles.extraExtraLargeFont);
+		messageLabel.setForeground(new Color(255, 255, 255));
+
+		add(messageLabel, logoutPromptLayout);
+
+		logoutPromptLayout.insets = new Insets(0, 100, 0, 0);
+		logoutPromptLayout.gridwidth = 1;
+		logoutPromptLayout.gridy = 1;
+		logoutPromptLayout.gridx = 0;
+		logoutPromptLayout.anchor = GridBagConstraints.WEST;
+
+		yesButton = new JButton("", new ImageIcon("images/okbutton.png"));
+		yesButton.setBorderPainted(false);
+		yesButton.setContentAreaFilled(false);
+		yesButton.addActionListener(this);
+
+		add(yesButton, logoutPromptLayout);
+
+		logoutPromptLayout.gridy = 1;
+		logoutPromptLayout.gridx = 1;
+		logoutPromptLayout.insets = new Insets(0, 0, 0, 100);
+		logoutPromptLayout.anchor = GridBagConstraints.EAST;
+
+		noButton = new JButton("", new ImageIcon("images/cancelbutton.png"));
+		noButton.setBorderPainted(false);
+		noButton.setContentAreaFilled(false);
+		noButton.addActionListener(this);
+
+		add(noButton, logoutPromptLayout);
+
+		timer.start();
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == yesButton) {
+			performYesOperation();
+
+		}
+		if (e.getSource() == noButton) {
+			performNoOperation();
+		}
+	}
+
+	public void restartClientInterface() throws PhidgetException {
+		mainGUI.mainDisplayPanel.remove(this);
+		mainGUI.mainDisplayPanel.repaint();
+		mainGUI.loadIntroPanel();
+		mainGUI.frame.pack();
+	}
+
+	public void performYesOperation() {
+		timer.stop();
+		ActionClips.playCancelButton();
+		mainGUI.mainDisplayPanel.remove(this);
+		mainGUI.mainDisplayPanel.repaint();
+		mainGUI.loadHomePanel();
+		mainGUI.homePanel.timer.restart();
+
+		mainGUI.frame.pack();
+	}
+
+	public void performNoOperation() {
+		timer.stop();
+		mainGUI.mainDisplayPanel.remove(this);
+		mainGUI.mainDisplayPanel.repaint();
+		if (isTimeout) {
+			try {
+				mainGUI.loadIntroPanel();
+
+			} catch (PhidgetException e1) {
+			}
+		} else {
+
+			mainGUI.loadHomePanel();
+			mainGUI.homePanel.timer.restart();
+		}
+		mainGUI.frame.pack();
+	}
+}

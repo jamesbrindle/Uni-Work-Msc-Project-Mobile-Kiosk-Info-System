@@ -1,0 +1,25 @@
+package sik.client.admin;
+
+import sik.common.*;
+
+import java.io.Serializable;
+import java.rmi.RemoteException;
+
+public class RMIClientImpl implements RMIClient, Serializable {
+
+
+    public RMIClientImpl() throws RemoteException {
+    	
+    	
+    }
+
+	public void dispatchMessage(String theMessage) throws RemoteException {
+	
+	}
+
+	
+	public void printMessage(String theMessage) throws RemoteException {
+		System.out.println(theMessage);
+		
+	}
+}

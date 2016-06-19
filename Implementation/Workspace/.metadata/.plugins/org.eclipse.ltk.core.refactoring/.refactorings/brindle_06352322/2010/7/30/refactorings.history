@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;default.jpg&apos; to &apos;SIK-Server&apos;&#x0D;&#x0A;- Original project: &apos;brindle_06352322&apos;&#x0D;&#x0A;- Destination element: &apos;SIK-Server&apos;&#x0D;&#x0A;- Original element: &apos;default.jpg&apos;" description="Copy file" destination="=SIK-Server" element1="images/default.jpg" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1280595856416" units="0" version="1.0"/>
+</session>

@@ -1,0 +1,14 @@
+1283543686273	Move file
+1283545397004	Rename method 'getImageLocation'
+1283550208597	Delete element
+1283550216396	Delete element
+1283718094028	Rename field 'connectionURL'
+1283718233855	Rename local variable 'bluetoothServiceDiscovery'
+1283718715093	Rename field 'vecDevices'
+1283719866518	Rename field 'isOperationFailed'
+1283720164351	Rename type 'BTServiceDiscovery'
+1283720977228	Delete element
+1283721622030	Rename method 'getArrayDeviceList'
+1283721781531	Rename field 'resultsArea'
+1283721795902	Rename field 'bluetoothDevicesArea'
+1283721807007	Rename field 'resultsAreaLayout'

@@ -1,0 +1,111 @@
+package sik.client;
+
+public class EditMessagesGUIButtonManager {
+	
+    private EditMessagesGUI editMessagesGUI;
+	
+    public EditMessagesGUIButtonManager(EditMessagesGUI GUI) {
+        this.editMessagesGUI = GUI;
+	      
+    } 
+	
+    /**
+     * Sets all navigation buttons enabled or disabled
+     * @param b - if false then disable, enable otherwise
+     */
+    public void setNavButtonsEnabled(boolean b) {
+        if (b == false) {
+            editMessagesGUI.firstNavButton.setEnabled(false);
+            editMessagesGUI.lastNavButton.setEnabled(false); 
+            editMessagesGUI.nextNavButton.setEnabled(false); 
+            editMessagesGUI.previousNavButton.setEnabled(false);
+            editMessagesGUI.removeNavButton.setEnabled(false);
+
+         
+        } else {
+            editMessagesGUI.firstNavButton.setEnabled(true);
+            editMessagesGUI.lastNavButton.setEnabled(true); 
+            editMessagesGUI.nextNavButton.setEnabled(true); 
+            editMessagesGUI.previousNavButton.setEnabled(true);
+            editMessagesGUI.newRecordNavButton.setEnabled(true); 
+            editMessagesGUI.removeNavButton.setEnabled(true);
+
+    		
+        }
+    }
+    
+    /**
+     * Sets navigation buttons into edit mode, i.e. no next and previous
+     * account record pointers
+     * @param b - if false then disable, enable otherwise
+     */
+    public void setEditNavButtonMode(boolean b) {
+        if (b == false) {
+            editMessagesGUI.newRecordNavButton.setText("New Message");
+            editMessagesGUI.saveNavButton.setEnabled(false);
+            editMessagesGUI.editNavButton.setEnabled(true);
+            editMessagesGUI.removeNavButton.setEnabled(true);
+          
+            
+        } else {
+            editMessagesGUI.firstNavButton.setEnabled(false);
+            editMessagesGUI.lastNavButton.setEnabled(false);
+            editMessagesGUI.nextNavButton.setEnabled(false); 
+            editMessagesGUI.previousNavButton.setEnabled(false);
+            editMessagesGUI.newRecordNavButton.setText("Cancel");
+            editMessagesGUI.saveNavButton.setEnabled(true);
+            editMessagesGUI.editNavButton.setEnabled(false);
+            editMessagesGUI.removeNavButton.setEnabled(false);
+          }
+    }
+    
+    /**
+     * Sets navigation buttons to first record mode, i.e. no first and previous
+     * record pointers
+     * @param b - if false then disable, enable otherwise
+     */
+    public void setIsFirst(boolean b) {
+        if (b == true) {
+            editMessagesGUI.firstNavButton.setEnabled(false);
+            editMessagesGUI.previousNavButton.setEnabled(false);
+        } else {
+            editMessagesGUI.firstNavButton.setEnabled(true);
+            editMessagesGUI.previousNavButton.setEnabled(true);
+        }
+    }
+    
+    /**
+     * Sets navigation buttons to last record mode, i.e. no last and next
+     * record pointers
+     * @param b - if false then disable, enable otherwise
+     */
+    public void setIsLast(boolean b) {
+        if (b == true) {
+            editMessagesGUI.lastNavButton.setEnabled(false);
+            editMessagesGUI.nextNavButton.setEnabled(false);
+        } else {
+            editMessagesGUI.lastNavButton.setEnabled(true);
+            editMessagesGUI.nextNavButton.setEnabled(true);
+        }
+    }
+
+    /**
+     * Sets navigation buttons to no record at all mode
+     * i.e. no first, previous, next or last record pointers
+     * @param b - if false then disable, enable otherwise
+     */
+    public void setIsEmpty(boolean b) {
+        if (b == true) {
+            editMessagesGUI.removeNavButton.setEnabled(false);
+            editMessagesGUI.firstNavButton.setEnabled(false);
+            editMessagesGUI.previousNavButton.setEnabled(false);
+            editMessagesGUI.lastNavButton.setEnabled(false);
+            editMessagesGUI.nextNavButton.setEnabled(false);
+            editMessagesGUI.newRecordNavButton.setEnabled(true);
+            editMessagesGUI.editNavButton.setEnabled(false);
+        } else {
+    		
+            editMessagesGUI.removeNavButton.setEnabled(true);    		
+        }
+    }    
+}

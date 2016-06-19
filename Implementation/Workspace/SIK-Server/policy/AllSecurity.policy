@@ -1,0 +1,19 @@
+/* AUTOMATICALLY GENERATED ON Fri Jun 16 18:52:37 EDT 2000*/
+/* DO NOT EDIT */
+
+grant {
+  permission java.security.AllPermission;
+};
+
+grant {
+  permission java.awt.AWTPermission 
+	"accessEventQueue";
+  permission java.awt.AWTPermission 
+	"showWindowWithoutWarningBanner";
+
+  permission java.util.PropertyPermission 
+	"user.home", "read";
+  permission java.io.FilePermission 
+	"${user.home}/serverOptions.txt", "read,write";
+};
+

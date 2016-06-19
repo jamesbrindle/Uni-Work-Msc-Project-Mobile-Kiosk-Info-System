@@ -1,0 +1,14 @@
+import java.util.ArrayList;
+
+
+public class Run {
+
+	static InOutEmails inOut;
+	public static void main(String[] args) {
+		inOut = new InOutEmails();
+		inOut.getEmails();
+		
+		
+	}
+
+}

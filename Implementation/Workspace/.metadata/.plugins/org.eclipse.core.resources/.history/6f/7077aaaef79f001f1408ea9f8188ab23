@@ -1,0 +1,61 @@
+package sik.client;
+
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+public class ObjectFileHandler {
+
+	public ObjectFileHandler() {
+	}
+
+	public void writeObjectFile(Object obj) {
+		ObjectOutputStream oo = null;
+
+		try {
+			oo = new ObjectOutputStream(
+					new FileOutputStream("srObjectFile.sof"));
+			oo.writeObject(obj);
+		System.out.println("Writing Object File");
+		} catch (Exception e) {
+			String errMessage = e.getMessage();
+			System.err.println("Error: " + errMessage);
+		} finally {
+			if (oo != null) {
+				try {
+					oo.flush();
+				} catch (IOException ioe) {
+					System.err.println("IO Error on flush");
+				}
+				try {
+					oo.close();
+				} catch (IOException ioe) {
+					System.err.println("IO Error on close");
+				}
+			}
+		}
+	}
+
+	public Object readObjectFile() {
+		Object obj = new Object();
+
+		ObjectInputStream oi = null;
+
+		try {
+			oi = new ObjectInputStream(new FileInputStream("srObjectFile.sro"));
+			obj = oi.readObject();
+			oi.close();
+		} catch (IOException e) {
+			System.err.println("Error opening file.");
+		} catch (ClassNotFoundException e) {
+			System.err.println("Error opening file.");
+			e.printStackTrace();
+		}
+
+		return obj;
+	}
+
+}

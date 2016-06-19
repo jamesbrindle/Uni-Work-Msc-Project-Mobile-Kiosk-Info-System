@@ -1,0 +1,13 @@
+
+-10-09-2010 10-11-42-
+
+--Starting The Student Information Kiosk RMI Server--
+
+Successfully loaded server settings file
+Server succesfully bound
+
+Admin client: Jamie-PC is requesting student record store
+Uploading student record store to admin client: Jamie-PC.....
+Upload complete
+Store modified by admin client: Jamie-PC
+

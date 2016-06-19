@@ -1,0 +1,67 @@
+package sik.client;
+
+import java.io.Serializable;
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+
+import sik.common.*;
+
+public class ServerHandler {
+
+	private static final long serialVersionUID = 1L;
+
+	protected MainDisplayGUI mainGUI;
+	public RMIServer rmiServer;
+	public RMIClientImpl thisClient;
+	private ClientOptions clientOptions;
+	private String bindName;
+	public String receivedMessage;
+	public boolean connected = false;
+	public Records studentRecord;
+
+	public ServerHandler(MainDisplayGUI mainGUI) {
+		this.mainGUI = mainGUI;
+		clientOptions = new ClientOptions();
+		bindName = clientOptions.getRMIAddress();
+		studentRecord = new Records();
+	}
+
+	public void connectToServer() {
+		try {
+
+			if (System.getSecurityManager() == null) {
+				System.setSecurityManager(new RMISecurityManager());
+			}
+
+			System.out.println("Looking up " + bindName);
+			rmiServer= (RMIServer) Naming.lookup(bindName);
+			thisClient = new RMIClientImpl(studentRecord);
+			rmiServer.connect(thisClient);
+			System.out.println("Connected to " + bindName);
+			connected = true;
+
+		} catch (Exception e) {
+			System.err.println("Failed to connected to " + bindName);
+			connected = false;
+			e.printStackTrace();
+		}
+	}
+
+	public void validateUser(String studentID, String pinNo) {
+		connectToServer();
+		try {
+			rmiServer.validateUser(thisClient, studentID, pinNo);
+		} catch (RemoteException e) {
+			System.err.println("Failed validate user");
+			e.printStackTrace();
+		}
+	}
+
+	public void retrieveStudentRecord() throws RemoteException {
+		this.studentRecord = thisClient.getRecord();
+		System.out.println("Validation Successful");	
+		rmiServer.dispatchMessage("StudentID: " + studentRecord.getStudentID() + " Successfully Validated");
+	}
+
+}

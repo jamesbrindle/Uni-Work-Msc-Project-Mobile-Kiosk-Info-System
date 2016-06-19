@@ -1,0 +1,42 @@
+package sik.client;
+
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+
+import sik.common.*;
+
+public class RMIClientImpl implements RMIClient, Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	public String receivedMessage;
+	public ArrayList<Object> recordArrayList;
+	
+	public RMIClientImpl() {
+
+	}
+	
+	public void printMessage(String theMessage) {
+		System.out.println(theMessage);		
+	}
+
+	public void dispatchMessage(String theMessage) {
+		receivedMessage = theMessage;		
+	}
+	
+	public ArrayList<Object> getRecordArrayList() {
+		return recordArrayList;
+	}
+
+	public void dispatchRecord(ArrayList<Object> recordArrayList) throws RemoteException {
+		this.recordArrayList = recordArrayList;
+		
+
+		
+	}
+
+
+
+   
+}

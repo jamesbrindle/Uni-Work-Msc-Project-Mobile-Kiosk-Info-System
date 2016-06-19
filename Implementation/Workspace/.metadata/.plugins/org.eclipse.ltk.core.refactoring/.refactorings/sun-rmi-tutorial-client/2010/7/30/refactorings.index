@@ -1,0 +1,18 @@
+1280433520311	Move compilation unit
+1280433522539	Move compilation unit
+1280435003218	Move file
+1280436326029	Delete element
+1280448304251	Rename local variable 'comp'
+1280448346449	Rename type 'ComputePi'
+1280448372878	Rename type 'Pi'
+1280448461416	Rename type 'RMIClientImpl'
+1280448470821	Rename type 'Test'
+1280448479451	Rename type 'RMIClientImpld'
+1280448694008	Move compilation units
+1280449767096	Rename type 'ComputePi'
+1280449782877	Rename type 'Test'
+1280450012075	Rename type 'RMIClientImpl'
+1280450024591	Rename type 'Pi'
+1280450076104	Rename local variable 'comp'
+1280450084621	Rename local variable 'task'
+1280450773112	Move compilation units

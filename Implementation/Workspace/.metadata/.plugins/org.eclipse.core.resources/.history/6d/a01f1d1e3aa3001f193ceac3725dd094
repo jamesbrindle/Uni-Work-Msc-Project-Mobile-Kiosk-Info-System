@@ -1,0 +1,46 @@
+package RFID;
+
+
+import com.phidgets.PhidgetException;
+import com.phidgets.RFIDPhidget;
+import com.phidgets.event.TagGainEvent;
+import com.phidgets.event.TagGainListener;
+
+
+public class Test implements TagGainListener{
+
+	RFIDPhidget rfid;
+	
+	public Test() throws PhidgetException {
+		rfid = new RFIDPhidget();		
+		rfid.addTagGainListener(this);
+		
+		rfid.openAny();
+		rfid.waitForAttachment();
+		
+		rfid.setAntennaOn(true);
+	}
+	
+	
+	public static void main(String[] args) throws PhidgetException {
+		
+		 
+		Test test = new Test();
+		System.out.println("1");
+		
+
+	}
+
+	public void tagGained(TagGainEvent arg0) {
+		try {
+			System.out.println(rfid.getLastTag());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	} 
+	
+
+
+}

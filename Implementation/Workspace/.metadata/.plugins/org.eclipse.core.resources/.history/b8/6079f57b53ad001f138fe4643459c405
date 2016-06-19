@@ -1,0 +1,83 @@
+
+
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class InOutEmail {
+	
+	public InOutEmail
+	private ArrayList<String> input;
+	protected String textFileLocation = "scan.txt";
+
+	@SuppressWarnings("deprecation")
+	public InOutEmail() {
+
+		input = new String[8];
+
+		File file = new File(textFileLocation);
+		FileInputStream fis = null;
+		BufferedInputStream bis = null;
+		DataInputStream dis = null;
+
+		try {
+			fis = new FileInputStream(file);
+			bis = new BufferedInputStream(fis);
+			dis = new DataInputStream(bis);
+
+			for (int n = 0; dis.available() != 0; n++) {
+				input[n] = dis.readLine();
+			}
+
+		} catch (FileNotFoundException e) {
+			status = "Problem loading file - File missing ";
+
+		} catch (IOException e) {
+			status = "Problem loading file - Possibly corrupt";
+		} finally {
+			try {
+				fis.close();
+				bis.close();
+				dis.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void exportFile() {
+		BufferedWriter fo;
+		try {
+			fo = new BufferedWriter(new FileWriter(textFileLocation));
+
+			for (int i = 0; i < input.length; i++) {
+				fo.write(input[i]);
+				fo.newLine();
+			}
+
+			fo.flush();
+			fo.close();
+
+			status = "RMI hosting location change successful";
+
+		} catch (IOException e) {
+			status = "RMI hosting location change unsuccessful - please check ServerOptions.txt";
+		}
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void changeRMILocation(String newUrl) {
+		input[3] = newUrl;
+		exportFile();
+
+	}
+}

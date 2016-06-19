@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="MTJ.emulatorLaunchConfigurationType">
+<booleanAttribute key="mtj.do_jad_launch" value="true"/>
+<booleanAttribute key="mtj.do_ota" value="false"/>
+<stringAttribute key="mtj.specified_jad_url" value="G:/Documents/Workspace/SIK-Server-Bluetooth/.mtj.tmp/emulation/BluetoothClient.jad"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="SIK-Server-Bluetooth"/>
+</launchConfiguration>

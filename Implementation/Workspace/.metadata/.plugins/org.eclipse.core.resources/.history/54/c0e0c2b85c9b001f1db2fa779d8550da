@@ -1,0 +1,43 @@
+package sik.server;
+
+import java.rmi.*;
+import java.rmi.server.*;
+import sik.common.*;
+
+public class RMIServerImpl extends UnicastRemoteObject
+                           implements RMIServer
+{
+
+	private static final long serialVersionUID = 1L;
+
+
+	public RMIServerImpl() throws RemoteException {
+        super();
+    }
+
+
+    public static void main(String[] args) {
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new RMISecurityManager());
+        }
+        
+        // the original example had "//host/Compute" here, which
+        // has to be replaced with a real host name. 
+        String name = "//localhost/RMIServer";
+        try {
+            RMIServer rmiServer = new RMIServerImpl();
+            Naming.rebind(name, rmiServer);
+            System.out.println("RMIServer bound");
+        } catch (Exception e) {
+            System.err.println("RMIServer exception: " + 
+			       e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+	public void printMessage(String theMessage) throws RemoteException {
+		
+		System.out.println(theMessage);
+	}
+}

@@ -1,0 +1,66 @@
+1283889068150	Copy package
+1283889072000	Delete element
+1283889294104	Delete element
+1283972676153	Delete element
+1283979863918	Delete element
+1283979873491	Delete element
+1283980699276	Copy package
+1283990187808	Delete element
+1283990360515	Move compilation unit
+1284061577311	Delete element
+1284061595345	Delete element
+1284109145462	Copy package
+1284109180096	Delete element
+1284109793775	Delete element
+1284110614658	Delete element
+1284234013762	Rename field 'newRecord'
+1284234316682	Rename method 'edit'
+1284234346322	Rename method 'newMessage'
+1284234388520	Rename method 'setNavButton'
+1284235788269	Rename method 'edit'
+1284236336094	Rename method 'loadNavigationElements'
+1284236358137	Rename field 'navigationLayout'
+1284236363425	Rename field 'navigation'
+1284236371038	Rename field 'control'
+1284236377450	Rename field 'saveNavButton'
+1284236387356	Rename field 'editNavButton'
+1284236395686	Rename field 'clearAllNavButton'
+1284237001653	Rename method 'edit'
+1284237007487	Rename method 'setEdit'
+1284237515532	Rename method 'loadNavigationElements'
+1284237521835	Rename field 'saveNavButton'
+1284237527794	Rename field 'navigation'
+1284237537263	Rename field 'editNavButton'
+1284237543347	Rename field 'editCtrkButton'
+1284237554205	Rename field 'clearAllNavButton'
+1284238345234	Rename method 'executeOptionDialogType'
+1284238374687	Rename method 'executeMessageDialogType'
+1284238384109	Rename method 'executeChangeRMIDialogType'
+1284239783633	Rename method 'loadAccountInfoElements'
+1284239790341	Rename method 'loadAccountLabels'
+1284240595043	Rename field 'saveAttempted'
+1284240611953	Rename field 'connected'
+1284240629254	Rename field 'timer'
+1284240699407	Rename field 'issaveAttempted'
+1284242020711	Rename method 'assignRFIDTag'
+1284242030851	Rename method 'changeRMILocation'
+1284242042317	Rename method 'editTimestable'
+1284242056529	Rename method 'editAssignment'
+1284242074469	Rename method 'loadTimetableGUI'
+1284242086809	Rename method 'editMessage'
+1284242097651	Rename method 'newStore'
+1284242107042	Rename method 'exit'
+1284242234026	Rename method 'loadEditAssignmentGUI'
+1284243323836	Rename method 'remove'
+1284243417109	Rename method 'edit'
+1284243484204	Rename method 'newRecord'
+1284243809449	Rename method 'save'
+1284244381251	Rename field 'saveAs'
+1284245517430	Rename field 'tempStore'
+1284246509949	Rename method 'clearGenericTextFields'
+1284248449096	Rename field 'accountsGUI'
+1284248994363	Rename method 'changeRMILocation'
+1284249001040	Rename method 'sRMILocation'
+1284250745479	Rename field 'timer'
+1284250850623	Rename local variable 'forTagID'
+1284253072677	Delete elements

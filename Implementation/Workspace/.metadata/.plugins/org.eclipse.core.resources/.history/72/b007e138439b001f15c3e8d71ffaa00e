@@ -1,0 +1,206 @@
+package rmi.common;
+import RMIChatClient;
+import RMIChatServer;
+
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.Vector;
+
+
+/**
+ *  This class implements an RMI Chat Server.
+ *  It is intended to run under RMI technology and simply connects to
+ * 	any number of clients for the echoing of sent messages
+ *  Methods are available to connect and send messages.
+ *  This Class filters which rooms each messages is supposed to go to
+ *  and it connects and updates a client desired screen name with the server
+ *  and updates a online user list on each client, and removes them when
+ *  the client disconnects.
+ *  
+ *  @author Jamie Brindle (06352322), Enterprise Programming, Msc Advanced Computing
+ */
+public class RMIChatServerImpl extends UnicastRemoteObject
+implements RMIChatServer {
+
+	private static final long serialVersionUID = 1L;
+
+	//vectors used to store clients and their details
+	private Vector<RMIChatClient> myClientVector;
+	private Vector<Integer> clientsToRooms;
+
+	public static String[] serverIDList;
+
+	/**
+	 * Construct RMIChatServerImpl
+	 */
+	public RMIChatServerImpl() throws RemoteException {
+
+		//initiate vectors
+		myClientVector = new Vector<RMIChatClient>();
+		clientsToRooms = new Vector<Integer>();
+
+	}
+
+	/**
+	 * Allows the users screen names to be removed from the server when request,
+	 * messages dispatched to UsersOnline class which deals with the removing
+	 * of the screen name
+	 * @param roomID - The room ID in which to remove the user from
+	 * @param screenName - The actual user to take off the list of users in a room
+	 * @throws RemoteException when there's a connection problem
+	 */
+	public void removeUsers(int roomID, String screenName) throws RemoteException {
+
+		//declare temp UsersOnline object
+		RMIChatClient tempUsersOnline;	
+
+		//iterate through the list of online users
+		for (int i = 0; i < myClientVector.size(); i++) {
+
+			//get each user object
+			tempUsersOnline = (RMIChatClient) myClientVector.elementAt(i);
+
+			//filter which room the screen name is to be displayed
+			if (clientsToRooms.elementAt(i).equals(roomID)) {
+
+				try {
+					//invoke the showOffline method in UserOnline class
+					tempUsersOnline.ShowOffline(screenName);			
+
+				} catch (RemoteException re) {
+
+					System.out.println(
+							"Failed to send to: " + tempUsersOnline
+							+ " reason: " + re);
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * Used to add user screen names to all the client's user list sink corresponding
+	 * to the correct room. The client would call this method and this method
+	 * sends a message to all other clients in a particular room
+	 * @param roomID - the room ID in which to add a user to
+	 * @param screenName - the name of the user to add to the room
+	 * @throws RemoteException when there's a connection problem
+	 */
+	public void updateUsers(int roomID, String screenName) throws RemoteException {
+
+		//declare temp UsersOnline object
+		RMIChatClient tempUsersOnline;
+
+		//iterate through the list of online users
+		for (int i = 0; i < myClientVector.size(); i++) {
+
+			//get each user object
+			tempUsersOnline = (RMIChatClient) myClientVector.elementAt(i);
+
+			//filter which room the screen name is to be displayed           
+			if (clientsToRooms.elementAt(i).equals(roomID)) {
+
+				try {
+					//invoke the showOnline method in UserOnline class
+					tempUsersOnline.ShowOnline(screenName);			
+
+				} catch (RemoteException re) {
+
+					System.out.println(
+							"Failed to send to: " + tempUsersOnline
+							+ " reason: " + re);
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * Registers the clients with the server and stored int a vector
+	 * along with the room id's which allows message filtering to particular
+	 * rooms
+	 * @param theClient - the client to connect to a particular room
+	 * @param roomID - the room to connect to
+	 * @throws RemoteException when there's a connection problem
+	 */
+	public void connect(RMIChatClient theClient, int roomID) throws RemoteException {
+
+		myClientVector.addElement(theClient);
+		clientsToRooms.addElement(roomID);
+
+		System.out.println("Bound Client: " + theClient);
+
+	}
+
+	/**
+	 * Dispatches the messages to the appropriate clients. The message is displayed
+	 * on the clients text area sink which is done by the RMIChatClient class
+	 * @param theMessage - the message in which to be sent
+	 * @param roomID - the room where the message is to be sent
+	 * @throws RemoteException when there's a connection problem
+	 */
+	public void sendMessageToServer(String theMessage, int roomID)
+	throws RemoteException {
+
+		//declare temp RMIClient object
+		RMIChatClient tempClient;
+
+		//build the message
+		String outputMessage = theMessage;
+
+		System.out.println("Sending: " + outputMessage);
+
+		//iterate through the list of clients
+		for (int i = 0; i < myClientVector.size(); i++) {
+
+			//get each client object  
+			tempClient = (RMIChatClient) myClientVector.elementAt(i);
+
+			//filter which room the messagess are to be displayed
+			if (clientsToRooms.elementAt(i).equals(roomID)) {
+
+				try {
+					//send message to client dispatcher
+					tempClient.dispatchMessage(outputMessage);
+
+				} catch (RemoteException re) {
+
+					System.out.println(
+							"Failed to send to: " + tempClient + " reason: "
+							+ re);
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * Main method, the RMIChatServerImpl is run once and each client
+	 * connects. This method binds the server object and server address
+	 * naming and also offers remote security
+	 */
+	public static void main(String[] args) {
+
+		try {
+
+			RMIChatServer myObject = new RMIChatServerImpl();
+
+			System.setSecurityManager(new RMISecurityManager());
+
+			//bing the object to a particular RMI name
+			Naming.rebind("RMIChatServerJBNET", myObject);
+
+			System.out.println("Remote objects bound to registry");
+		} catch (Exception e) {
+
+			System.out.println("Failed to register object " + e);
+			e.printStackTrace();
+			System.exit(1);
+
+		}
+
+	}
+
+}

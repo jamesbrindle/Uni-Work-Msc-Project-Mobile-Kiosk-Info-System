@@ -1,0 +1,29 @@
+package sik.com.phidgets;
+
+import com.phidgets.*;
+import com.phidgets.event.*;
+
+public class Test {
+	
+	
+	static InterfaceKitPhidget ik;
+	
+
+	public static void main(String[] args) throws PhidgetException {
+		System.out.println("Test...");
+		
+		ik = new InterfaceKitPhidget();		
+		ik.openAny();
+		ik.waitForAttachment();
+		
+		ik.addSensorChangeListener(new SensorChangeListener()
+		{
+		public void sensorChanged(SensorChangeEvent se)
+		{
+		//Insert your code here
+		System.out.println(se.getValue());
+		}
+		});
+	}
+
+}

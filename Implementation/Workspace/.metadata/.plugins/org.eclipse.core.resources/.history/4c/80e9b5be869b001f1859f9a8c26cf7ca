@@ -1,0 +1,12 @@
+package sik.common;
+
+import java.io.ObjectInputStream;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface RMIClient extends Remote {
+
+		public void printMessage(String theMessage) throws RemoteException;
+		public void dispatchMessage(String theMessage)throws RemoteException;
+		public void setStore(ObjectInputStream ois) throws RemoteException;
+}

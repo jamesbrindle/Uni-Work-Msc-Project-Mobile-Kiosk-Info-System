@@ -1,0 +1,69 @@
+package sik.server;
+
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import javax.swing.JTextArea;
+import sik.admin.Store;
+import sik.admin.Record;
+
+import sik.common.RMIServer;
+
+public class RMIServerImpl extends UnicastRemoteObject implements RMIServer {
+
+	private static final long serialVersionUID = 1L;
+
+	private Store studentRecordsStore;
+	private Record studentRecord;
+	private ServerOptions serverOptions;
+	protected JTextArea logs;
+
+
+	public RMIServerImpl(JTextArea logs) throws RemoteException {
+		
+		super();
+		
+		this.logs = logs;
+				
+	}
+
+	public void startRMIServer() throws RemoteException {
+		if (System.getSecurityManager() == null) {
+			System.setSecurityManager(new RMISecurityManager());
+		}
+
+		serverOptions = new ServerOptions();
+		String RMIAddress = serverOptions.getRMIAddress();
+		studentRecordsStore = new Store();		
+		studentRecordsStore = studentRecordsStore.fileIn(serverOptions.getStoreFileName());
+		
+		RMIServer rmiServer = new RMIServerImpl(this.logs);
+
+		try {
+			Naming.rebind(RMIAddress, rmiServer);
+			dispatchMessage("Server succesfully bound");
+			
+		} catch (Exception e) {
+			System.err.println("RMIServer exception: " + 
+					e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	public void dispatchMessage(String theMessage) {
+		logs.append(theMessage);
+	}
+
+	@Override
+	public ArrayList<Object> getStudentRecordArrayList(String studentID) throws RemoteException {
+		
+		studentRecord = studentRecordsStore.getRecordFromStudentID(studentID);
+		
+		ArrayList<Object> studentRecordArrayList = new ArrayList<Object>();
+		studentRecordArrayList = studentRecord.recordToArrayList();
+		
+		return studentRecordArrayList;
+	}
+}

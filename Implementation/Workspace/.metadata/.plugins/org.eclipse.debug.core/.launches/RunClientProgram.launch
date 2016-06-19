@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="net.genady.rmi.rmiServer">
+<stringAttribute key="net.genady.rmi.afterCommand" value=""/>
+<stringAttribute key="net.genady.rmi.beforeCommand" value=""/>
+<booleanAttribute key="net.genady.rmi.beforeWaitCompletion" value="false"/>
+<booleanAttribute key="net.genady.rmi.launchInspectLater" value="false"/>
+<mapAttribute key="net.genady.rmi.launchProp">
+<mapEntry key="java.security.policy" value="${workspace_loc:/SIK-Client-User/AllSecurity.policy}"/>
+</mapAttribute>
+<listAttribute key="net.genady.rmi.launchProp.codebase">
+<listEntry value="file:${workspace_loc:/SIK-Client-User/bin}"/>
+<listEntry value="file:${workspace_loc:/SIK-Client-User/lib/bluecove.jar}"/>
+<listEntry value="file:${workspace_loc:/SIK-Client-User/lib/phidget21.jar}"/>
+</listAttribute>
+<intAttribute key="net.genady.rmi.launchRegistryAction" value="1"/>
+<stringAttribute key="net.genady.rmi.launchRegistryPort" value=""/>
+<booleanAttribute key="net.genady.rmi.logRMIEvents" value="false"/>
+<booleanAttribute key="net.genady.rmi.logRMIEvents.noSerialization" value="false"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/SIK-Client-User/src/sik/client/user/RunClientProgram.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sik.client.user.RunClientProgram"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="localhost 1099"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="SIK-Client-User"/>
+</launchConfiguration>

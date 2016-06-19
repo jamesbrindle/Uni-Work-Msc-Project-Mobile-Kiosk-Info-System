@@ -1,0 +1,23 @@
+package sik.common;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+import sik.common.Store;
+import sik.common.StudentRecord;
+
+public interface RMIServerInterface extends Remote {
+
+	public StudentRecord getStudentRecord(String studentID, String computerName, boolean isRFIDInput)
+			throws RemoteException;
+
+	public void dispatchMessage(String theMessage) throws RemoteException;
+
+	public void saveStore(Store store, String computerName)
+			throws RemoteException;
+
+	public Store getStore(String computerName) throws RemoteException;
+
+	public Store getStore_silent() throws RemoteException;
+
+}

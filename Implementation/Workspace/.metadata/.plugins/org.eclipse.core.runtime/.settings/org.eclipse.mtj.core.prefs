@@ -1,0 +1,24 @@
+#Fri Sep 03 20:07:55 BST 2010
+preverify_type=default_preverifier
+antenna_jar=G\:\\Documents\\Workspace\\WTK2.5.2_01\\antenna-bin-1.2.1-beta.jar
+proguard_dir=
+ota_autodeploy=true
+ota_port=0
+eclipse.preferences.version=1
+rmt_debug_delay=60000
+preverify_config_value=CLDC
+deployment_dir=deployed
+preprocess_debuglevel=debug
+use_resources_dir=true
+rmt_debug_poll_interval=500
+force_java11=true
+proguard_options=-dontusemixedcaseclassnames -dontnote -defaultpackage ''
+pkg_excluded_props=MIDlet-Jar-URL|MIDlet-Jar-Size
+preverify_config_location=platform
+ota_port_defined=false
+proguard_use_specified=false
+ota_start_at_start=false
+proguard_keep=public class * extends javax.microedition.midlet.MIDlet
+wtk_root=G\:\\Documents\\wtk
+resources_dir=res
+pkg_autoversion=false

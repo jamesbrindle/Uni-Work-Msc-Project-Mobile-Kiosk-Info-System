@@ -1,0 +1,48 @@
+package RFID;
+
+import listeners.RFIDAttachListener;
+import listeners.RFIDDetachListener;
+import listeners.RFIDErrorListener;
+import listeners.RFIDTagGainListener;
+import listeners.RFIDTagLossListener;
+
+import com.phidgets.PhidgetException;
+import com.phidgets.RFIDPhidget;
+
+import listeners.*;
+
+public class Test {
+
+	private static RFIDPhidget rfid;
+	private static RFIDAttachListener attach_listener;
+	private static RFIDDetachListener detach_listener;
+	private static RFIDErrorListener error_listener;
+	private static RFIDTagGainListener tagGain_listener;
+	private static RFIDTagLossListener tagLoss_listener;
+
+	
+	
+	
+	public static void main(String[] args) throws PhidgetException {
+		
+		 
+		rfid = new RFIDPhidget();
+		
+	    //error_listener = new RFIDErrorListener(this);        
+	    tagGain_listener = new RFIDTagGainListener("hello");        
+	  //  tagLoss_listener = new RFIDTagLossListener(this.tagTxt);
+		
+		rfid.setAntennaOn(true);
+		rfid.setLEDOn(true);
+		
+		//rfid.addAttachListener(attach_listener);
+	   // rfid.addDetachListener(detach_listener);
+	   // rfid.addErrorListener(error_listener);
+	    rfid.addTagGainListener(tagGain_listener);
+	 //   rfid.addTagLossListener(tagLoss_listener);
+
+	} 
+	
+
+
+}

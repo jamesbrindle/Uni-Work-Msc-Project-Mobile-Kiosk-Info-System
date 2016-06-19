@@ -1,0 +1,26 @@
+1280594153222	Rename package 'sik.client.user'
+1280595681275	Rename type 'RunClient'
+1280600527596	Rename type 'LoginManager'
+1280601519260	Rename field 'display'
+1280603773874	Rename field 'introMessageDisplay'
+1280607421005	Rename compilation unit 'enterAdminPasswordDialog.java'
+1280607474501	Rename field 'yesButton'
+1280607486878	Rename field 'noButton'
+1280607974692	Rename type 'AdminPasswordDialog'
+1280607990454	Rename field 'adminPassordDialog'
+1280610456218	Rename field 'messagePane'
+1280611127754	Rename method 'getComputerName'
+1280611137394	Rename method 'getPortNumber'
+1280611166417	Rename local variable 'computerName'
+1280611186531	Rename local variable 'portNumberInt'
+1280611413534	Move file
+1280611470548	Move file
+1280611586863	Move file
+1280612175673	Rename field 'introMessageLayout'
+1280612563617	Delete element
+1280613428260	Rename field 'introDisplay'
+1280615088350	Rename field 'manPinDisplayPanelLayout'
+1280615097935	Rename field 'introDisplayPanelLayout'
+1280619029071	Rename field 'manPinEntryPanelCentre'
+1280619037609	Rename field 'manPinEntryPanelSouth'
+1280619110392	Rename field 'manPinEntryLayout'

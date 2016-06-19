@@ -1,0 +1,122 @@
+package sik.server;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import javax.swing.JTextArea;
+
+import sik.common.RMIServerInterface;
+import sik.common.Store;
+import sik.common.StudentRecord;
+
+public class RMIServerImpl extends UnicastRemoteObject implements RMIServerInterface, Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private Store store;
+	private StudentRecord studentRecord;
+	private ServerIOServices serverOptions;
+	protected JTextArea logs;
+
+	public RMIServerImpl(JTextArea logs) throws RemoteException {
+		super();
+		this.logs = logs;
+		store = new Store();
+		serverOptions = new ServerIOServices();	
+	}
+	
+	public String getClassDirectory() throws IOException {
+		File f = new File(".");
+		return f.getCanonicalPath();
+		}
+
+	public void startRMIServer() throws IOException {
+		if (System.getSecurityManager() == null) {
+			System.setSecurityManager(new RMISecurityManager());	
+		}
+		
+		store = store.fileIn(serverOptions.getStoreFileName());		
+		
+		String RMIAddress = serverOptions.getRMIAddress();
+		
+		try {			
+			dispatchMessage("Successfully loaded student records store");
+		} catch (Exception e) {
+			dispatchMessage("Problem loading store from data file");
+		}
+		try {
+			Naming.rebind(RMIAddress, (RMIServerInterface)this);
+			dispatchMessage("Server succesfully bound");
+
+		} catch (RemoteException e) {
+			dispatchMessage("Problem binding server");
+			System.err.println("RMIServer exception: " + e.getMessage());
+			e.printStackTrace();
+		}	
+	}
+
+	public void dispatchMessage(String theMessage) {
+		logs.append(theMessage + "\n");
+	}
+
+	@Override
+	public StudentRecord getStudentRecord(String uniqueInput,
+			String computerName, boolean isRFIDInput) throws RemoteException {
+
+		studentRecord = new StudentRecord();
+
+		try {
+
+			if (isRFIDInput) {
+
+				studentRecord = store.getRecordFromTagID(uniqueInput);
+
+			} else {
+				studentRecord = store.getRecordFromStudentID(uniqueInput);
+			}
+
+			dispatchMessage("Client connected: Device name: " + computerName
+					+ " Student ID: " + studentRecord.getStudentID()
+					+ "\nSending student records array list to " + computerName);
+
+			if (isRFIDInput) {
+				dispatchMessage("Input Method: RFID Tag. Key: " + uniqueInput);
+			} else {
+				dispatchMessage("Input Method: Manual Pin Entry");
+			}
+
+		} catch (NullPointerException e) {
+			dispatchMessage("Client connected but provided wrong credentials, client disconnected");
+			studentRecord.setFirstName("nullArrayList");
+
+		} catch (ArrayIndexOutOfBoundsException e) {
+			dispatchMessage("Client connected but provided wrong credentials, client disconnected");
+			studentRecord.setFirstName("nullArrayList");
+		}
+
+		return studentRecord;
+	}
+
+	public void saveStore(Store store, String computerName)
+			throws RemoteException {
+		this.store = store;
+		store.fileOut(serverOptions.getStoreFileName());
+		dispatchMessage("Store modified by admin client: " + computerName);
+	}
+
+	public Store getStore(String computerName) {
+		dispatchMessage("Admin client: " + computerName
+				+ " is requesting student record store");
+		dispatchMessage("Uploading student record store to admin client: "
+				+ computerName + ".....");
+		dispatchMessage("Upload complete");
+		return store;
+	}
+
+	public Store getStore_silent() {
+		return store;
+	}
+}

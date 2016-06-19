@@ -1,0 +1,129 @@
+package sik.client;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+
+public class ExitDialog extends JDialog
+implements ActionListener {
+
+	private static final long serialVersionUID = 1L;
+	private JButton OKButton, cancelButton;
+	public int choice;
+	private JTextField passwordTextField;
+	private JLabel messageLabel;
+	private String password = "qw123";
+	private JPanel messagePane, passwordPane, buttonPane;
+
+	/** This method constructs the frame (or dialogue)
+	 * @param parent The frame this dialogue should return to
+	 * @param title The title of the dialogue
+	 * @param message The message the dialogue is giving or asking
+	 */
+	public ExitDialog(JFrame parent, String title) {
+
+        super(parent, title, true);
+        
+		//message pane		
+        
+		messagePane = new JPanel();
+		
+		messageLabel = new JLabel("Please enter admin password to close program");
+		messageLabel.setForeground(new Color(0,0,0));
+		
+		messagePane.add(messageLabel);
+		
+		//password pane
+		
+		passwordPane = new JPanel();
+		
+		passwordTextField = new JTextField(20);		
+		
+		passwordPane.add(new JLabel("Password:"));
+		passwordPane.add(passwordTextField);		
+					
+		//button pane
+		
+		buttonPane = new JPanel();
+		
+		OKButton = new JButton("OK");
+		OKButton.addActionListener(this);
+		
+		cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(this);
+		
+		buttonPane.add(OKButton);
+		buttonPane.add(cancelButton);	
+		
+		// add panes
+		
+		getContentPane().add(messagePane, BorderLayout.NORTH);
+		getContentPane().add(passwordPane, BorderLayout.CENTER);
+		getContentPane().add(buttonPane, BorderLayout.SOUTH); 
+		
+		//system atts
+		
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		
+		setResizable(false);         
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Dimension screenSize = tk.getScreenSize();
+		int screenHeight = screenSize.height;
+		int screenWidth = screenSize.width;
+		setLocation(screenWidth / 4, screenHeight / 4);
+		
+		pack();
+		setVisible(true); // show the frame
+
+	}
+
+	/**
+	 * Get the choice integer that has been set (on selection of a button)
+	 * @return choice integer
+	 */
+	public int getChoice() {
+		return choice;
+	}
+
+	/**
+	 * set the choice integer to a particular value
+	 * @param c value of selection
+	 */
+	public void setChoice(int c) {
+		this.choice = c;
+	}
+
+	/**
+	 * effects of particular action listeners
+	 */
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == OKButton) {
+			if(passwordTextField.getText().equalsIgnoreCase(password)) {
+				this.setChoice(1);
+				setVisible(false); // after selection, close the frame
+				dispose();
+			}
+			else {
+				messageLabel.setText("Wrong password. Please try again");
+				messageLabel.setForeground(new Color(255,0,0));
+			}
+			
+		}
+
+		if (e.getSource() == cancelButton) {
+			this.setChoice(0);
+			setVisible(false); // after selection, close the frame
+			dispose();
+		}
+	}
+}

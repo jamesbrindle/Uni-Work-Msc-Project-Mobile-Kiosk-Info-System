@@ -1,0 +1,19 @@
+package sik.client;
+
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+
+import sik.common.*;
+
+public class RMIClientImpl implements RMIClient, Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	public String receivedMessage;
+	
+	public RMIClientImpl() {
+
+	}
+  
+}

@@ -1,0 +1,30 @@
+package sik.server;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+public class ServerLogs {
+	
+	protected Container container;
+	protected JFrame frame;
+	protected JTextArea logsTextArea;
+	protected JScrollPane logsScrollPane;
+	protected JButton closeButton;
+		
+	public ServerLogs() {
+		container = new Container(new BorderLayout());
+		frame = new JFrame("Server Logger");
+		logsTextArea = new JTextArea(20,20);
+		logsScrollPane = new JScrollPane(logsTextArea);
+		closeButton = new JButton("Stop and Close Server");
+		
+		
+		
+	}
+
+}

@@ -1,0 +1,52 @@
+package sik.client;
+
+import java.io.Serializable;
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
+import java.util.ArrayList;
+
+import sik.common.*;
+
+public class ServerHandler implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	protected MainDisplayGUI mainGUI;
+	public RMIServer rmiServer;
+	private ClientOptions clientOptions;
+	private String bindName;
+	public String receivedMessage;
+	public boolean connected = false;
+	public Records studentRecord;
+	public ArrayList<Object> StudentRecordArrayList;;
+
+
+	public ServerHandler(MainDisplayGUI mainGUI) {
+		this.mainGUI = mainGUI;
+		clientOptions = new ClientOptions();
+		bindName = clientOptions.getRMIAddress();
+		StudentRecordArrayList = new ArrayList<Object>();
+		studentRecord = new Records();
+	}
+
+	public void connectToServer() {
+		try {
+
+			if (System.getSecurityManager() == null) {
+				System.setSecurityManager(new RMISecurityManager());
+			}
+
+			System.out.println("Looking up " + bindName);	
+			rmiServer = (RMIServer) Naming.lookup(bindName);
+			System.out.println("Connected to " + bindName);
+			connected = true;
+
+
+		} catch (Exception e) {
+			System.err.println("Failed to connected to " +bindName);
+			connected = false;
+			e.printStackTrace();
+		}
+	}
+
+}

@@ -1,0 +1,325 @@
+package sik.server;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+
+public class EditMessagesGUI extends JFrame implements WindowListener {
+
+	private static final long serialVersionUID = 1L;
+	private Container container;
+	protected JFrame frame;
+
+	protected EditMessagesGUIButtonManager editMessagesGBM;
+	protected EditMessagesGUIListener editMessagesGL;
+	protected RecordsGUIListener recordsGL;
+
+	// panels
+
+	private JPanel messageArea, navigation;
+
+	// layouts
+
+	private GridBagConstraints messageAreaLayout, navigationLayout;
+
+	// navigationElements
+
+	protected JButton firstNavButton, lastNavButton, nextNavButton, previousNavButton,
+	newRecordNavButton, saveNavButton, editNavButton, removeNavButton;
+
+	private Color red = new Color(255, 0, 0);
+	protected JLabel warningLabel;
+	protected String warningMessage;
+	protected boolean isEditing = false;
+
+	// menu Elements
+
+	protected JMenuBar menuBar;
+	protected JMenu menu;
+	protected JMenuItem menuItem3;
+
+	// messages elements
+
+	private JLabel messageNumberLabel;
+	protected JTextArea theMessage;
+	protected JTextField messageNumberTextField;
+	private JScrollPane theMessageScrollPane;
+
+	protected ArrayList<String> messagesArrayList;
+	protected int arrayPointer = 0;
+
+
+	/**
+	 * RecordsGUI Constructor
+	 */
+	public EditMessagesGUI(RecordsGUIListener recordsGL) {
+		this.recordsGL = recordsGL;	             
+		messagesArrayList = new ArrayList<String>();
+	}
+
+	/**
+	 * Builds the standard GUI visuals (text field, labels, 
+	 * buttons and text area objects)
+	 * @throws RemoteException 
+	 */
+	public void runGUI() throws RemoteException {
+		frame = new JFrame("Messages Editor GUI");
+		frame.addWindowListener(this);
+
+		editMessagesGBM = new EditMessagesGUIButtonManager(this);
+		editMessagesGL = new EditMessagesGUIListener(this);
+
+		container = frame.getContentPane();
+		container.setLayout(new BorderLayout());
+
+		messageArea = new JPanel(new GridBagLayout());
+		messageAreaLayout = new GridBagConstraints();
+
+		navigation = new JPanel(new GridBagLayout());
+		navigationLayout = new GridBagConstraints();
+
+		LoadMenu(); // Frames drop down menu (i.e 'File Open')
+
+		loadNavigationElements(); // Used to navigate through account records
+		loadMessagesArea();
+
+		container.add(messageArea, BorderLayout.CENTER);
+		container.add(navigation, BorderLayout.SOUTH);
+
+		frame.setJMenuBar(menuBar); // add menu to frame
+		frame.setResizable(false); // don't allow to resize the frame
+
+		// centre frame on screen
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Dimension screenSize = tk.getScreenSize();
+		int screenHeight = screenSize.height;
+		int screenWidth = screenSize.width;
+
+		frame.setLocation(screenWidth / 4, screenHeight / 4);
+		frame.pack();
+		frame.setVisible(true);
+
+		editMessagesGL.setNavButtons();
+
+		this.addWindowListener(new WindowAdapter() {
+
+			/**
+			 * Add a window listener thread
+			 */
+			 public void windowClosing(WindowEvent e) {
+
+				 frame.dispose();
+
+			 }
+		});         
+	}
+
+	private void loadMessagesArea() {
+
+
+		messageAreaLayout.insets = new Insets(5,5,5,5);
+
+		messageNumberLabel = new JLabel("Message Number");
+		messageAreaLayout.gridy = 0;
+		messageAreaLayout.gridx = 0;
+		messageAreaLayout.anchor = GridBagConstraints.WEST;
+		messageArea.add(messageNumberLabel, messageAreaLayout);
+
+		messageNumberTextField = new JTextField(10);
+		messageNumberTextField.setEditable(false);
+		messageAreaLayout.gridy = 0;
+		messageAreaLayout.gridx = 1;
+		messageArea.add(messageNumberTextField, messageAreaLayout);
+
+		theMessage= new JTextArea(10,50);
+		theMessage.setEditable(false);
+		theMessageScrollPane = new JScrollPane(theMessage);
+		messageAreaLayout.gridy = 1;
+		messageAreaLayout.gridx = 0;
+		messageAreaLayout.gridwidth =2;
+		messageArea.add(theMessageScrollPane, messageAreaLayout);
+
+		if(recordsGL.store.currentRecord().getMessages()==null) {
+			messageNumberTextField.setText("0 / 0");
+		}
+		else {
+			messagesArrayList = recordsGL.store.currentRecord().getMessages();
+			messageNumberTextField.setText("1 / " + messagesArrayList.size());
+			if(messagesArrayList.isEmpty()) {
+				theMessage.setText("");
+			}
+			else {
+				theMessage.setText(messagesArrayList.get(0).toString());
+			}
+		}
+	}
+
+	private void loadNavigationElements() {
+
+		navigationLayout.insets = new Insets(10, 2, 5, 2);
+
+		warningLabel = new JLabel(warningMessage);
+		warningLabel.setForeground(red);
+		navigationLayout.gridx = 0;
+		navigationLayout.gridy = 0;
+		navigationLayout.gridwidth = 8;
+		navigation.add(warningLabel, navigationLayout);
+
+		navigationLayout.gridwidth = 1;
+		firstNavButton = new JButton("<<");
+		firstNavButton.addActionListener(editMessagesGL);
+		navigationLayout.gridx = 0;
+		navigationLayout.gridy = 1;
+		navigation.add(firstNavButton, navigationLayout);
+
+		previousNavButton = new JButton("<");
+		previousNavButton.addActionListener(editMessagesGL);
+		navigationLayout.gridx = 1;
+		navigationLayout.gridy = 1;
+		navigation.add(previousNavButton, navigationLayout);
+
+		nextNavButton = new JButton(">");
+		nextNavButton.addActionListener(editMessagesGL);
+		navigationLayout.gridx = 2;
+		navigationLayout.gridy = 1;
+		navigation.add(nextNavButton, navigationLayout);    	
+
+		lastNavButton = new JButton(">>");
+		lastNavButton.addActionListener(editMessagesGL);
+		navigationLayout.gridx = 3;
+		navigationLayout.gridy = 1;
+		navigation.add(lastNavButton, navigationLayout);
+
+		newRecordNavButton = new JButton("New Message");
+		newRecordNavButton.addActionListener(editMessagesGL);
+		navigationLayout.gridx = 4;
+		navigationLayout.gridy = 1;
+		navigation.add(newRecordNavButton, navigationLayout);
+
+		saveNavButton = new JButton("Save");
+		saveNavButton.addActionListener(editMessagesGL);
+		saveNavButton.setEnabled(false);
+		navigationLayout.gridx = 5;
+		navigationLayout.gridy = 1;
+		navigation.add(saveNavButton, navigationLayout);
+
+		editNavButton = new JButton("Edit");
+		editNavButton.addActionListener(editMessagesGL);
+		navigationLayout.gridx = 6;
+		navigationLayout.gridy = 1;
+		navigation.add(editNavButton, navigationLayout);
+
+		removeNavButton = new JButton("Remove Message");
+		removeNavButton.addActionListener(editMessagesGL);
+		navigationLayout.gridx = 7;
+		navigationLayout.gridy = 1;
+		navigation.add(removeNavButton, navigationLayout);
+
+	}
+
+	private void LoadMenu() {
+		menuBar = new JMenuBar();
+		menu = new JMenu("File");
+		menuBar.add(menu);
+
+		menuItem3 = new JMenuItem("Exit GUI"); 
+		menuItem3.addActionListener(editMessagesGL);
+
+		menu.add(menuItem3);
+
+	}
+
+	public void changeWarningMessage(String message) {
+		warningMessage = message;
+		warningLabel.setText(warningMessage);
+	}
+
+	public void setNavButtonsEnabled(boolean b) {
+		editMessagesGBM.setNavButtonsEnabled(b);
+	}
+
+	public void setEditNavButtonMode(boolean b) {
+		editMessagesGBM.setEditNavButtonMode(b);
+	}
+
+	public void setIsLast(boolean b) {
+		editMessagesGBM.setIsLast(b);
+	}
+
+	public void setIsFirst(boolean b) {
+		editMessagesGBM.setIsFirst(b);
+	}
+
+	public void setIsEmpty(boolean b) {
+		editMessagesGBM.setIsEmpty(b);
+
+	}
+
+	/**
+	 * Implements and redefines window closing event
+	 * @param e The window calling the event
+	 */
+	public void windowClosing(WindowEvent e) {
+
+		frame.dispose();
+
+	}
+
+	/**
+	 * Implements and redefines window closed event
+	 * @param e The window calling the event
+	 */
+	public void windowClosed(WindowEvent e) {}
+
+	/**
+	 * Implements and redefines window Opened event
+	 * @param e The window calling the event
+	 */
+	public void windowOpened(WindowEvent e) {}
+
+	/**
+	 * Implements and redefines window iconified event
+	 * @param e The window calling the event
+	 */
+	public void windowIconified(WindowEvent e) {}
+
+	/**
+	 * Implements and redefines window deiconified event
+	 * @param e The window calling the event
+	 */
+	public void windowDeiconified(WindowEvent e) {}
+
+	/**
+	 * Implements and redefines window activated event
+	 * @param e The window calling the event
+	 */
+	public void windowActivated(WindowEvent e) {}
+
+	/**
+	 * Implements and redefines window deactivated event
+	 * @param e The window calling the event
+	 */
+	public void windowDeactivated(WindowEvent e) {}
+
+}

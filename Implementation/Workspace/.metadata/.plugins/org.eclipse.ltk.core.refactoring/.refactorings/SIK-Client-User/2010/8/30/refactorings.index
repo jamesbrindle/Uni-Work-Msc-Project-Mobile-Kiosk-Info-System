@@ -1,0 +1,33 @@
+1280657803888	Rename field 'introMessageFont'
+1280657871919	Rename field 'extrLargeFont'
+1280657947236	Rename field 'largerTextFont'
+1280658733671	Rename type 'LoginManagerGUI'
+1280661169311	Rename type 'LoginElements'
+1280662133551	Delete element
+1280663351578	Delete element
+1280663879480	Copy compilation unit
+1280663889433	Rename type 'CopyOfImagePanel'
+1280664744880	Rename field 'introDisplayPanel'
+1280665475514	Move compilation unit
+1280665822318	Delete element
+1280665999987	Move compilation unit
+1280666469532	Rename field 'loginManager'
+1280666559575	Rename type 'ManKeyEntryPanel'
+1280667005751	Rename field 'manKeyPinEntryPanel'
+1280668045975	Rename type 'ManPinEntryPanel'
+1280668056224	Rename field 'manPinEntryPanel'
+1280668212039	Rename type 'MainPinEntryPanel'
+1280668227311	Rename field 'mainPinEntryPanel'
+1280668233972	Rename field 'mainDisplayPanel'
+1280669089465	Rename type 'NumPad'
+1280675589135	Rename field 'textComponents'
+1280678581240	Rename field 'CancelInterface'
+1280679399449	Delete element
+1280679975199	Move package
+1280688277718	Copy compilation unit
+1280688297289	Copy file
+1280691299753	Rename type 'Records'
+1280694245797	Rename compilation unit 'Records.java'
+1280694274790	Copy compilation unit
+1280695178072	Delete element
+1280695476040	Rename type 'Records'

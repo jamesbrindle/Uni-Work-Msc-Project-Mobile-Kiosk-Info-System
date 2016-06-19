@@ -1,0 +1,58 @@
+package sik.server;
+
+import java.rmi.*;
+import java.rmi.server.*;
+import java.util.ArrayList;
+import java.util.Vector;
+
+import sik.common.*;
+
+public class RMIServerImpl extends UnicastRemoteObject
+                           implements RMIServer
+{
+
+	private static final long serialVersionUID = 1L;
+	
+	private ArrayList<RMIClient> clientsArrayList;
+	private RMIClient tempClient;
+	
+	
+	public RMIServerImpl() throws RemoteException {
+        clientsArrayList = new ArrayList<RMIClient>();
+    }
+	
+	public void connect(RMIClient theClient) throws RemoteException {
+		clientsArrayList.add(theClient);
+		System.out.println("A client has connected");
+				
+	}
+
+    public static void main(String[] args) {
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new RMISecurityManager());
+        }
+        
+        // the original example had "//host/Compute" here, which
+        // has to be replaced with a real host name. 
+        String name = "//localhost/RMIServer";
+        try {
+            RMIServer rmiServer = new RMIServerImpl();
+            Naming.rebind(name, rmiServer);
+            System.out.println("RMIServer bound");
+          
+        } catch (Exception e) {
+            System.err.println("RMIServer exception: " + 
+			       e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public void dispatchMessage(String theMessage) throws RemoteException {
+    	
+    }
+
+	public void printMessage(String theMessage) throws RemoteException {
+		
+		System.out.println(theMessage);
+	}
+}

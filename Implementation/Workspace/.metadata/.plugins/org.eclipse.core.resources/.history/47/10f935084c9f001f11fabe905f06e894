@@ -1,0 +1,21 @@
+package sik.client;
+
+import java.io.Serializable;
+import java.rmi.RemoteException;
+
+public class RunClientProgram {
+
+	private static final long serialVersionUID = 1L;
+	protected static MainDisplayGUI mainGUI;
+
+	public RunClientProgram () {
+
+
+	}
+	public static void main(String[] args) throws RemoteException {
+		mainGUI = new MainDisplayGUI();
+		mainGUI.run();
+
+	}
+
+}

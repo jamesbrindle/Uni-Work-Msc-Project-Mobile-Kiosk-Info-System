@@ -1,0 +1,12 @@
+package sik.common;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface RMIServer extends Remote {
+
+    public void dispatchMessage(String theMessage)throws RemoteException;
+	public void connect(RMIClient theClient) throws RemoteException;
+	public void validateUser(RMIClient theClient, String studentID, String pinNo) throws RemoteException;
+
+}

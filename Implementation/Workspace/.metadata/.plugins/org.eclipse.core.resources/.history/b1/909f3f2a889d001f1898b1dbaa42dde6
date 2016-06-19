@@ -1,0 +1,6 @@
+package sik.pannels;
+
+public interface CancelInterface {
+
+	public void Cancel();
+}

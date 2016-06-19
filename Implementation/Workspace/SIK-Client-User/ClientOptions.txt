@@ -1,0 +1,19 @@
+WARNING -- change the variables but do NOT change anything else
+-
+RMI Address:
+//127.0.0.1:1099/RMIServer
+-
+Admin Password:
+password
+-
+Background Image Location
+res/images/background1.jpg
+-
+Client Location Identifier
+AA1
+-
+Debug Mode
+true
+-
+Campus Map Image Location
+res

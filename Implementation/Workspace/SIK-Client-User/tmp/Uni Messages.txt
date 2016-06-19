@@ -1,0 +1,16 @@
+-- Messages --
+
+------------------
+Message Number: 1
+Your 3pm Enterprise programming lecture has changed 
+its location to E432
+------------------
+Message Number: 2
+Your new replacement student ID card is ready for collection
+------------------
+Message Number: 3
+9am Maths lecture cancelled. Sorry for any inconvienience
+------------------
+Message Number: 4
+Freshers fair in the student union today
+------------------

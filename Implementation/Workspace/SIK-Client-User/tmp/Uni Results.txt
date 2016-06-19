@@ -1,0 +1,39 @@
+-- Current Results --
+
+------------------
+Unit ID: 
+Unit Name: 
+Assignment 1: %
+Assignment 2: %
+Exam: %
+------------------
+Unit ID: 
+Unit Name: 
+Assignment 1: %
+Assignment 2: %
+Exam: %
+------------------
+Unit ID: 
+Unit Name: 
+Assignment 1: %
+Assignment 2: %
+Exam: %
+------------------
+Unit ID: 
+Unit Name: 
+Assignment 1: %
+Assignment 2: %
+Exam: %
+------------------
+Unit ID: 
+Unit Name: 
+Assignment 1: %
+Assignment 2: %
+Exam: %
+------------------
+Unit ID: 
+Unit Name: 
+Assignment 1: %
+Assignment 2: %
+Exam: %
+------------------

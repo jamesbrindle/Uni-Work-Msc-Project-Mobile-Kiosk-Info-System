@@ -1,0 +1,68 @@
+package sik.server;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+public class ServerLogger implements ActionListener{
+	
+	protected Container container;
+	protected JFrame frame;
+	protected JTextArea logsTextArea;
+	protected JScrollPane logsScrollPane;
+	protected JButton closeButton;
+		
+	public ServerLogger() {
+		frame = new JFrame("Server Logger");
+		
+		 frame.addWindowListener(new WindowAdapter() {
+
+	            public void windowClosing(WindowEvent e) {
+
+	                frame.dispose();
+	                System.exit(0);
+					
+	            }
+	        });		
+		
+		container = new Container();
+		container = frame.getContentPane();
+		container.setLayout(new BorderLayout());
+		
+		logsTextArea = new JTextArea(20,40);
+		logsScrollPane = new JScrollPane(logsTextArea);
+		
+		closeButton = new JButton("Stop and Close Server");
+		closeButton.addActionListener(this);
+		
+		container.add(logsScrollPane, BorderLayout.NORTH);
+		container.add(closeButton, BorderLayout.SOUTH);
+		
+	    // centre frame on screen
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        Dimension screenSize = tk.getScreenSize();
+        int screenHeight = screenSize.height;
+        int screenWidth = screenSize.width;
+         
+        frame.setLocation(screenWidth / 4, screenHeight / 4);
+        frame.pack();
+        frame.setVisible(true);			
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==closeButton) {
+			frame.dispose();
+			System.exit(0);
+		}		
+	}
+}

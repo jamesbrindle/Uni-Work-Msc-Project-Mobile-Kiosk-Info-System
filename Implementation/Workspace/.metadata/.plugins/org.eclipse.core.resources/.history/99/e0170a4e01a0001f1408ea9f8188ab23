@@ -1,0 +1,57 @@
+package sik.server;
+
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+
+import javax.swing.JTextArea;
+
+import sik.admin.Store;
+import sik.admin.Records;
+import sik.common.RMIClient;
+import sik.common.RMIServer;
+
+public class RMIServerImpl extends UnicastRemoteObject implements RMIServer {
+
+	private static final long serialVersionUID = 1L;
+
+	private ArrayList<RMIClient> clientArrayList;
+
+	private Store studentRecordsStore;
+	private Records studentRecord;
+	private ServerOptions serverOptions;
+	protected JTextArea logs;
+
+
+	public RMIServerImpl(JTextArea logs) throws RemoteException {
+		
+		super();
+		
+		this.logs = logs;
+		clientArrayList = new ArrayList<RMIClient>();
+		serverOptions = new ServerOptions();
+
+		studentRecordsStore = new Store();
+		studentRecordsStore = studentRecordsStore.fileIn(serverOptions.getStoreFileName());
+
+		studentRecord = new Records();
+	}
+
+	public void startRMIServer() {
+		if (System.getSecurityManager() == null) {
+			System.setSecurityManager(new RMISecurityManager());
+		}
+
+		String name = serverOptions.getRMIAddress();
+
+		try {
+			Naming.rebind(name, this);
+		} catch (Exception e) {
+			System.err.println("RMIServer exception: " + 
+					e.getMessage());
+			e.printStackTrace();
+		}
+	}
+}

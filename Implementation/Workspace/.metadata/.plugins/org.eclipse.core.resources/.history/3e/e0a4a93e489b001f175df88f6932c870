@@ -1,0 +1,44 @@
+package sik.client.admin;
+
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+
+import sik.server.RMIServer;
+
+public class Test  {
+	
+
+	private static final long serialVersionUID = 1L;
+	RMIServer rmiServer;
+	String bindName = "rmi://localhost/RMIServer";
+	
+	public Test() throws RemoteException {
+		
+		connect();
+	}
+	
+	public void connect() {
+		try {
+
+			System.out.println("Looking up " + bindName);
+			rmiServer = (RMIServer) Naming.lookup(bindName);
+			RMIClient myClient;
+			myClient = new RMIClientImpl();		
+
+			System.out.println("Connected!");
+			
+			//myClient.dispatchMessage("Hello There");
+
+		} catch (Exception e) {
+			System.out.println("Failed");
+		}
+		
+	}
+	
+	
+	
+	public static void main(String[] args) throws RemoteException {
+		Test test = new Test();
+	}
+
+}

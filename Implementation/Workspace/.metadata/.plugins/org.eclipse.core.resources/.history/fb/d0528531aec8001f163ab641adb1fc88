@@ -1,0 +1,164 @@
+package sik.server;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.util.ArrayList;
+
+/**
+ * Class used for text file IO services. The text file contains attributes
+ * values and settings to be used by other classes so that these settings can be
+ * changed by simply changing the values in the text file, rather than having to
+ * hard code the attribute values or keep prompting the user for an input
+ * 
+ * @author Jamie Brindle (06352322) - Manchester Metropolitan University
+ */
+public class ServerIOServices implements Serializable {
+
+	/**
+	 * Default universal serializable class ID
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * An array of lines brought from the text file
+	 */
+	private ArrayList<String> input;
+
+	/**
+	 * The text file location
+	 */
+	private String serverOptionsFileLocation = "ServerOptions.txt";
+
+	/**
+	 * The status of text file IO execution. It is used to determine if any IO
+	 * executions were successful or not, and if not, produce an educated error
+	 * message
+	 */
+	private String status = "";
+
+	/**
+	 * Class constructor
+	 */
+	public ServerIOServices() {
+		input = new ArrayList<String>();
+
+		File file = new File(serverOptionsFileLocation);
+		BufferedReader in = null;
+
+		// read all the files of the text file
+		try {
+			in = new BufferedReader(new InputStreamReader(new FileInputStream(
+					file)));
+			String str;
+			while ((str = in.readLine()) != null) {
+				input.add(str);
+			}
+
+			// problems caught, such as the file doesn't exist
+		} catch (FileNotFoundException e) {
+			status = "Error: Couldn't load server options config file. File not found";
+			System.err.println("Can't find serverOptions.txt");
+
+		} catch (IOException e) {
+			status = "Error: Problem reading store file - Possibly currupt";
+			e.printStackTrace();
+		} finally {
+			try {
+				in.close();
+			} catch (Exception IO) {
+				System.err.println("Problem closing input stream");
+			}
+		}
+
+		status = "Successfully loaded server settings file";
+		System.out.println("Successfully loaded server settings file");
+	}
+
+	/**
+	 * Returns the RMI address from the text file
+	 * 
+	 * @return rmiAddress The RMI address String
+	 */
+	public String getRMIAddress() {
+		String rmiAddress = input.get(3).toString();
+
+		return rmiAddress;
+	}
+
+	/**
+	 * Returns the RMI registry port
+	 * 
+	 * @return regPort The port in which to return
+	 */
+	public int getRegistryPort() {
+		int regPort = Integer.parseInt(input.get(6).toString());
+
+		return regPort;
+	}
+
+	/**
+	 * Returns the student records store file name and location
+	 * 
+	 * @return storeFileName the file name and location in which to return
+	 */
+	public String getStoreFileName() {
+		String storeFileName = input.get(9).toString();
+
+		return storeFileName;
+	}
+
+	/**
+	 * Used to write the file. It will overwrite any existing file
+	 */
+	public void exportFile() {
+		BufferedWriter out = null;
+		try {
+			out = new BufferedWriter(new FileWriter(serverOptionsFileLocation));
+
+			for (int i = 0; i < input.size(); i++) {
+				if (input.get(i) != null) {
+					out.write(input.get(i));
+					out.newLine();
+				}
+			}
+
+			out.flush();
+			out.close();
+
+			status = "Export to file successful";
+			System.out.println("export file success");
+
+		} catch (IOException e) {
+			status = "Export to file unsuccessful";
+			System.err.println("export unsuccessful");
+		}
+	}
+
+	/**
+	 * Returns the status of this class, which would include any error that
+	 * occur and whether a IO services has completed successfully
+	 * 
+	 * @return status The status string in which to return
+	 */
+	public String getStatus() {
+		return status;
+	}
+
+	/**
+	 * Sets the RMI location and exports the amended text file *
+	 * 
+	 * @param newUrl
+	 *            The new RMI location
+	 */
+	public void changeRMILocation(String newUrl) {
+		input.set(3, newUrl);
+		exportFile();
+	}
+}

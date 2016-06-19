@@ -1,0 +1,365 @@
+package sik.client;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import java.awt.Dimension;
+
+
+import javax.swing.ImageIcon;
+
+public class LoginManagerGUI extends JFrame implements ActionListener {
+	private static final long serialVersionUID = 1L;
+
+	//top elements
+
+	ExitDialog exitDialog;
+
+	protected Container container;
+	protected JFrame frame;	
+
+	private JLabel typicalJLabel = new JLabel("");
+	private JButton exitProgramButton;
+	private ImageIcon image;
+
+	//intro elements
+	
+	private JPanel introDisplayPanel;
+	private GridBagConstraints introDisplayLayout;
+	private JLabel introMessageLn1, introMessageLn2;
+	
+	private JButton keyEntryButton;
+	private Font extrLargeFont;
+	private Font largerTextFont;
+	
+	//manual pin entry elements
+	
+	private JPanel manPinEntryDisplayPanel, manPinEntryPanelNorth, manPinEntryPanelEast, manPinEntryPanelWest;
+	private GridBagConstraints manPinEntryDisplayLayout, manPinEntryLayoutNorth, 
+			manPinEntryLayoutEast, manPinEntryLayoutWest, numPadLayout;
+	private JLabel manPinEntryMessage, studentIDLabel, pinNoLabel;
+	private JTextField studentIDTextField, pinNoTextField;
+	
+	private JButton numEnter, numCancel, numClear, numEmpty1, numEmpty2, numEmpty3, 
+			num0, num1, num2, num3, num4, num5, num6, num7, num8, num9;
+	private Font manPinEntryMessageFont;
+	
+	
+	public LoginManagerGUI() {
+
+	}
+
+	public void run() {
+		image = new ImageIcon("images/background1.jpg");
+		
+		frame = new JFrame("Student Informatio Kiosk"); // Main frame and its title
+		
+		frame.addWindowListener(new WindowAdapter() {
+
+            /**
+             * Add a window listener thread
+             */
+            public void windowClosing(WindowEvent e) {
+
+                frame.dispose();
+                System.exit(0);
+				
+            }
+        });
+
+		container = frame.getContentPane();
+		container.setLayout(new BorderLayout());
+
+		frame.setResizable(false);
+		//frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // because the closing operation has been re-defined
+		//frame.setUndecorated(true);
+
+		typicalJLabel = new JLabel("");
+		System.out.println(typicalJLabel.getText().toString());
+
+		introDisplayPanel = new ImagePanel(image.getImage());
+		introDisplayPanel.setLayout(new GridBagLayout());
+		introDisplayLayout = new GridBagConstraints();		 
+		extrLargeFont = new Font(typicalJLabel.getFont().getName(), typicalJLabel.getFont().getStyle(),22);
+		
+		manPinEntryDisplayPanel = new ImagePanel(image.getImage());
+		manPinEntryDisplayPanel.setLayout(new GridBagLayout());
+		manPinEntryDisplayLayout = new GridBagConstraints();		 
+		
+		
+		loadIntroElements();
+		addExitHotKey();
+
+		container.add(introDisplayPanel, BorderLayout.CENTER);	
+
+		// centre frame on screen
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Dimension screenSize = tk.getScreenSize();
+		int screenHeight = screenSize.height;
+		int screenWidth = screenSize.width;
+
+		frame.setLocation(screenWidth / 4, screenHeight / 4);
+		frame.pack();
+		frame.setVisible(true);
+		
+		
+	}
+
+
+	public void loadIntroElements() {
+				
+		introDisplayLayout.insets = new Insets(5,5,5,5);
+		
+		introDisplayLayout.gridy=0;	
+		
+		introMessageLn1 = new JLabel("Please Hold Your Fob Key or Card Up to the Reader");
+		introMessageLn1.setFont(extrLargeFont);
+		introMessageLn1.setForeground(new Color(255,255,255));
+		introDisplayPanel.add(introMessageLn1, introDisplayLayout);
+
+		introDisplayLayout.gridy=1;
+		
+		introMessageLn2 = new JLabel("In Order to Access This Consol");
+		introMessageLn2.setFont(extrLargeFont);
+		introMessageLn2.setForeground(new Color(255,255,255));
+		introDisplayPanel.add(introMessageLn2, introDisplayLayout);
+
+		introDisplayLayout.insets = new Insets(100,5,5,5);	
+
+		introDisplayLayout.gridy=2;
+		
+		keyEntryButton = new JButton("Manual Pin Entry");
+		keyEntryButton.addActionListener(this);		
+		introDisplayPanel.add(keyEntryButton, introDisplayLayout);
+
+	}
+
+	public void loadManualPinEntryElements() {
+		//north
+		
+		manPinEntryPanelNorth = new JPanel(new GridBagLayout());
+		manPinEntryPanelNorth.setOpaque(false);
+		manPinEntryLayoutNorth = new GridBagConstraints();
+		
+		manPinEntryMessage = new JLabel("Please Enter Your Student ID and Pin Number");
+		manPinEntryMessage.setFont(manPinEntryMessageFont);
+		manPinEntryMessage.setForeground(new Color(255,255,255));
+		manPinEntryPanelNorth.add(manPinEntryMessage, manPinEntryLayoutNorth);
+		
+		manPinEntryDisplayLayout.insets = new Insets(40,40,40,40);
+		
+		manPinEntryDisplayLayout.gridwidth = 2;
+		manPinEntryDisplayLayout.gridy = 0;		
+		manPinEntryDisplayPanel.add(manPinEntryPanelNorth, manPinEntryDisplayLayout);
+		
+		//east
+		
+		manPinEntryPanelEast = new JPanel(new GridBagLayout());
+		manPinEntryPanelEast.setOpaque(false);
+		manPinEntryLayoutEast = new GridBagConstraints();
+		
+		manPinEntryLayoutEast.insets = new Insets(2,5,2,5);
+		manPinEntryLayoutEast.anchor = GridBagConstraints.WEST;
+		manPinEntryLayoutEast.gridy = 0;
+		
+		studentIDLabel = new JLabel("Student ID:");
+		studentIDLabel.setForeground(new Color(255,255,255));
+		studentIDTextField = new JTextField(15);
+		
+		manPinEntryPanelEast.add(studentIDLabel, manPinEntryLayoutEast);
+		manPinEntryPanelEast.add(studentIDTextField, manPinEntryLayoutEast);
+		
+		manPinEntryLayoutEast.gridy = 1;
+		
+		pinNoLabel = new JLabel("Pin Numebr:");
+		pinNoLabel.setForeground(new Color(255,255,255));
+
+		pinNoTextField = new JTextField(15);
+		
+		manPinEntryPanelEast.add(pinNoLabel, manPinEntryLayoutEast);
+		manPinEntryPanelEast.add(pinNoTextField, manPinEntryLayoutEast);
+		
+		manPinEntryDisplayLayout.gridwidth = 1;
+		manPinEntryDisplayLayout.gridy = 1;		
+		manPinEntryDisplayPanel.add(manPinEntryPanelEast, manPinEntryDisplayLayout);
+		
+		//west / num pad
+		
+		manPinEntryDisplayLayout.gridx = 1;
+		manPinEntryDisplayLayout.gridy = 1;		
+		
+		loadNumPad();
+		
+		manPinEntryDisplayPanel.add(manPinEntryPanelWest, manPinEntryDisplayLayout);
+		
+		
+		container.add(manPinEntryDisplayPanel, BorderLayout.CENTER);
+		
+	}
+	
+	public void loadNumPad() {
+		manPinEntryPanelWest = new JPanel(new GridBagLayout());
+		manPinEntryPanelWest.setOpaque(false);
+		manPinEntryLayoutWest = new GridBagConstraints();
+		
+		manPinEntryLayoutWest.ipady = 8;
+        
+		manPinEntryLayoutWest.insets = new Insets(4, 0, 0, 0);
+		
+        num1 = new JButton("1");
+        num1.addActionListener(this);
+        manPinEntryLayoutWest.gridx = 0;
+        manPinEntryLayoutWest.gridy = 0;		
+        manPinEntryPanelWest.add(num1, manPinEntryLayoutWest);
+        
+        num2 = new JButton("2");
+        num2.addActionListener(this);
+        manPinEntryLayoutWest.gridx = 1;
+        manPinEntryLayoutWest.gridy = 0;    	
+        manPinEntryPanelWest.add(num2, manPinEntryLayoutWest);
+        
+        num3 = new JButton("3");
+        num3.addActionListener(this);
+        manPinEntryLayoutWest.gridx = 2;
+        manPinEntryLayoutWest.gridy = 0;    	
+        manPinEntryPanelWest.add(num3, manPinEntryLayoutWest);
+        
+        manPinEntryLayoutWest.insets = new Insets(4, 10, 0, 0);
+        
+        numClear = new JButton("Clear");
+        numClear.addActionListener(this);
+        manPinEntryLayoutWest.fill = GridBagConstraints.HORIZONTAL;
+        manPinEntryLayoutWest.gridx = 3;
+        manPinEntryLayoutWest.gridy = 0;    	
+        manPinEntryPanelWest.add(numClear, manPinEntryLayoutWest);
+        
+        manPinEntryLayoutWest.insets = new Insets(0, 0, 0, 0);
+        
+        num4 = new JButton("4");
+        num4.addActionListener(this);
+        manPinEntryLayoutWest.gridx = 0;
+        manPinEntryLayoutWest.gridy = 1;    	
+        manPinEntryPanelWest.add(num4, manPinEntryLayoutWest);
+        
+        num5 = new JButton("5");
+        num5.addActionListener(this);
+        manPinEntryLayoutWest.gridx = 1;
+        manPinEntryLayoutWest.gridy = 1;    	
+        manPinEntryPanelWest.add(num5, manPinEntryLayoutWest);
+        
+        num6 = new JButton("6");
+        num6.addActionListener(this);
+        manPinEntryLayoutWest.gridx = 2;
+        manPinEntryLayoutWest.gridy = 1;    	
+        manPinEntryPanelWest.add(num6, manPinEntryLayoutWest);
+        
+        manPinEntryLayoutWest.insets = new Insets(0, 10, 0, 0);
+        
+        numCancel = new JButton("Cancel");
+        numCancel.addActionListener(this);
+        manPinEntryLayoutWest.fill = GridBagConstraints.HORIZONTAL;
+        manPinEntryLayoutWest.gridx = 3;
+        manPinEntryLayoutWest.gridy = 1;    	
+        manPinEntryPanelWest.add(numCancel, manPinEntryLayoutWest);
+        
+        manPinEntryLayoutWest.insets = new Insets(0, 0, 0, 0);
+        
+        num7 = new JButton("7");
+        num7.addActionListener(this);
+        manPinEntryLayoutWest.gridx = 0;
+        manPinEntryLayoutWest.gridy = 2;    	
+        manPinEntryPanelWest.add(num7, manPinEntryLayoutWest);
+        
+        num8 = new JButton("8");
+        num8.addActionListener(this);
+        manPinEntryLayoutWest.gridx = 1;
+        manPinEntryLayoutWest.gridy = 2;    	
+        manPinEntryPanelWest.add(num8, manPinEntryLayoutWest);
+        
+        num9 = new JButton("9");
+        num9.addActionListener(this);
+        manPinEntryLayoutWest.gridx = 2;
+        manPinEntryLayoutWest.gridy = 2;    	
+        manPinEntryPanelWest.add(num9, manPinEntryLayoutWest);
+        
+        manPinEntryLayoutWest.insets = new Insets(0, 10, 0, 0);
+        
+        numEnter = new JButton("Enter");
+        numEnter.addActionListener(this);
+        manPinEntryLayoutWest.gridx = 3;
+        manPinEntryLayoutWest.gridy = 2;    	
+        manPinEntryPanelWest.add(numEnter, manPinEntryLayoutWest);
+        
+        manPinEntryLayoutWest.insets = new Insets(0, 0, 0, 0);
+        
+        numEmpty1 = new JButton("");
+        numEmpty1.setVisible(false);
+        manPinEntryLayoutWest.fill = GridBagConstraints.BOTH;
+        manPinEntryLayoutWest.gridx = 0;
+        manPinEntryLayoutWest.gridy = 3;    	
+        manPinEntryPanelWest.add(numEmpty1, manPinEntryLayoutWest);
+        
+        num0 = new JButton("0");
+        num0.addActionListener(this);
+        manPinEntryLayoutWest.gridx = 1;
+        manPinEntryLayoutWest.gridy = 3;    	
+        manPinEntryPanelWest.add(num0, manPinEntryLayoutWest);
+        
+        numEmpty2 = new JButton("");
+        numEmpty2.setVisible(false);
+        manPinEntryLayoutWest.fill = GridBagConstraints.BOTH;
+        manPinEntryLayoutWest.gridx = 2;
+        manPinEntryLayoutWest.gridy = 3;    	
+        manPinEntryPanelWest.add(numEmpty2, manPinEntryLayoutWest);
+        
+        manPinEntryLayoutWest.insets = new Insets(0, 10, 0, 0);
+        
+        numEmpty3 = new JButton("");
+        numEmpty3.setVisible(false);
+        manPinEntryLayoutWest.fill = GridBagConstraints.BOTH;
+        manPinEntryLayoutWest.gridx = 3;
+        manPinEntryLayoutWest.gridy = 3;    	
+        manPinEntryPanelWest.add(numEmpty3, manPinEntryLayoutWest);
+        
+        manPinEntryLayoutWest.insets = new Insets(0, 0, 0, 0);  
+	}
+
+	public void addExitHotKey() {
+		exitProgramButton = new JButton("");
+		exitProgramButton.addActionListener(this);
+		exitProgramButton.setMnemonic(KeyEvent.VK_Q);
+		frame.add(exitProgramButton);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==exitProgramButton) {
+			exitDialog = new ExitDialog(this, "Exit Attempt");
+
+			if (exitDialog.getChoice() == 1) {
+				frame.dispose();
+				System.exit(0);
+			} 
+		}
+
+		if(e.getSource()==keyEntryButton) {
+			container.remove(introDisplayPanel);
+			frame.repaint();
+			loadManualPinEntryElements();		
+			frame.pack();
+			
+			
+		}
+	}
+
+}

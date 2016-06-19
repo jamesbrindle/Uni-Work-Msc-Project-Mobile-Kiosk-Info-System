@@ -1,0 +1,765 @@
+package sik.server;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.Random;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+
+public class RecordsGUIListener  implements ActionListener, Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	protected RecordsGUI recordsGUI;
+	protected RecordsGUIFieldValidator accountsGV;
+	protected EditMessagesGUI editMessagesGUI;
+	protected EditTimestableGUI editTimestableGUI;
+	protected EditResultsGUI editResultsGUI;
+	protected NumeralFunctions nf;
+
+	private OptionsDialog exitDialog, removeDialog, fileExistsDialog;
+
+	private JFileChooser fc, fc2, fc3;
+
+	private File file, saveAs, filePic;
+
+	protected Store store, tempStore;
+
+	private String currentFileName;
+	protected String defaultPhoto="images/default.jpg";
+
+	private int validationOK;
+
+	private boolean newRecord;    
+	private boolean saveAttempt = false;    
+	private boolean didSearch = false;  
+	protected boolean isRMIFile = false;
+
+
+	public RecordsGUIListener(RecordsGUI GUI) {
+		this.recordsGUI = GUI;
+		accountsGV = new RecordsGUIFieldValidator(this);
+		store = new Store();
+		nf = new NumeralFunctions();
+	} 
+
+	public void actionPerformed(ActionEvent e) {
+
+		if (e.getSource() == recordsGUI.editImageButton) {    		     			     
+			updatePhoto();    		
+		}
+
+		if (e.getSource() == recordsGUI.editMessages) {
+			editMessagesGUI = new EditMessagesGUI(this);
+			try {
+				editMessagesGUI.runGUI();
+			} catch (RemoteException e1) {
+
+			}
+		}
+
+		if (e.getSource() == recordsGUI.editTimestable) {
+			editTimestableGUI = new EditTimestableGUI(this);
+			editTimestableGUI.runGUI();
+		}
+
+		if (e.getSource() == recordsGUI.editAssignmentResults) {
+			editResultsGUI = new EditResultsGUI(this);
+			editResultsGUI.runGUI();
+		}
+
+		if (e.getSource() == recordsGUI.menuItem4) {
+			store = new Store();
+			recordsGUI.setIsEmpty(true);
+			recordsGUI.changeWarningMessage(
+			"Be sure to save the store before exiting");
+			currentFileName = "Unsaved.dat";
+			setRecord();
+		} // When the 'new store' menu item is pressed from the file menu, create new store
+
+		if (e.getSource() == recordsGUI.menuItem1) {
+			openFile();
+		} // When the 'open file' menu item is pressed from the file menu
+
+		if (e.getSource() == recordsGUI.menuItem2) {
+			saveFileAs();
+		} // When the  'save store as' menu item is pressed from the file menu
+
+		if (e.getSource() == recordsGUI.menuItem3) {
+			exitDialog = new OptionsDialog(new JFrame(), "Exit",
+			"Are you sure you wish to exit?");
+
+			if (exitDialog.getChoice() == 1) {
+				recordsGUI.dispose();
+				System.exit(0);
+			}          
+		}// When the 'exit' menu item is pressed from the file menu, exit frame
+		
+		if (e.getSource() == recordsGUI.nextNavButton) {
+			store.nextRecordPointer();
+			// set appropriate navigation buttons enabled mode
+			recordsGUI.setIsFirst(store.isFirst());
+			recordsGUI.setIsLast(store.isLast());
+			recordsGUI.setIsEmpty(false);
+			setRecord();
+		} // when the 'next' record pointer button is pressed, point to next record
+
+		if (e.getSource() == recordsGUI.previousNavButton) {
+			store.previousRecordPointer();
+			// set appropriate navigation buttons enabled mode
+			recordsGUI.setIsFirst(store.isFirst());
+			recordsGUI.setIsLast(store.isLast());
+			recordsGUI.setIsEmpty(false);
+			setRecord();
+		} // when the 'previous' record pointer button is pressed, point to previous record
+
+		if (e.getSource() == recordsGUI.firstNavButton) {
+			store.firstRecordPointer();
+			// set appropriate navigation buttons enabled mode
+			recordsGUI.setIsFirst(store.isFirst());
+			recordsGUI.setIsLast(store.isLast());
+			recordsGUI.setIsEmpty(false);
+			setRecord();
+		} // when the 'first' record pointer button is pressed, point to first record
+
+		if (e.getSource() == recordsGUI.lastNavButton) {
+			store.lastRecordPointer();
+			// set appropriate navigation buttons enabled mode
+			recordsGUI.setIsFirst(store.isFirst());
+			recordsGUI.setIsLast(store.isLast());
+			recordsGUI.setIsEmpty(false);
+			setRecord();
+		} // when the 'last' record pointer button is pressed, point to last record
+
+		if (e.getSource() == recordsGUI.removeNavButton) {
+			// create a 'are you sure' dialogue
+			removeDialog = new OptionsDialog(new JFrame(), "Remove",
+			"Are you sure you want to delete the current record?");
+
+			if (removeDialog.getChoice() == 1) { // if yes pressed
+
+				if (didSearch) { // has there been a previous search request
+					Store tempStore2 = new Store();
+
+					store = store.fileIn(currentFileName);
+
+					for (int i = 0; i < store.recordArrayList.size(); i++) {
+						if (!(store.recordArrayList.get(i).getStudentID()
+								== nf.stringToInt(
+										recordsGUI.studentIDTextField.getText()))) {
+							tempStore2.recordArrayList.add(
+									store.recordArrayList.get(i));
+						}
+					} // create new store, put everything in it except desired record to remove
+
+					store = tempStore2;
+					saveFile();
+					store.firstRecordPointer();
+
+					// set appropriate navigation buttons enabled mode
+					recordsGUI.setIsFirst(store.isFirst());
+					recordsGUI.setIsLast(store.isLast());
+					recordsGUI.searchBarTextField.setText("");
+					setRecord(); // update frame
+					didSearch = false; // research search requested
+
+				} else { // if no search requested, remove record and update frame
+
+					store.removeRecord(store.currentRecord());
+					saveFile();
+
+					if (store.isEmpty()) {
+						recordsGUI.setIsEmpty(true);            	
+						recordsGUI.changeWarningMessage(
+						"There are no account records in this store");
+						setRecord();
+
+					} else {
+
+						if (store.isFirst()) {
+							store.nextRecordPointer();
+							// set appropriate navigation buttons enabled mode
+							recordsGUI.setIsFirst(store.isFirst());
+							recordsGUI.setIsLast(store.isLast());
+							recordsGUI.setIsEmpty(false);
+							setRecord();
+						} else {
+							store.lastRecordPointer();
+							// set appropriate navigation buttons enabled mode
+							recordsGUI.setIsFirst(store.isFirst());
+							recordsGUI.setIsLast(store.isLast());
+							recordsGUI.setIsEmpty(false);
+							setRecord();
+						}
+					}
+				}
+			}
+		} // when the 'remove' record button is pressed, remove record, save store
+
+		if (e.getSource() == recordsGUI.editNavButton) {
+			recordsGUI.isEditing = true;
+			recordsGUI.setTextFieldsEditable(true);
+			recordsGUI.changeWarningMessage(
+			"Be sure to click the save button when alterations are complete");
+			recordsGUI.setEditNavButtonMode(true);
+		} // when 'edit' button is pressed, make text fields editable
+
+		if (e.getSource() == recordsGUI.newRecordNavButton) {
+			// new record button changes to cancel button when editing or creating new record...
+			if (recordsGUI.isEditing) { // if is editing
+				newRecord = false;
+				recordsGUI.setTextFieldsEditable(false);
+				recordsGUI.changeWarningMessage(
+				"use the navigation bar below to move through records, create, modify or remove");
+				recordsGUI.setEditNavButtonMode(false);
+
+				if (store.isEmpty()) { // if there are no records
+					recordsGUI.setIsEmpty(true); 
+					recordsGUI.changeWarningMessage(
+					"There are no account records in this store");
+				} else {
+					// set appropriate navigation buttons enabled mode
+					recordsGUI.setIsFirst(store.isFirst());
+					recordsGUI.setIsLast(store.isLast());
+				}
+				if (saveAttempt) { // some validation errors exists in text fields, need to recheck
+					store.lastRecordPointer(); // point to record just created
+					store.removeRecord(store.currentRecord()); // remove record with error
+					store.lastRecordPointer();
+					recordsGUI.setIsFirst(store.isFirst());
+					recordsGUI.setIsLast(store.isLast());
+					setRecord();
+					if (store.isEmpty()) {
+						recordsGUI.changeWarningMessage(
+						"There are no account records in this store");
+						recordsGUI.setIsEmpty(true);
+					}
+				} else {
+					setRecord();
+				}
+
+			} else { // reset search requested, if new record created, update frame
+				didSearch = false;
+				newRecord = true;
+				recordsGUI.setTextFieldsEditable(true);
+				recordsGUI.changeWarningMessage(
+				"Be sure to click the save button when accounts details are complete");
+				recordsGUI.setEditNavButtonMode(true);
+				recordsGUI.setIsEmpty(true);
+				setRecord();
+			}
+		} // when the new record button has been pressed
+
+		if (e.getSource() == recordsGUI.saveNavButton) {
+
+			if (recordsGUI.isEditing == true && newRecord == false) { 
+				validationOK = 0; // reset validation count
+				validateAndStore(); // validate all fields
+				if (validationOK == 11) { // if validation all came back ok
+					recordsGUI.setTextFieldsEditable(false);
+					recordsGUI.setEditNavButtonMode(false);
+					// set appropriate navigation buttons enabled mode
+					recordsGUI.setIsFirst(store.isFirst());
+					recordsGUI.setIsLast(store.isLast());
+					recordsGUI.changeWarningMessage(
+							"use the navigation bar below to move through " +
+					"records, create, modify or remove");
+
+					if (didSearch) { // if a search was previously requested
+						Store tempStore2 = new Store();
+						Store tempStore3 = new Store();
+
+						tempStore3.recordArrayList.add(store.currentRecord());
+						store = store.fileIn(currentFileName);
+
+						for (int i = 0; i < store.recordArrayList.size(); i++) {
+							if (!(store.recordArrayList.get(i).getStudentID()
+									== nf.stringToInt(
+											recordsGUI.studentIDTextField.getText()))) {
+								tempStore2.recordArrayList.add(
+										store.recordArrayList.get(i));
+							}
+						} // create store, add all records except the one saving
+
+						// then add the edited record to the store
+						tempStore2.recordArrayList.add(
+								tempStore3.recordArrayList.get(0));
+
+						store = tempStore2;
+
+					}
+					saveFile();
+					System.out.println("check 2");
+
+				} // when the save button has been pressed
+
+			} else if (newRecord) { // if a new record has been created
+
+				store.addRecord(
+						new Records(
+								nf.stringToInt(
+										recordsGUI.studentIDTextField.getText())));
+				store.lastRecordPointer();
+				validationOK = 0;
+				validateAndStore();
+				if (validationOK == 11) {
+					recordsGUI.setTextFieldsEditable(false);
+					recordsGUI.setEditNavButtonMode(false);
+					// set appropriate navigation buttons enabled mode
+					recordsGUI.setIsFirst(store.isFirst());
+					recordsGUI.setIsLast(store.isLast());
+					recordsGUI.changeWarningMessage(
+							"use the navigation bar below to move through records, " +
+					"create, modify or remove");
+					saveFile();
+					store = store.fileIn(currentFileName);
+					newRecord = false;
+					store.lastRecordPointer();
+					System.out.println("check 3");
+
+				}
+			}
+		} // create new account, validate all fields, save store
+
+		if (e.getSource() == recordsGUI.searchBarSearchButton) {
+			store = store.fileIn(currentFileName); // reset search
+			tempStore = new Store();
+
+			if (recordsGUI.searchBarTextField.getText().equalsIgnoreCase("")
+					|| recordsGUI.searchBarTextField.getText() == null) { // if field not empty
+
+				if (didSearch) { // if search already requested
+					didSearch = false;
+					store = store.fileIn(currentFileName); // reset search
+
+					// set appropriate navigation buttons enabled mode
+					recordsGUI.setIsFirst(store.isFirst());
+					recordsGUI.setIsLast(store.isLast());
+					setRecord();
+				}
+			} else {
+
+				if (nf.containsOnlyNumbers(
+						recordsGUI.searchBarTextField.getText())) {
+					// if field contains only numbers, then search on account number
+
+					for (int i = 0; i < store.recordArrayList.size(); i++) {
+
+						if (nf.numberToString(store.recordArrayList.get(i).getStudentID()).contains(
+								recordsGUI.searchBarTextField.getText())) {
+							tempStore.recordArrayList.add(
+									store.recordArrayList.get(i));
+
+						} // create new store with matching search results
+					}
+					didSearch = true; // show search was requested
+					store = tempStore;
+					// set appropriate navigation buttons enabled mode
+					recordsGUI.setIsFirst(store.isFirst());
+					recordsGUI.setIsLast(store.isLast());
+					setRecord();
+					if (store.isEmpty()) {
+						store = store.fileIn(currentFileName);
+						recordsGUI.changeWarningMessage(
+						"There are no records matching your search");
+					}
+				} else { // then search on last name			
+					for (int i = 0; i < store.recordArrayList.size(); i++) {
+						if (store.recordArrayList.get(i).getLastName().toLowerCase().indexOf(
+								recordsGUI.searchBarTextField.getText().toLowerCase())
+								> -1) {
+							tempStore.recordArrayList.add(
+									store.recordArrayList.get(i));
+
+						} // create new store with matching search results
+					}
+					didSearch = true; // show search was requested
+					store = tempStore;
+					recordsGUI.setIsFirst(store.isFirst());
+					recordsGUI.setIsLast(store.isLast());
+					setRecord();
+					if (store.isEmpty()) {
+						recordsGUI.setIsEmpty(true);
+						recordsGUI.changeWarningMessage(
+						"There are no records matching your search");
+					}
+				}
+			}
+		}
+	} // if search button pressed, if empty reset store to original file date, else
+
+	// create new store with matching search results
+
+	public void openFile() {
+		isRMIFile = false;
+		int returnVal = 0;
+
+		fc = new JFileChooser(); // file chooser browser
+		TextFilter tf = new TextFilter(".dat"); // look for only .dat files
+
+		fc.setCurrentDirectory(new File(".")); 
+		fc.setFileFilter(tf);
+		returnVal = fc.showOpenDialog(recordsGUI.menuItem1);
+
+		if (returnVal == JFileChooser.APPROVE_OPTION) { // if a file is selected
+
+			try {
+
+				file = fc.getSelectedFile(); // load the file 
+				store = store.fileIn(file.getName()); // cast the object found inside the file to the temp store
+				currentFileName = file.getName(); // update a string to use for saving and opening in the future
+				store.firstRecordPointer(); // go the first record on the store
+
+				setRecord(); // display the record on the frame
+
+				if (store.isEmpty()) {
+					recordsGUI.changeWarningMessage(
+							"There are no account records in this store");
+					recordsGUI.setIsEmpty(true);
+					recordsGUI.newRecordNavButton.setEnabled(true);
+				} else {               
+
+					recordsGUI.changeWarningMessage(
+							"use the navigation bar below to move through records, create, modify or remove");
+					recordsGUI.setNavButtonsEnabled(true);
+					recordsGUI.setIsFirst(store.isFirst());
+					recordsGUI.setIsLast(store.isLast());
+
+				}
+
+			} catch (Exception k) { // if error loading file
+				System.out.println("could not load file");
+				recordsGUI.changeWarningMessage("Error loading file");
+				recordsGUI.setIsEmpty(true);
+
+			}
+		}
+	} // opens a file browser dialogue and sets the store to that found within the selected file
+
+
+	public void saveFileAs() {
+
+		int returnVal3 = 0;
+
+		fc2 = new JFileChooser();
+		TextFilter tf3 = new TextFilter(".dat"); // default file to .dat
+
+		fc2.setCurrentDirectory(new File(".")); // look first in current directory
+		fc2.setFileFilter(tf3);
+		returnVal3 = fc2.showSaveDialog(recordsGUI.menuItem2);
+
+		if (returnVal3 == JFileChooser.APPROVE_OPTION) {
+			try {
+				saveAs = fc2.getSelectedFile();
+
+				if (saveAs.exists()) { // if file exists, ask to overwrite or not
+					fileExistsDialog = new OptionsDialog(new JFrame(),
+							"File Name Already Exists",
+					"Would you like to overwrite the existing file?");
+
+					if (fileExistsDialog.getChoice() == 1) {
+						store.fileOut(saveAs.getName());
+						currentFileName = saveAs.getName();
+
+					} else if (fileExistsDialog.getChoice() == 0) { // if user doesn't want to overwrite...
+						fileExistsDialog.setChoice(1);
+						saveFile(); 
+					}
+				} else { // if file doesn't exist
+					store.fileOut(saveAs.getName());  
+					currentFileName = saveAs.getName();
+					setRecord();
+				}
+			} catch (Exception k) {
+				recordsGUI.changeWarningMessage("Could Not Save File");
+				System.out.println("Could not save file");
+			}
+		}
+	} // saves the file to a chosen name and directory
+
+	/**
+	 * Saves current store in the file name selected when first opening the file
+	 */
+	public void saveFile() {
+
+		store.fileOut(currentFileName);
+	}
+
+	public void updatePhoto() {
+		int returnVal2 = 0;
+		fc3 = new JFileChooser();
+		TextFilter tf3 = new TextFilter(".jpg");
+
+		fc3.setCurrentDirectory(new File("images"));
+		fc3.setFileFilter(tf3);
+		returnVal2 = fc3.showOpenDialog(recordsGUI.editImageButton);
+
+		if(returnVal2 == JFileChooser.APPROVE_OPTION) {
+			try {
+				filePic = fc3.getSelectedFile();
+				recordsGUI.photo = new ImageIcon("images/" + filePic.getName());
+				store.currentRecord().setImage(recordsGUI.photo); //sets the file name to the persons record on file
+				recordsGUI.image.setIcon(recordsGUI.photo);  //sets the photo active on the frame
+				validateAndStore();
+
+				saveFile();               
+
+			}
+
+			catch (Exception k) {
+				recordsGUI.changeWarningMessage(
+						"Wrong file size or type or file corrupt. Please retry");
+			}
+
+			finally {
+			}
+		}
+
+	}
+
+	public void setRecord() {
+		if (store.isEmpty() == false && newRecord == false) {
+			recordsGUI.studentIDTextField.setText(
+					nf.numberToString(store.currentRecord().getStudentID()));
+			recordsGUI.pinNumberTextField.setText(
+					nf.numberToString(store.currentRecord().gettPinNo()));
+			recordsGUI.titleTextField.setText(store.currentRecord().getTitle());
+			recordsGUI.firstNameTextField.setText(
+					store.currentRecord().getFirstName());
+			recordsGUI.lastNameTextField.setText(
+					store.currentRecord().getLastName());
+			recordsGUI.firstLineAddrTextField.setText(
+					store.currentRecord().getFirstLineAddress());
+			recordsGUI.secondLineAddrTextField.setText(
+					store.currentRecord().getSecondLineAddress());
+			recordsGUI.cityTextField.setText(store.currentRecord().getCity());
+			recordsGUI.countyTextField.setText(
+					store.currentRecord().getCounty());
+			recordsGUI.postCodeTextField.setText(
+					store.currentRecord().getPostCode());
+			recordsGUI.telephoneTextField.setText(
+					store.currentRecord().getTelephone());
+			if (store.currentRecord().getImage()!=null) {
+				recordsGUI.image.setIcon(store.currentRecord().getImage());
+			}
+			else {
+				recordsGUI.photo = new ImageIcon(defaultPhoto);
+				recordsGUI.image.setIcon(recordsGUI.photo);
+			}          
+
+		} else if (store.isEmpty() == true && newRecord == false) { // if store is empty
+			recordsGUI.studentIDTextField.setText("");
+			recordsGUI.pinNumberTextField.setText("");
+			recordsGUI.titleTextField.setText("");
+			recordsGUI.firstNameTextField.setText("");
+			recordsGUI.lastNameTextField.setText("");
+			recordsGUI.firstLineAddrTextField.setText("");
+			recordsGUI.secondLineAddrTextField.setText("");
+			recordsGUI.cityTextField.setText("");
+			recordsGUI.countyTextField.setText("");
+			recordsGUI.postCodeTextField.setText("");
+			recordsGUI.telephoneTextField.setText("");
+			recordsGUI.photo = new ImageIcon(defaultPhoto);
+			recordsGUI.image.setIcon(recordsGUI.photo);
+
+
+		} else if (newRecord) { // if new record selected, set fields appropriately
+			createNewRecord();
+		}		
+	}
+
+	/**
+	 * Sets up the frame's text fields in order to add a new account record. As the
+	 * account number is the records unique identifier, this method makes sure there
+	 * are no duplicate account numbers. If there are no records, this method creates a
+	 * starting number. Also a random pin number is generated.
+	 */
+	public void createNewRecord() {
+		if (store.isEmpty()) {
+			recordsGUI.studentIDTextField.setText("4000001");
+		} else {
+			int lastAccountNumber = store.recordArrayList.get(store.recordArrayList.size() - 1).getStudentID();
+
+			recordsGUI.studentIDTextField.setText(
+					nf.numberToString(lastAccountNumber + 1));
+		}
+
+		Random generator = new Random();
+		int randomNumber = generator.nextInt(999999) + 100000;
+		int actualPinNumber = 0;
+
+		if (randomNumber > 999999) {
+			actualPinNumber = randomNumber - 100000;
+
+		} else {
+			actualPinNumber = randomNumber;
+		}
+
+		recordsGUI.pinNumberTextField.setText(nf.numberToString(actualPinNumber));
+		recordsGUI.titleTextField.setText("");
+		recordsGUI.firstNameTextField.setText("");
+		recordsGUI.lastNameTextField.setText("");
+		recordsGUI.firstLineAddrTextField.setText("");
+		recordsGUI.secondLineAddrTextField.setText("");
+		recordsGUI.cityTextField.setText("");
+		recordsGUI.countyTextField.setText("");
+		recordsGUI.postCodeTextField.setText("");
+		recordsGUI.telephoneTextField.setText("");
+		recordsGUI.photo = new ImageIcon (defaultPhoto);
+		recordsGUI.image.setIcon(recordsGUI.photo);
+	}
+
+	/**
+	 * Validates each text field in the frame and stores each field. This method
+	 * validates that there are no invalid numbers or characters in each field and that
+	 * certain fields are required to be entered. An error message will be produced if
+	 * invalids are found, requesting the user re-attempt the input. The store will not
+	 * be saved otherwise
+	 */
+	public void validateAndStore() {
+		if (accountsGV.validatePinNumber(
+				recordsGUI.pinNumberTextField.getText())) {
+			store.currentRecord().setPinNo(
+					nf.stringToInt(recordsGUI.pinNumberTextField.getText()));
+			validationOK++;
+			saveAttempt = false;
+		} else {
+			validationOK--;
+			saveAttempt = true;
+			recordsGUI.changeWarningMessage(
+					"Make sure the pin number field is 4 digits long between 1000 and 9999");
+		}
+		if (accountsGV.validateStringsFieldsNumbersNotAllowed(
+				recordsGUI.titleTextField.getText())) {
+			validationOK++;
+			saveAttempt = false;
+			store.currentRecord().setTitle(recordsGUI.titleTextField.getText());
+		} else {
+			validationOK--;
+			saveAttempt = true;
+			recordsGUI.changeWarningMessage(
+					"Make sure there are no invalid characters in the title field (i.e. $%^&) or numebrs");
+		}
+		if (accountsGV.validateStringsFieldsNumbersNotAllowed(
+				recordsGUI.firstNameTextField.getText())) {
+			validationOK++;
+			saveAttempt = false;
+			store.currentRecord().setFirstName(
+					recordsGUI.firstNameTextField.getText());
+		} else {
+			validationOK--;
+			saveAttempt = true;
+			recordsGUI.changeWarningMessage(
+					"Make sure there are no invalid characters in the first name field (i.e. $%^&)");
+		}
+		if (accountsGV.validateStringsFieldsNumbersNotAllowed(
+				recordsGUI.lastNameTextField.getText())) {
+			validationOK++;
+			saveAttempt = false;
+			saveAttempt = false;
+			store.currentRecord().setLastName(
+					recordsGUI.lastNameTextField.getText());
+		} else {
+			validationOK--;
+			saveAttempt = true;
+			recordsGUI.changeWarningMessage(
+					"Make sure there are no invalid characters in the last name field (i.e. $%^&)");
+		}
+		if (accountsGV.validateStringsFieldsNumbersAllowed(
+				recordsGUI.firstLineAddrTextField.getText())) {
+			validationOK++;
+			saveAttempt = false;
+			store.currentRecord().setFirstLineAddress(
+					recordsGUI.firstLineAddrTextField.getText());
+		} else {
+			validationOK--;
+			saveAttempt = true;
+			recordsGUI.changeWarningMessage(
+					"Make sure there are no invalid characters in the first line address field (i.e. $%^&)");
+		}
+		if (accountsGV.validateStringsFieldsNumbersAllowed(
+				recordsGUI.secondLineAddrTextField.getText())) {
+			validationOK++;
+			saveAttempt = false;
+			store.currentRecord().setSecondLineAddress(
+					recordsGUI.secondLineAddrTextField.getText());
+		} else {
+			validationOK--;
+			saveAttempt = true;
+			recordsGUI.changeWarningMessage(
+					"Make sure there are no invalid characters in the second line address field (i.e. $%^&)");
+		}
+		if (accountsGV.validateStringsFieldsNumbersNotAllowed(
+				recordsGUI.cityTextField.getText())) {
+			validationOK++;
+			saveAttempt = false;
+			store.currentRecord().setCity(recordsGUI.cityTextField.getText());
+		} else {
+			validationOK--;
+			saveAttempt = true;
+			recordsGUI.changeWarningMessage(
+					"Make sure there are no invalid characters in the city field (i.e. $%^&) or numbers");
+		}
+		if (accountsGV.validateStringsFieldsNumbersNotAllowed(
+				recordsGUI.countyTextField.getText())) {
+			validationOK++;
+			saveAttempt = false;
+			store.currentRecord().setCounty(
+					recordsGUI.countyTextField.getText());
+		} else {
+			validationOK--;
+			saveAttempt = true;
+			recordsGUI.changeWarningMessage(
+					"Make sure there are no invalid characters in the county field (i.e. $%^&) or numbers");
+		}
+		if (accountsGV.validateStringsFieldsNumbersAllowed(
+				recordsGUI.postCodeTextField.getText())) {
+			validationOK++;
+			saveAttempt = false;
+			store.currentRecord().setPostCode(
+					recordsGUI.postCodeTextField.getText());
+		} else {
+			validationOK--;
+			saveAttempt = true;
+			recordsGUI.changeWarningMessage(
+					"Make sure there are no invalid characters in the post code field (i.e. $%^&)");
+		}
+		if (accountsGV.validateTelephone(
+				recordsGUI.telephoneTextField.getText())) {
+			validationOK++;
+			saveAttempt = false;
+			store.currentRecord().setTelephone(
+					recordsGUI.telephoneTextField.getText());
+		} else {
+			validationOK--;
+			saveAttempt = true;
+			recordsGUI.changeWarningMessage(
+					"Make sure there are no invalid characters in the telephone field (i.e. $%^&)");
+		}
+
+		if (recordsGUI.firstNameTextField.getText().equalsIgnoreCase("")
+				|| recordsGUI.titleTextField.getText().equalsIgnoreCase("")
+				|| recordsGUI.lastNameTextField.getText().equalsIgnoreCase("")
+				|| recordsGUI.firstLineAddrTextField.getText().equalsIgnoreCase("")
+				|| recordsGUI.postCodeTextField.getText().equalsIgnoreCase("")
+				|| recordsGUI.cityTextField.getText().equalsIgnoreCase("")
+				|| recordsGUI.countyTextField.getText().equalsIgnoreCase("")) 
+		{
+			validationOK--;
+			recordsGUI.changeWarningMessage(
+					"You must at least fill in the title, name, " +
+			"first line address, city, county and post code fields");
+			saveAttempt = true;
+		} else {
+			validationOK++;
+			saveAttempt = false;
+
+		}
+	}
+}
+

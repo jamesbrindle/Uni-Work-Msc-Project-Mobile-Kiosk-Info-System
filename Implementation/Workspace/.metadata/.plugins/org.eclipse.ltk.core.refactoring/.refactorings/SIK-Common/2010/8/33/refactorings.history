@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;PhidgetConnector.java&apos; to &apos;SIK-Client-Admin/src/sik.client.admin&apos;&#x0D;&#x0A;- Original project: &apos;SIK-Common&apos;&#x0D;&#x0A;- Destination element: &apos;SIK-Client-Admin/src/sik.client.admin&apos;&#x0D;&#x0A;- Original element: &apos;sik.common.PhidgetConnector.java&apos;&#x0D;&#x0A;- Update references to refactored element" description="Move compilation unit" destination="=SIK-Client-Admin/src&lt;sik.client.admin" element1="/src&lt;sik.common{PhidgetConnector.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" patterns="*" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1281980835124" units="1" version="1.0"/>
+</session>

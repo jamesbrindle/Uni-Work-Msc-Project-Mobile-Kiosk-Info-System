@@ -1,0 +1,404 @@
+package sik.client;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+public class EditTimestableGUI extends JFrame implements WindowListener, ActionListener {
+
+	private static final long serialVersionUID = 1L;
+	private Container container;
+	protected JFrame frame;
+
+	protected RecordsGUIListener recordsGL;
+
+	// panels
+
+	private JPanel timestableNameArea, navigation, timestableArea;
+
+	// layouts
+
+	private GridBagConstraints timestableNameAreaLayout, navigationLayout, timestableAreaLayout;
+
+	// navigationElements
+
+	private JButton  saveNavButton, editNavButton, clearAllNavButton;
+
+	// menu Elements
+
+	protected JMenuBar menuBar;
+	protected JMenu menu;
+	protected JMenuItem menuItem3;
+
+	// timestable elements
+
+	private JLabel timestableNameLabel;
+	private JTextField timestableNameTextField;
+
+	private ArrayList<JTextArea> timestableArrayList;
+	private ArrayList<JScrollPane> timestableArrayListScrollPane;
+	private ArrayList<String> timestableArrayListString;
+
+	private boolean isTimestableNull = true;
+	private boolean isEditing = false;
+
+	public EditTimestableGUI(RecordsGUIListener recordsGL) {
+		this.recordsGL = recordsGL;	             
+		timestableArrayList = new ArrayList<JTextArea>();
+		timestableArrayListScrollPane = new ArrayList<JScrollPane>();
+		timestableArrayListString = new ArrayList<String>();
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == menuItem3) {
+			frame.dispose();                         
+		} 
+
+		if (e.getSource() == clearAllNavButton) {
+			for (int i = 0; i< timestableArrayList.size();i++) {
+				timestableArrayList.get(i).setText("");
+			}
+			timestableNameTextField.setText("");
+		}
+
+		if (e.getSource() == saveNavButton) {
+			timestableArrayListString.clear();
+			for(int i = 0; i < timestableArrayList.size(); i++) {
+				timestableArrayListString.add(timestableArrayList.get(i).getText());
+			}
+			recordsGL.store.currentRecord().setTimestableName(timestableNameTextField.getText());
+			recordsGL.store.currentRecord().setTimestable(timestableArrayListString);
+			recordsGL.saveFile();
+			isEditing = false;
+
+			setTextAreasEditable(false); 
+			saveNavButton.setEnabled(false);
+			clearAllNavButton.setEnabled(false);
+			editNavButton.setText("Edit");
+
+		}
+
+		if (e.getSource() == editNavButton) {
+			if(isEditing) {
+				isEditing = false;
+				setTextAreasEditable(false); 
+				editNavButton.setText("Edit");
+				saveNavButton.setEnabled(false);
+				clearAllNavButton.setEnabled(false);
+
+				if(!(isTimestableNull)) {
+					for (int i = 0; i< timestableArrayList.size();i++) {
+						timestableArrayList.get(i).setText(
+								recordsGL.store.currentRecord().getTimestable().get(i));
+					}
+					timestableNameTextField.setText(
+							recordsGL.store.currentRecord().getTimestableName());
+				}
+				else {
+					for (int i = 0; i< timestableArrayList.size();i++) {
+						timestableArrayList.get(i).setText("");
+					}
+				}
+
+			}
+			else {
+				isEditing = true;
+				setTextAreasEditable(true);        	
+				editNavButton.setText("Cancel");
+				saveNavButton.setEnabled(true);
+				clearAllNavButton.setEnabled(true);
+			}
+
+		}
+
+	}
+
+	/**
+	 * Builds the standard GUI visuals (text field, labels, 
+	 * buttons and text area objects)
+	 */
+	public void runGUI() {
+
+		if(recordsGL.store.currentRecord().getTimestable()==null) {
+			isTimestableNull = true;
+		}
+		else {
+			isTimestableNull = false;
+		}
+
+		frame = new JFrame("Timestable Editor GUI");
+		frame.addWindowListener(this);
+
+		container = frame.getContentPane();
+		container.setLayout(new BorderLayout());
+
+		timestableNameArea = new JPanel(new GridBagLayout());
+		timestableNameAreaLayout = new GridBagConstraints();
+
+		timestableArea = new JPanel(new GridBagLayout());
+		timestableAreaLayout = new GridBagConstraints();
+
+		navigation = new JPanel(new GridBagLayout());
+		navigationLayout = new GridBagConstraints();
+
+		LoadMenu(); // Frames drop down menu (i.e 'File Open')
+
+		loadNavigationElements(); // Used to navigate through account records
+		loadTimestableNameArea();
+		loadTimestableArea();
+
+		container.add(timestableNameArea, BorderLayout.NORTH);
+		container.add(timestableArea, BorderLayout.CENTER);
+		container.add(navigation, BorderLayout.SOUTH);
+
+		frame.setJMenuBar(menuBar); // add menu to frame
+		frame.setResizable(false); // don't allow to resize the frame
+
+		// centre frame on screen
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Dimension screenSize = tk.getScreenSize();
+		int screenHeight = screenSize.height;
+		int screenWidth = screenSize.width;
+
+		frame.setLocation(screenWidth / 4, screenHeight / 4);
+		frame.pack();
+		frame.setVisible(true);
+
+
+		this.addWindowListener(new WindowAdapter() {
+
+			/**
+			 * Add a window listener thread
+			 */
+			public void windowClosing(WindowEvent e) {
+
+				frame.dispose();
+
+
+			}
+		});
+
+	}
+
+	private void loadTimestableNameArea() {
+
+		timestableNameAreaLayout.insets = new Insets(5,5,5,5);
+
+		timestableNameLabel = new JLabel("Timestable Name");
+		timestableNameAreaLayout.anchor = GridBagConstraints.WEST;
+		timestableNameArea.add(timestableNameLabel, timestableNameAreaLayout);
+
+		timestableNameTextField = new JTextField(30);
+		timestableNameTextField.setEditable(false);
+
+		timestableNameArea.add(timestableNameTextField, timestableNameAreaLayout);
+
+	}
+
+	private void loadTimestableArea() {
+		timestableAreaLayout.anchor = GridBagConstraints.CENTER;
+		timestableAreaLayout.insets = new Insets(5,5,5,5);
+
+		timestableArea.add(new JLabel(" "), timestableAreaLayout);
+		timestableArea.add(new JLabel("9-10"), timestableAreaLayout);
+		timestableArea.add(new JLabel("10-11"), timestableAreaLayout);
+		timestableArea.add(new JLabel("11-12"), timestableAreaLayout);
+		timestableArea.add(new JLabel("12-13"), timestableAreaLayout);
+		timestableArea.add(new JLabel("13-14"), timestableAreaLayout);
+		timestableArea.add(new JLabel("14-15"), timestableAreaLayout);
+		timestableArea.add(new JLabel("15-16"), timestableAreaLayout);
+		timestableArea.add(new JLabel("16-17"), timestableAreaLayout);
+		timestableArea.add(new JLabel("17-18"), timestableAreaLayout);
+
+
+		for(int i = 0; i<45; i++) {
+
+			timestableArrayList.add(new JTextArea(3,8));
+
+			if(!(isTimestableNull)) {
+				timestableArrayList.get(i).setText(
+						recordsGL.store.currentRecord().getTimestable().get(i));
+			}
+
+			timestableArrayList.get(i).setEditable(false);
+			timestableArrayListScrollPane.add(new JScrollPane(timestableArrayList.get(i)));
+
+		}
+		if(!(isTimestableNull)) {
+			timestableNameTextField.setText(recordsGL.store.currentRecord().getTimestableName());
+		}
+
+		timestableAreaLayout.anchor = GridBagConstraints.WEST;
+
+		//monday
+
+		timestableAreaLayout.gridy=1;
+		timestableArea.add(new JLabel("Monday"), timestableAreaLayout);
+
+		timestableAreaLayout.insets = new Insets(5,1,5,1);    	
+		for(int i = 0; i<9; i++) {
+			timestableArea.add(timestableArrayListScrollPane.get(i), timestableAreaLayout);
+		}
+		timestableAreaLayout.insets = new Insets(5,5,5,5);
+
+		//tuesday
+
+		timestableAreaLayout.gridy=2;
+		timestableArea.add(new JLabel("Tuesday"), timestableAreaLayout);
+
+		timestableAreaLayout.insets = new Insets(5,1,5,1);    	
+		for(int i = 9; i<18; i++) {
+			timestableArea.add(timestableArrayListScrollPane.get(i), timestableAreaLayout);
+		}
+		timestableAreaLayout.insets = new Insets(5,5,5,5);
+
+		//wendesday
+
+		timestableAreaLayout.gridy=3;
+		timestableArea.add(new JLabel("Wednesday"), timestableAreaLayout);
+
+		timestableAreaLayout.insets = new Insets(5,1,5,1);    	
+		for(int i = 18; i<27; i++) {
+			timestableArea.add(timestableArrayListScrollPane.get(i), timestableAreaLayout);
+		}
+		timestableAreaLayout.insets = new Insets(5,5,5,5);
+
+		//thursday
+
+		timestableAreaLayout.gridy=4;
+		timestableArea.add(new JLabel("Thursday"), timestableAreaLayout);
+
+		timestableAreaLayout.insets = new Insets(5,1,5,1);    	
+		for(int i = 27; i<36; i++) {
+			timestableArea.add(timestableArrayListScrollPane.get(i), timestableAreaLayout);
+		}
+		timestableAreaLayout.insets = new Insets(5,5,5,5);
+
+		//friday
+
+		timestableAreaLayout.gridy=5;
+		timestableArea.add(new JLabel("Friday"), timestableAreaLayout);
+
+		timestableAreaLayout.insets = new Insets(5,1,5,1);    	
+		for(int i = 36; i<45; i++) {
+			timestableArea.add(timestableArrayListScrollPane.get(i), timestableAreaLayout);
+		}
+		timestableAreaLayout.insets = new Insets(5,5,5,5);
+
+	}
+
+	/**
+	 * Loads the objects regarding account record navigation
+	 */
+	private void loadNavigationElements() {
+
+		navigationLayout.insets = new Insets(10, 2, 5, 2);
+
+		saveNavButton = new JButton("Save");
+		saveNavButton.addActionListener(this);
+		saveNavButton.setEnabled(false);
+		navigation.add(saveNavButton, navigationLayout);
+
+		editNavButton = new JButton("Edit");
+		editNavButton.addActionListener(this);
+		navigation.add(editNavButton, navigationLayout);
+
+		clearAllNavButton = new JButton("Clear All");
+		clearAllNavButton.addActionListener(this);
+		clearAllNavButton.setEnabled(false);
+		navigation.add(clearAllNavButton, navigationLayout);
+
+	}
+
+	/**
+	 * Loads the frame's drop down menu, used to open, load and create stores
+	 * and to exit the frame
+	 */
+	private void LoadMenu() {
+		menuBar = new JMenuBar();
+		menu = new JMenu("File");
+		menuBar.add(menu);
+
+		menuItem3 = new JMenuItem("Exit GUI"); 
+		menuItem3.addActionListener(this);
+
+
+		// adds each button to the frame
+		menu.add(menuItem3);
+
+	}
+
+	private void setTextAreasEditable(boolean b) {
+		for(int i = 0; i<timestableArrayList.size(); i++) {
+			timestableArrayList.get(i).setEditable(b);
+		}
+		timestableNameTextField.setEditable(true);	}
+
+
+	/**
+	 * Implements and redefines window closing event
+	 * @param e The window calling the event
+	 */
+	public void windowClosing(WindowEvent e) {
+
+		frame.dispose();
+	}
+
+	/**
+	 * Implements and redefines window closed event
+	 * @param e The window calling the event
+	 */
+	public void windowClosed(WindowEvent e) {}
+
+	/**
+	 * Implements and redefines window Opened event
+	 * @param e The window calling the event
+	 */
+	public void windowOpened(WindowEvent e) {}
+
+	/**
+	 * Implements and redefines window iconified event
+	 * @param e The window calling the event
+	 */
+	public void windowIconified(WindowEvent e) {}
+
+	/**
+	 * Implements and redefines window deiconified event
+	 * @param e The window calling the event
+	 */
+	public void windowDeiconified(WindowEvent e) {}
+
+	/**
+	 * Implements and redefines window activated event
+	 * @param e The window calling the event
+	 */
+	public void windowActivated(WindowEvent e) {}
+
+	/**
+	 * Implements and redefines window deactivated event
+	 * @param e The window calling the event
+	 */
+	public void windowDeactivated(WindowEvent e) {}
+
+}

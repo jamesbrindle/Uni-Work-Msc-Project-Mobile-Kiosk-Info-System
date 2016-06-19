@@ -1,0 +1,287 @@
+package sik.client.user.panels;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.Serializable;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+
+import com.phidgets.PhidgetException;
+
+import sik.client.user.ActionClips;
+import sik.client.user.FontStyles;
+import sik.client.user.MainDisplayGUI;
+
+public class HomePanel extends JPanel implements ActionListener, Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	protected MainDisplayGUI mainGUI;
+
+	private GridBagConstraints mainPanelLayout, greatingsPanelLayout,
+			buttonPanelLayout;
+	private JPanel greetingsPanel, buttonPanel;
+
+	private JButton timesTableButton, messagesButton, campusGuideButton,
+			BluetoothButton, assignmentResultsButton, logoutButton;
+
+	private MessagesPanel messagesPanel;
+
+	private ImageIcon photo;
+	private JLabel photoLabel;
+	
+	public Timer timer;
+
+	private Dimension iconButtonSize = new Dimension(120, 120);
+	
+	public HomePanel(MainDisplayGUI mainGUI) {
+		
+		timer = new Timer(10000, new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+
+				loadTimeLogout();					
+				timer.stop();
+			}
+		});
+		
+		
+
+		this.mainGUI = mainGUI;
+		ActionClips.playWelcome();
+
+		setLayout(new GridBagLayout());
+		mainPanelLayout = new GridBagConstraints();
+
+		greetingsPanel = new JPanel(new GridBagLayout());
+		greatingsPanelLayout = new GridBagConstraints();
+		greetingsPanel.setOpaque(false);
+
+		buttonPanel = new JPanel(new GridBagLayout());
+		buttonPanelLayout = new GridBagConstraints();
+		buttonPanel.setOpaque(false);
+
+		messagesPanel = new MessagesPanel(this);
+
+		setOpaque(false);
+
+		// Greatings Panel
+
+		JLabel welcomeMessage = new JLabel("Welcome "
+				+ mainGUI.rmiClient.studentRecord.getFirstName() + " "
+				+ mainGUI.rmiClient.studentRecord.getLastName());
+		welcomeMessage.setFont(FontStyles.extraExtraLargeFont);
+		welcomeMessage.setForeground(new Color(255, 255, 255));
+
+		photo = mainGUI.rmiClient.studentRecord.getImage();
+		photoLabel = new JLabel(photo);
+		photoLabel.setPreferredSize(new Dimension(100, 150));
+		Border border = LineBorder.createGrayLineBorder();
+		photoLabel.setBorder(border);
+
+		greatingsPanelLayout.gridx = 0;
+		greetingsPanel.add(welcomeMessage, greatingsPanelLayout);
+
+		greatingsPanelLayout.gridx = 1;
+		greatingsPanelLayout.insets = new Insets(0, 300, 0, 0);
+		greetingsPanel.add(photoLabel, greatingsPanelLayout);
+
+		// Button Panel
+
+		this.messagesButton = new JButton("", new ImageIcon(
+				"images/buttonSelected/message.png"));
+		this.messagesButton.setPreferredSize(iconButtonSize);
+		this.messagesButton.setRolloverEnabled(true);
+		this.messagesButton.setBorderPainted(false);
+		this.messagesButton.setContentAreaFilled(false);
+		this.messagesButton.addActionListener(this);
+
+		this.timesTableButton = new JButton("", new ImageIcon(
+				"images/buttonNotSelected/schedule.png"));
+		this.timesTableButton.setPreferredSize(iconButtonSize);
+		this.timesTableButton.setRolloverEnabled(true);
+		this.timesTableButton.setBorderPainted(false);
+		this.timesTableButton.setContentAreaFilled(false);
+		this.timesTableButton.addActionListener(this);
+
+		this.assignmentResultsButton = new JButton("", new ImageIcon(
+				"images/buttonNotSelected/results.png"));
+		this.assignmentResultsButton.setPreferredSize(iconButtonSize);
+		this.assignmentResultsButton.setRolloverEnabled(true);
+		this.assignmentResultsButton.setBorderPainted(false);
+		this.assignmentResultsButton.setContentAreaFilled(false);
+		this.assignmentResultsButton.addActionListener(this);
+
+		this.campusGuideButton = new JButton("", new ImageIcon(
+				"images/buttonNotSelected/map.png"));
+		this.campusGuideButton.setPreferredSize(iconButtonSize);
+		this.campusGuideButton.setRolloverEnabled(true);
+		this.campusGuideButton.setBorderPainted(false);
+		this.campusGuideButton.setContentAreaFilled(false);
+		this.campusGuideButton.addActionListener(this);
+
+		this.BluetoothButton = new JButton("", new ImageIcon(
+				"images/buttonNotSelected/bluetooth.png"));
+		this.BluetoothButton.setPreferredSize(iconButtonSize);
+		this.BluetoothButton.setRolloverEnabled(true);
+		this.BluetoothButton.setBorderPainted(false);
+		this.BluetoothButton.setContentAreaFilled(false);
+		this.BluetoothButton.addActionListener(this);
+
+		this.logoutButton = new JButton("", new ImageIcon(
+				"images/buttonNotSelected/logout.png"));
+		this.logoutButton.setPreferredSize(iconButtonSize);
+		this.logoutButton.setRolloverEnabled(true);
+		this.logoutButton.setBorderPainted(false);
+		this.logoutButton.setContentAreaFilled(false);
+		this.logoutButton.addActionListener(this);
+
+		buttonPanelLayout.insets = new Insets(10, 10, 10, 10);
+		buttonPanelLayout.gridy = 0;
+		buttonPanelLayout.gridx = 0;
+
+		buttonPanel.add(messagesButton, buttonPanelLayout);
+
+		buttonPanelLayout.gridy = 0;
+		buttonPanelLayout.gridx = 1;
+
+		buttonPanel.add(timesTableButton, buttonPanelLayout);
+
+		buttonPanelLayout.gridy = 1;
+		buttonPanelLayout.gridx = 0;
+
+		buttonPanel.add(assignmentResultsButton, buttonPanelLayout);
+
+		buttonPanelLayout.gridy = 1;
+		buttonPanelLayout.gridx = 1;
+
+		buttonPanel.add(campusGuideButton, buttonPanelLayout);
+
+		buttonPanelLayout.gridy = 2;
+		buttonPanelLayout.gridx = 0;
+
+		buttonPanel.add(BluetoothButton, buttonPanelLayout);
+
+		buttonPanelLayout.gridy = 2;
+		buttonPanelLayout.gridx = 1;
+
+		buttonPanel.add(logoutButton, buttonPanelLayout);
+
+		// Add sub panels to main panel
+
+		mainPanelLayout.gridy = 0;
+		mainPanelLayout.gridx = 0;
+		mainPanelLayout.gridwidth = 2;
+
+		mainPanelLayout.insets = new Insets(0, 0, 0, 0);
+		mainPanelLayout.anchor = GridBagConstraints.EAST;
+
+		add(greetingsPanel, mainPanelLayout);
+
+		mainPanelLayout.gridy = 1;
+		mainPanelLayout.gridx = 0;
+		mainPanelLayout.gridwidth = 1;
+
+		mainPanelLayout.insets = new Insets(0, 15, 0, 35);
+
+		add(buttonPanel, mainPanelLayout);
+
+		mainPanelLayout.gridy = 1;
+		mainPanelLayout.gridx = 1;
+
+		mainPanelLayout.insets = new Insets(0, 0, 7, 0);
+
+		add(messagesPanel, mainPanelLayout);
+
+	}
+
+	public void resetButtonIcons() {
+		this.messagesButton.setIcon(new ImageIcon(
+				"images/buttonNotSelected/message.png"));
+
+		this.timesTableButton.setIcon(new ImageIcon(
+				"images/buttonNotSelected/schedule.png"));
+
+		this.assignmentResultsButton.setIcon(new ImageIcon(
+				"images/buttonNotSelected/results.png"));
+
+		this.campusGuideButton.setIcon(new ImageIcon(
+				"images/buttonNotSelected/map.png"));
+
+		this.BluetoothButton.setIcon(new ImageIcon(
+				"images/buttonNotSelected/bluetooth.png"));
+
+		this.logoutButton.setIcon(new ImageIcon(
+				"images/buttonNotSelected/logout.png"));
+	}
+	
+	public void loadTimeLogout() {		
+		mainGUI.mainDisplayPanel.remove(this);
+		mainGUI.frame.repaint();
+		mainGUI.loadLogoutPromptPanel();
+		mainGUI.frame.pack();	
+	}
+	
+	public void loadManualLogout() {
+		timer.stop();
+		mainGUI.mainDisplayPanel.remove(this);
+		mainGUI.frame.repaint();
+		mainGUI.loadGoodbyePanel();
+		mainGUI.frame.pack();	
+	}	
+
+	public void actionPerformed(ActionEvent e) {
+		timer.restart();
+
+		if (e.getSource() == messagesButton) {
+			resetButtonIcons();
+			ActionClips.playNumButton();
+			this.messagesButton.setIcon(new ImageIcon(
+					"images/buttonSelected/message.png"));
+		}
+		if (e.getSource() == timesTableButton) {
+			resetButtonIcons();
+			ActionClips.playNumButton();
+			this.timesTableButton.setIcon(new ImageIcon(
+					"images/buttonSelected/schedule.png"));
+		}
+		if (e.getSource() == assignmentResultsButton) {
+			resetButtonIcons();
+			ActionClips.playNumButton();
+			this.assignmentResultsButton.setIcon(new ImageIcon(
+					"images/buttonSelected/results.png"));
+		}
+		if (e.getSource() == campusGuideButton) {
+			resetButtonIcons();
+			ActionClips.playNumButton();
+			this.campusGuideButton.setIcon(new ImageIcon(
+					"images/buttonSelected/map.png"));
+		}
+		if (e.getSource() == BluetoothButton) {
+			resetButtonIcons();
+			ActionClips.playNumButton();
+			this.BluetoothButton.setIcon(new ImageIcon(
+					"images/buttonSelected/bluetooth.png"));
+		}
+		if (e.getSource() == logoutButton) {
+			resetButtonIcons();
+			
+			this.logoutButton.setIcon(new ImageIcon(
+			"images/buttonSelected/logout.png"));
+			
+			ActionClips.playCancelButton();
+			this.loadManualLogout();
+
+		}
+	}
+}

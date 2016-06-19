@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;clientOptions.txt&apos; to &apos;SIK-Client/src/sik.client&apos;&#x0D;&#x0A;- Original project: &apos;ATMSystemEclipse&apos;&#x0D;&#x0A;- Destination element: &apos;SIK-Client/src/sik.client&apos;&#x0D;&#x0A;- Original element: &apos;clientOptions.txt&apos;" description="Copy file" destination="=SIK-Client/src&lt;sik.client" element1="clientOptions.txt" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1280611039274" units="0" version="1.0"/>
+</session>

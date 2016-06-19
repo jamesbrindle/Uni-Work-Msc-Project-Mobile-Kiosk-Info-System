@@ -1,0 +1,30 @@
+package sik.client.admin;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import sik.common.RMIClient;
+import sik.common.RMIServer;
+
+public class RMIClientImpl extends UnicastRemoteObject implements RMIClient{
+	
+	private static final long serialVersionUID = 1L;
+	protected static String bindName = "RMIServer";
+	protected static RMIServer rmiServer;
+	protected static RMIClient rmiClient;
+	protected static RMIClientImpl impl;
+	
+	protected RMIClientImpl() throws RemoteException {
+
+	}	
+	
+	public void dispatchMessage(String theMessage) {
+		try {
+			rmiServer.printMessage(theMessage);
+		} catch (RemoteException e) {
+			
+			e.printStackTrace();
+		}
+	}
+	
+}

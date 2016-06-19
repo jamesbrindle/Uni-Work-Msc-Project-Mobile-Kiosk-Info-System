@@ -1,0 +1,5 @@
+package sik.common;
+
+public interface Records {
+
+}

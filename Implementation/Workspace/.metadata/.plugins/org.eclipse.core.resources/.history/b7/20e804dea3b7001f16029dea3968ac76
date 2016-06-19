@@ -1,0 +1,21 @@
+# MTJ Build Properties
+DefaultColorPhone.includes=src/example/bluetooth/demo/BTImageClient.java\
+,src/example/bluetooth/demo/BTImageServer.java\
+,src/example/bluetooth/demo/DemoMIDlet.java\
+,src/example/bluetooth/demo/GUIImageClient.java\
+,src/example/bluetooth/demo/GUIImageServer.java\
+,res/icons/demo.png\
+,res/images/duke.png\
+,res/images/leaf.jpg\
+,res/images/leaf.png\
+,res/images/st-off.png\
+,res/images/st-on.png\
+,src/icons/demo.png\
+,src/images/duke.png\
+,src/images/leaf.jpg\
+,src/images/leaf.png\
+,src/images/st-off.png\
+,src/images/st-on.png\
+
+DefaultColorPhone.excludes=\
+

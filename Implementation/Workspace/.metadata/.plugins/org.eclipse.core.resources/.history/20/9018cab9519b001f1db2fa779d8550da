@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="net.genady.rmi.rmiServer">
+<mapAttribute key="net.genady.rmi.launchProp">
+<mapEntry key="java.security.policy" value="${workspace_loc:/SIK-Server/RMIsecurity.policy}"/>
+</mapAttribute>
+<listAttribute key="net.genady.rmi.launchProp.codebase">
+<listEntry value="file:${workspace_loc:/SIK-Server/bin}"/>
+<listEntry value="file:${workspace_loc:/SIK-Server/bin}"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sik.server.ComputeEngine"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="localhost"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="SIK-Server"/>
+</launchConfiguration>

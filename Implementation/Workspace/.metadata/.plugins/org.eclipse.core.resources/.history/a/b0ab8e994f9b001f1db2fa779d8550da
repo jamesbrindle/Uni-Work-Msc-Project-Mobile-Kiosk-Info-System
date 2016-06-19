@@ -1,0 +1,285 @@
+package sik.client.admin;
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+
+
+/**
+ * Used to create account records and to set and get account record field 
+ * information using ‘getter’ and ‘setter’ methods
+ * @author Jamie Brindle (06352322)
+ */
+public class Records implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	protected int studentID;
+	private int pinNo;
+	private String title, firstName, lastName, firstLineAddress, secondLineAddress,
+				city, county, postCode, telephone, timestableName;
+	private ImageIcon image;
+	private ArrayList<String> messagesArrayList, timestableArrayList, resultsArrayList;
+
+	/**
+	 * Account constructor.
+	 * Also instantiate certain fields that are not necessarily required
+	 * @param studentID The account number required as a primary key or unique identifier
+	 */
+	public Records(int studentID) {
+		this.studentID = studentID;
+		this.secondLineAddress = "";
+		this.telephone = "";
+	}
+
+	/**
+	 * Getter method for accountNo
+	 * @return accountNo Account record account number integer
+	 */
+	public int getStudentID() {
+		return studentID;
+	}
+
+	/**
+	 * Getter method for pinNo
+	 * @return pinNo Account record pin number integer
+	 */
+	public int gettPinNo() {
+		return pinNo;
+	}
+
+	/**
+	 * Getter method for title
+	 * @return title Account record name title string
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * Getter method for firstName
+	 * @return firstName Account record first name string
+	 */
+	public String getFirstName() {
+		return firstName;
+	}
+
+	/**
+	 * Getter method for lastName
+	 * @return lastName Account record last name string
+	 */
+	public String getLastName() {
+		return lastName;
+	}
+
+	/**
+	 * Getter method for firstLineAddress
+	 * @return firstLineAddress Account record account number string
+	 */
+	public String getFirstLineAddress() {
+		return firstLineAddress;
+	}
+
+	/**
+	 * Getter method for secondLineAddress
+	 * @return secondLineAddress Account record second name string
+	 */
+	public String getSecondLineAddress() {
+		return secondLineAddress;
+	}
+
+	/**
+	 * Getter method for city
+	 * @return city Account record city string
+	 */
+	public String getCity() {
+		return city;
+	}
+
+	/**
+	 * Getter method for county
+	 * @return county Account record county string
+	 */
+	public String getCounty() {
+		return county;
+	}
+
+	/**
+	 * Getter method for postCode
+	 * @return postCode Account record post code string
+	 */
+	public String getPostCode() {
+		return postCode;
+	}
+
+	/**
+	 * Getter method for telephone
+	 * @return telephone Account record telephone number string
+	 */
+	public String getTelephone() {
+		return telephone;
+	}
+
+	/**
+	 * Getter method for student photo
+	 * @return image Record image of student photo
+	 */
+	public ImageIcon getImage() {
+		return image;
+
+	}
+
+	/**
+	 * Getter method for student messages
+	 * @return messageArrayList Array List of messages
+	 */
+	public ArrayList<String> getMessages() {
+		return messagesArrayList;
+	}
+
+	/**
+	 * Getter method for student timestable
+	 * @return timestableArrayList Array List of timestable
+	 */
+	public ArrayList<String> getTimestable() {
+		return timestableArrayList;
+	}
+	
+	/**
+	 * Getter method for student timestable name string
+	 * @return timestableName String of the name of the timestable
+	 */
+	public String getTimestableName() {
+		return timestableName;
+	}
+
+	/**
+	 * Getter method for student assignment results
+	 * @return resultsArrayList Array List of assignment results
+	 */
+	public ArrayList<String> getResults() {
+		return resultsArrayList;
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Setter method for account record pin number
+	 * @param pinNo The pin number integer
+	 */
+	public void setPinNo(int pinNo) {
+		this.pinNo = pinNo;
+	}
+
+	/**
+	 * Setter method for account record title
+	 * @param title the name title string
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/**
+	 * Setter method for account record first name
+	 * @param firstName the first name string
+	 */
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	/**
+	 * Setter method for account record last name
+	 * @param lastName the last name string
+	 */
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	/**
+	 * Setter method for account record first line of address
+	 * @param firstLineAddress the first line of address string
+	 */
+	public void setFirstLineAddress(String firstLineAddress) {
+		this.firstLineAddress = firstLineAddress;
+	}
+
+	/**
+	 * Setter method for account record second line of address
+	 * @param secondLineAddress the second line of the address string
+	 */
+	public void setSecondLineAddress(String secondLineAddress) {
+		this.secondLineAddress = secondLineAddress;
+	}
+
+	/**
+	 * Setter method for account record city
+	 * @param city the city string
+	 */
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	/**
+	 * Setter method for account record county
+	 * @param county the county string
+	 */
+	public void setCounty(String county) {
+		this.county = county;
+	}
+
+	/**
+	 * Setter method for account record post code
+	 * @param postCode the post code string
+	 */
+	public void setPostCode(String postCode) {
+		this.postCode = postCode;
+	}
+
+	/**
+	 * Setter method for account record telephone
+	 * @param telephone the telephone number string
+	 */
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	/**
+	 * Setter method for student photo image
+	 * @param image the ImageIcon of student photo
+	 */
+	public void setImage(ImageIcon image) {
+		this.image = image;
+	}
+
+	/**
+	 * Setter method for student messages
+	 * @param messages ArrayList of messages Strings
+	 */
+	public void setMessages(ArrayList<String> messages) {
+		this.messagesArrayList = messages;
+	}
+
+	/**
+	 * Setter method for student timestable
+	 * @param timestable ArrayList of student timestable Strings
+	 */
+	public void setTimestable(ArrayList<String> timestable) {
+		this.timestableArrayList = timestable;
+	}
+
+	/**
+	 * Setter method for student timestable name
+	 * @param ttn String of the timestable name
+	 */
+	public void setTimestableName(String ttn) {
+		this.timestableName = ttn;
+	}
+
+	/**
+	 * Setter method for student assignment results
+	 * @param results ArrayList of student assignment results
+	 */
+	public void setResults(ArrayList<String> results) {
+		this.resultsArrayList = results;
+	}
+
+}

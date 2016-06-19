@@ -1,0 +1,55 @@
+package sik.client;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+
+import sik.common.*;
+
+public class RMIClientImpl implements RMIClient, Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	public String receivedMessage;
+	public ArrayList<Object> recordArrayList;
+	
+	public RMIClientImpl() {
+
+	}
+	
+	public void printMessage(String theMessage) {
+		System.out.println(theMessage);		
+	}
+
+	public void dispatchMessage(String theMessage) {
+		receivedMessage = theMessage;		
+	}
+	
+	public void dispatchRecord(ArrayList<Object> studentRecordArrayList) throws RemoteException {
+	
+			ObjectOutputStream output;
+ 
+			try 
+			{
+				output = new ObjectOutputStream(new FileOutputStream( "Customers.index" ) );
+				output.writeObject(studentRecordArrayList);
+				output.close();
+			}
+			catch ( IOException e)
+			{
+				System.err.println( "Error opening file." );
+			} 
+		}
+
+		
+
+		
+	}
+
+
+
+   
+}

@@ -1,0 +1,216 @@
+package sik.client.user.panels;
+
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.Timer;
+
+import sik.client.user.ActionClips;
+import sik.client.user.FontStyles;
+import sik.client.user.MainDisplayGUI;
+import sik.client.user.panes.MapAreaPane;
+import sik.client.user.panes.MapAreaPane.ZoomType;
+
+public class MapPanel extends JPanel implements ActionListener, MouseMotionListener {
+	
+	private static final long serialVersionUID = 1L;
+
+	private MainDisplayGUI mainGUI;
+	
+	private MapAreaPane mapAreaPane;
+	private JPanel titlePanel, legendPanel, navigationPanel;
+	
+	private GridBagConstraints mainLayout, titleLayout, legendLayout, navigationLayout;
+	
+	private JLabel titleLabel;
+	private JButton backButton, zoomInButton, zoomOutButton;
+	private JTextArea legendTextArea;
+	public Timer timer;
+	
+	public MapPanel(MainDisplayGUI mainGUI) {
+		this.mainGUI = mainGUI;
+		
+		timer = new Timer(50000, new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+
+				loadTimedLogoutPanel();
+				timer.stop();
+			}
+		});
+				
+		timer.start();
+		
+		setLayout(new GridBagLayout());
+		setOpaque(false);
+	
+		titlePanel = new JPanel(new GridBagLayout());
+		legendPanel = new JPanel(new GridBagLayout());
+		navigationPanel = new JPanel(new GridBagLayout());
+		mapAreaPane = new MapAreaPane(mainGUI.homePanel);
+		
+		mapAreaPane.addMouseMotionListener(this);
+		addMouseMotionListener(this);
+		
+		mainLayout = new GridBagConstraints();
+		titleLayout = new GridBagConstraints();
+		legendLayout = new GridBagConstraints();
+		navigationLayout = new GridBagConstraints();
+		
+		loadMapPanelElements();
+		positionSubPanels();	
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == backButton) {
+			loadHomePanel();
+		}
+		if(e.getSource() == zoomInButton) {
+			ActionClips.playNumButton();
+			this.executeZoomIn();
+		}
+		if(e.getSource() == zoomOutButton) {
+			ActionClips.playNumButton();
+			this.executeZoomOut();
+		}
+	}
+	
+	private void loadMapPanelElements() {
+		loadTitlePanelElements();
+		loadLegendElements();
+		loadNavigationElements();
+	}
+	
+	private void positionSubPanels() {
+		mainLayout.gridy = 0;
+		mainLayout.gridy = 0;
+		mainLayout.gridwidth = 2;
+		
+		mainLayout.insets = new Insets(35,10,25,10);
+		add(titleLabel, mainLayout);		
+		
+		mainLayout.gridwidth = 1;
+		mainLayout.gridx = 0;
+		mainLayout.gridy = 1;
+		
+		mainLayout.insets = new Insets(0,10,0,20);
+		add(mapAreaPane, mainLayout);
+		
+		mainLayout.gridheight = 2;
+		mainLayout.gridy = 1;
+		mainLayout.gridx = 1;		
+		
+		mainLayout.insets = new Insets(0,10,0,10);
+		add(legendPanel, mainLayout);
+		
+		mainLayout.gridheight = 1;
+		mainLayout.gridx = 0;
+		mainLayout.gridy = 2;
+		
+		mainLayout.anchor = GridBagConstraints.CENTER;
+		
+		mainLayout.insets = new Insets(0,10,0,10);		
+		add(navigationPanel, mainLayout);		
+	}
+	
+	private void loadTitlePanelElements() {
+		titleLabel = new JLabel("All Saints Campus Map");
+		titleLabel.setFont(FontStyles.extraExtraLargeFont);
+		titleLabel.setForeground(new Color(255,255,255));
+		titlePanel.add(titleLabel, titleLayout);		
+	}
+	
+	private void loadLegendElements() {
+		legendTextArea = new JTextArea(8,5);
+		legendTextArea.setEditable(false);
+		legendTextArea.setText(mainGUI.clientOptions.getCampusLegendText());
+		legendTextArea.setFont(FontStyles.smallerFont);
+		
+		legendTextArea.setOpaque(false);
+		legendPanel.setOpaque(false);
+		
+		legendLayout.insets = new Insets(0,5,0,5);
+		legendPanel.add(legendTextArea, legendLayout);
+	}
+	
+	private void loadNavigationElements() {
+		navigationPanel.setOpaque(false);
+		
+		backButton = new JButton("", new ImageIcon("images/backButton.png"));		
+		zoomInButton = new JButton("", new ImageIcon("images/buttonNotSelected/zoom_in.png"));
+		zoomOutButton = new JButton("", new ImageIcon("images/buttonNotSelected/zoom_out.png"));
+		
+		backButton.setContentAreaFilled(false);
+		zoomInButton.setContentAreaFilled(false);
+		zoomOutButton.setContentAreaFilled(false);
+		
+		backButton.setBorderPainted(false);
+		zoomInButton.setBorderPainted(false);
+		zoomOutButton.setBorderPainted(false);
+		
+		backButton.addActionListener(this);
+		zoomInButton.addActionListener(this);
+		zoomOutButton.addActionListener(this);
+		
+		zoomInButton.setPressedIcon(new ImageIcon("images/buttonSelected/zoom_in.png"));
+		zoomOutButton.setPressedIcon(new ImageIcon("images/buttonSelected/zoom_out.png"));		
+		
+		navigationLayout.insets = new Insets(5,0,0,90);
+		
+		navigationLayout.anchor = GridBagConstraints.WEST;
+		navigationLayout.gridx = 0;
+		navigationPanel.add(backButton, navigationLayout);
+		
+		navigationLayout.insets = new Insets(5,0,0,90);
+		
+		navigationLayout.gridx = 1;
+		navigationPanel.add(zoomInButton, navigationLayout);
+		
+		navigationLayout.insets = new Insets(5,0,0,0);
+		
+		navigationLayout.gridx = 2;
+		navigationPanel.add(zoomOutButton, navigationLayout);		
+	}
+	
+	private void loadTimedLogoutPanel() {
+		ActionClips.playCancelButton();
+		mainGUI.mainDisplayPanel.remove(this);
+		mainGUI.frame.repaint();
+		mainGUI.loadLogoutPromptPanel("map");
+		mainGUI.frame.pack();
+	}
+	
+	private void loadHomePanel() {
+		timer.stop();
+		mainGUI.mainDisplayPanel.remove(this);
+		mainGUI.frame.repaint();
+		mainGUI.loadHomePanel("messages");
+		mainGUI.frame.pack();
+	}
+	
+	private void executeZoomIn() {
+		mapAreaPane.setZoom(ZoomType.ZOOM_PLUS_4);
+	}
+	
+	private void executeZoomOut() {
+		mapAreaPane.setZoom(ZoomType.ZOOM_MINUS_4);
+	}	
+
+	public void mouseDragged(MouseEvent arg0) {
+		timer.restart();
+	}
+
+	public void mouseMoved(MouseEvent arg0) {
+		timer.restart();	
+	}
+}

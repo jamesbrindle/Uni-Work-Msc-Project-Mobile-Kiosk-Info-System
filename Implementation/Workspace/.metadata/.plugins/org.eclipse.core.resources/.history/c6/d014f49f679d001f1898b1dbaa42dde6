@@ -1,0 +1,97 @@
+package sik.client;
+
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+class IntroPanel extends JPanel implements ActionListener {
+
+	private static final long serialVersionUID = 1L;
+
+	//top elements
+
+	ExitDialog exitDialog;
+
+	protected Container container;
+	protected JFrame frame;	
+
+	protected ImageIcon image;
+
+	//intro elements
+	
+	private GridBagConstraints introDisplayLayout;
+	private JLabel introMessageLn1, introMessageLn2;
+	
+	private JButton keyEntryButton;
+	
+	private Image img;
+	protected MainDisplayGUI mainGUI;
+
+
+	public IntroPanel(MainDisplayGUI mainGUI) {
+		
+		this.mainGUI = mainGUI;
+		
+		setLayout(new GridBagLayout());
+		introDisplayLayout = new GridBagConstraints();		
+		
+		introDisplayLayout.insets = new Insets(5,5,5,5);
+		
+		introDisplayLayout.gridy=0;	
+		
+		introMessageLn1 = new JLabel("Please Hold Your Fob Key or Card Up to the Reader");
+		introMessageLn1.setFont(mainGUI.extraLargeFont);
+		introMessageLn1.setForeground(new Color(255,255,255));
+		add(introMessageLn1, introDisplayLayout);
+
+		introDisplayLayout.gridy=1;
+		
+		introMessageLn2 = new JLabel("In Order to Access This Consol");
+		introMessageLn2.setFont(mainGUI.extraLargeFont);
+		introMessageLn2.setForeground(new Color(255,255,255));
+		add(introMessageLn2, introDisplayLayout);
+
+		introDisplayLayout.insets = new Insets(100,5,5,5);	
+
+		introDisplayLayout.gridy=2;
+		
+		keyEntryButton = new JButton("Manual Pin Entry");
+		keyEntryButton.setFont(mainGUI.largerFont);
+		keyEntryButton.addActionListener(this);
+			
+		add(keyEntryButton, introDisplayLayout);
+		
+	}
+
+	//public void paintComponent(Graphics g) {
+	//	g.drawImage(img, 0, 0, null);
+	//}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==keyEntryButton) {
+			mainGUI.container.remove(this);
+			mainGUI.frame.repaint();	
+			mainGUI.loadManualPinEntryElements();			
+			mainGUI.frame.pack();
+		}
+		
+	}
+
+}

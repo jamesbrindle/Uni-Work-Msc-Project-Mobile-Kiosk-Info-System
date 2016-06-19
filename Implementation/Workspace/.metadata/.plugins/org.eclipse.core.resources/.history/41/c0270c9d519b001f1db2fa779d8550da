@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="net.genady.rmi.rmiServer">
+<mapAttribute key="net.genady.rmi.launchProp">
+<mapEntry key="java.security.policy" value="${workspace_loc:/sun-rmi-tutorial-client/RMIsecurity.policy}"/>
+</mapAttribute>
+<listAttribute key="net.genady.rmi.launchProp.codebase">
+<listEntry value="file:${workspace_loc:/sun-rmi-tutorial-client/bin}"/>
+<listEntry value="file:${workspace_loc:/sun-rmi-tutorial-common/bin}"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="client.ComputePi"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="localhost 1099"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="sun-rmi-tutorial-client"/>
+</launchConfiguration>

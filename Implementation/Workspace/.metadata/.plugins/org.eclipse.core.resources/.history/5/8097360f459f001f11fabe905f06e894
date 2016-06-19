@@ -1,0 +1,146 @@
+package sik.client;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.Serializable;
+import java.rmi.RemoteException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import javax.swing.ImageIcon;
+
+import sik.pannels.*;
+
+public class MainDisplayGUI implements ActionListener {
+	private static final long serialVersionUID = 1L;
+
+	//Main Display
+
+	private ExitDialog exitDialog;
+
+	public Container container;
+	public JFrame frame;	
+
+	private JLabel typicalJLabel = new JLabel("");
+	private JButton exitProgramButton;
+	protected ImageIcon image;
+
+	public JPanel mainDisplayPanel;
+	private GridBagConstraints mainDisplayLayout;
+	
+	//Panels
+	
+	protected IntroPanel introPanel;
+	protected JPanel manPinEntryPanel;
+	
+	//Function Classes
+	
+	protected ClientOptions clientOptions;
+	
+	//fonts
+	public Font extraLargeFont, largerFont;	
+	
+	//server functions
+	
+	public String studentID = "";
+	public String receivedMessage = "";
+	public ServerHandler serverHandler;
+
+	
+   public MainDisplayGUI() throws RemoteException {
+	   clientOptions = new ClientOptions();	
+	   serverHandler = new ServerHandler(this);		 
+	  
+	}
+
+	public void run() {
+		image = new ImageIcon(clientOptions.getImageLocation());
+		
+		frame = new JFrame("Student Informatio Kiosk"); // Main frame and its title		
+		frame.addWindowListener(new WindowAdapter() {
+
+            /**
+             * Add a window listener thread
+             */
+            public void windowClosing(WindowEvent e) {
+
+                frame.dispose();
+                System.exit(0);
+				
+            }
+        });
+
+		container = frame.getContentPane();
+		container.setLayout(new BorderLayout());
+
+		frame.setResizable(false);
+		
+		//frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); 
+		//frame.setUndecorated(true);
+
+		typicalJLabel = new JLabel("");
+		System.out.println(typicalJLabel.getText().toString());
+		
+		extraLargeFont = new Font(typicalJLabel.getFont().getName(), typicalJLabel.getFont().getStyle(),24);
+		largerFont = new Font(typicalJLabel.getFont().getName(), typicalJLabel.getFont().getStyle(),15);
+
+		mainDisplayPanel = new ImagePanel(image.getImage());
+		mainDisplayPanel.setLayout(new GridBagLayout());
+		mainDisplayLayout = new GridBagConstraints();
+		
+		addExitHotKey();		
+		loadIntroPanel();
+		
+		container.add(mainDisplayPanel, BorderLayout.CENTER);		
+		
+		// centre frame on screen
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Dimension screenSize = tk.getScreenSize();
+		int screenHeight = screenSize.height;
+		int screenWidth = screenSize.width;
+
+		frame.setLocation(screenWidth / 4, screenHeight / 4);
+		frame.pack();
+		frame.setVisible(true);		
+		
+	}
+	
+	public void loadIntroPanel() {
+		introPanel = new IntroPanel(this);
+		mainDisplayPanel.add(introPanel, mainDisplayLayout);
+		
+	}
+
+	public void loadManualPinEntryPanel() {
+		manPinEntryPanel = new ManPinEntryPanel(this);
+		mainDisplayPanel.add(manPinEntryPanel, mainDisplayLayout);
+                
+	}
+	
+	public void addExitHotKey() {
+		exitProgramButton = new JButton("");
+		exitProgramButton.addActionListener(this);
+		exitProgramButton.setMnemonic(KeyEvent.VK_Q);
+		frame.add(exitProgramButton);
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==exitProgramButton) {
+			exitDialog = new ExitDialog(new JFrame(), "Exit Attempt");
+
+			if (exitDialog.getChoice() == 1) {
+				frame.dispose();
+				System.exit(0);
+			} 
+		}
+	}
+	
+
+}

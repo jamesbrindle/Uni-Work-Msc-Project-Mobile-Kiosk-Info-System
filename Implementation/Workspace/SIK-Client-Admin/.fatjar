@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Thu Sep 09 22:11:53 BST 2010
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=SIK-Client-Admin.jar
+manifest.mergeall=true
+manifest.mainclass=sik.client.admin.RunAdminProgram
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=
+includes=
